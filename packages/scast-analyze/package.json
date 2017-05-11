@@ -1,0 +1,11 @@
+{
+  "name": "@statechart/scast-analyze",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "dependencies": {
+    "unist-util-transform": "^1.0.1",
+    "unist-util-transform-group": "^1.0.1",
+    "unist-util-transform-stack": "^1.0.0"
+  }
+}

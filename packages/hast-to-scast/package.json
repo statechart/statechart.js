@@ -1,0 +1,9 @@
+{
+  "name": "@statechart/hast-to-scast",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "unist-util-map": "^1.0.3"
+  }
+}
