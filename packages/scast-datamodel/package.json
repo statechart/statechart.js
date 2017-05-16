@@ -1,7 +1,7 @@
 {
   "name": "@statechart/scast-datamodel",
   "version": "0.1.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "license": "MIT",
   "dependencies": {
     "unist-util-transform": "^1.0.1",

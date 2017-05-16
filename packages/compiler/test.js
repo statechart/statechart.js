@@ -2,7 +2,7 @@
 'use strict';
 
 var start = require('unified-args');
-var processor = require('./');
+var processor = require('./dist');
 var pack = require('./package.json');
 
 var name = pack.name;

@@ -1,0 +1,12 @@
+{
+  "name": "@statechart/scast-to-scexe",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@statechart/scpb": "*",
+    "unist-util-transform": "*",
+    "unist-util-transform-group": "*",
+    "unist-util-transform-stack": "*"
+  }
+}
