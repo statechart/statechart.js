@@ -1,4 +1,4 @@
-import { union, toArray } from './set';
+import { union, toArray, hasIntersection } from './set';
 
 export default function establishEntryset(backend, doc, interpreter, entrySet, transSet, exitSet) {
   var configuration = new Set(interpreter.configuration);
@@ -59,8 +59,7 @@ function addEntryDescendantsCompound(doc, configuration, entrySet, transSet, exi
   var completion = state.completion;
   union(entrySet, completion);
 
-  // TODO this seems weird
-  if (hasIntersection(completion, state.children)) return;
+  if (hasIntersection(new Set(completion), state.children)) return;
 
   var first = completion[0];
   if (typeof first === 'undefined') return;
@@ -72,7 +71,7 @@ function shouldAddCompoundState(configuration, entrySet, exitSet, state) {
   var children = state.children;
   return (
     !hasIntersection(entrySet, children) && (
-      !hasIntersection(configuration, children) &&
+      !hasIntersection(configuration, children) ||
       hasIntersection(exitSet, children)
     )
   );
@@ -80,7 +79,7 @@ function shouldAddCompoundState(configuration, entrySet, exitSet, state) {
 
 function exitStates(backend, doc, exitSet) {
   exitSet.forEach(function(idx) {
-    var state = doc.state[idx];
+    var state = doc.states[idx];
     state.onExit.forEach(function(execution) {
       backend.exec(execution);
     });

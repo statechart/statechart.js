@@ -33,12 +33,13 @@ export default [
     stateDescendants,
     stateCompletion,
     stateCompletionParallel,
-
-    // establish types
-    stateType,
-    transitionType,
   ]),
   createTranslator([
+
+  // establish types
+  stateType,
+  transitionType,
+
     stateCompletionHistory,
     transitionExitSet,
   ]),

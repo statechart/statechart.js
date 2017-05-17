@@ -1,7 +1,9 @@
-var fetch = require('fetch-ponyfill')().fetch;
-var visit = require('unist-util-visit');
+import visit from 'unist-util-visit';
+import createFetch from 'fetch-ponyfill';
 
-module.exports = function(options) {
+const fetch = createFetch().fetch;
+
+export default function(options) {
   options = options || {};
   var resolve = options.resolve || function(src) { return src; };
 

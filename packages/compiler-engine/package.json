@@ -1,7 +1,7 @@
 {
-  "name": "@statechart/compiler",
+  "name": "@statechart/compiler-engine",
   "version": "0.1.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "license": "MIT",
   "dependencies": {
     "@statechart/hast-xml-parse": "*",
@@ -9,14 +9,8 @@
     "@statechart/hast-scxml-lint": "*",
     "@statechart/scast-analyze": "*",
     "@statechart/scast-datamodel": "*",
-    "@statechart/scast-fetch-script": "*",
     "@statechart/scast-to-scexe": "*",
-    "@statechart/scexe-to-scpb": "*",
     "rehype-minify-whitespace": "^2.0.0",
-    "to-vfile": "^2.1.1",
-    "unified": "^6.1.2",
-    "unified-args": "^3.0.0",
-    "unist-util-inspect": "^4.1.0",
-    "unist-util-map": "^1.0.3"
+    "unified": "^6.1.2"
   }
 }

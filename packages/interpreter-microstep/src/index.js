@@ -6,7 +6,7 @@ export function init(backend, doc) {
     backend,
     doc,
     initialState(),
-    doc.states[0].completion,
+    new Set(doc.states[0].completion),
     new Set(),
     new Set()
   );

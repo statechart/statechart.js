@@ -1,7 +1,7 @@
-const transform = require('unist-util-transform');
-const createStack = require('unist-util-transform-stack');
+import transform from 'unist-util-transform';
+import createStack from 'unist-util-transform-stack';
 
-module.exports = function(opts) {
+export default function(opts) {
   var datamodels = opts.datamodels
   return function(root, file) {
     function init(scxml) {

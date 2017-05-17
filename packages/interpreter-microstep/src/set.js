@@ -1,9 +1,13 @@
 export function difference(subject, set) {
-  set.forEach(subject.delete);
+  set.forEach(function(element) {
+    if (subject.has(element)) subject.delete(element);
+    else subject.add(element);
+  });
   return subject;
 }
 
 export function intersection(subject, set) {
+  if (Array.isArray(set)) set = new Set(set);
   set.forEach(function(element) {
     if (!subject.has(element)) subject.delete(element);
   });
@@ -14,7 +18,9 @@ export function intersection(subject, set) {
 }
 
 export function union(subject, set) {
-  set.forEach(subject.add);
+  set.forEach(function(element) {
+    subject.add(element);
+  });
   return subject;
 }
 
@@ -23,7 +29,7 @@ export function toArray(subject) {
   subject.forEach(function(element) {
     arr.push(element);
   });
-  return arr;
+  return arr.sort();
 }
 
 const INTERSECTS = '@statechart/intersects';

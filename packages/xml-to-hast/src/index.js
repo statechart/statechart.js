@@ -1,4 +1,4 @@
-const SaxParser = require('parse5/lib/sax');
+import SaxParser from 'parse5/lib/sax';
 
 function getParent(stack) {
   return stack[stack.length - 1];
@@ -33,10 +33,8 @@ function closeLocation(location) {
   };
 }
 
-module.exports = function(options) {
-  this.Parser = parser;
-
-  function parser(doc, file) {
+export default function(options) {
+  this.Parser = function XMLParser(doc, file) {
     return parse(String(file));
   }
 };

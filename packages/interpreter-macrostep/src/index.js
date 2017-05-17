@@ -1,11 +1,7 @@
-var Emitter = require('events');
-var microstep = require('@statechart/interpreter-microstep');
-var handleEvent = microstep.handleEvent;
-var synchronize = microstep.synchronize;
+import Emitter from 'events';
+import { init, handleEvent, synchronize } from '@statechart/interpreter-microstep';
 
-module.exports = createInterpreter;
-
-function createInterpreter(document, ioprocessors, invokers) {
+export default function createInterpreter(document, ioprocessors, invokers) {
   var isRunning = false;
   var step;
   var emitter = new Emitter();
@@ -94,7 +90,7 @@ function createInterpreter(document, ioprocessors, invokers) {
 
     start: function() {
       isRunning = true;
-      state = microstep.init(backend, document);
+      state = init(backend, document);
       return step = datamodel
         .flush()
         .then(macrostep)

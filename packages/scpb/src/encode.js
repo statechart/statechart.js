@@ -1,12 +1,10 @@
-var $protobuf = require('protobufjs/minimal');
-var encodeBitset = require('@statechart/scpb-bitset').encode;
-var types = require('./types');
+import $protobuf from 'protobufjs/minimal';
+import { encode as encodeBitset } from '@statechart/scpb-bitset';
+import { state as stateTypes, transition as transitionTypes } from './types';
 
 var $Writer = $protobuf.Writer;
 
-module.exports = encodeDocument;
-
-function encodeDocument(message, writer) {
+export default function encodeDocument(message, writer) {
     if (!writer)
         writer = $Writer.create();
     if (message.name != null && message.hasOwnProperty("name"))
@@ -22,7 +20,6 @@ function encodeDocument(message, writer) {
     return writer;
 }
 
-var stateTypes = types.state;
 function encodeState(message, writer, stateSize, transitionSize) {
     if (!writer)
         writer = $Writer.create();
@@ -53,7 +50,6 @@ function encodeState(message, writer, stateSize, transitionSize) {
     return writer;
 }
 
-var transitionTypes = types.transition;
 function encodeTransition(message, writer, stateSize, transitionSize) {
     if (!writer)
         writer = $Writer.create();

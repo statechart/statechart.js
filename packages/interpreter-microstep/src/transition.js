@@ -3,7 +3,7 @@ import { union, intersection, difference, toArray } from './set';
 
 export default function selectTransitions(backend, doc, interpreter, event) {
   var configuration = new Set(interpreter.configuration);
-  var targetSet = new Set();
+  var entrySet = new Set();
   var transSet = new Set();
   var exitSet = new Set();
   var conflicts = new Set();
@@ -19,7 +19,7 @@ export default function selectTransitions(backend, doc, interpreter, event) {
       isTransitionApplicable(transition, event) &&
       isTransitionEnabled(transition, backend)
     ) {
-      union(targetSet, transition.targets);
+      union(entrySet, transition.targets);
       transSet.add(transition.idx);
       union(exitSet, transition.exits);
       union(conflicts, transition.conflicts);
@@ -37,7 +37,7 @@ function isTransitionActive(transition, configuration) {
 }
 
 function isTransitionConflictFree(transition, conflicts) {
-  return !conflicts.has(transSet.idx);
+  return !conflicts.has(transition.idx);
 }
 
 function isTransitionApplicable(transition, event) {

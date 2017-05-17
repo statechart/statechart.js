@@ -1,6 +1,6 @@
-const transform = require('unist-util-transform');
-const createGroup = require('unist-util-transform-group');
-const createStack = require('unist-util-transform-stack');
+import transform from 'unist-util-transform';
+import createGroup from 'unist-util-transform-group';
+import createStack from 'unist-util-transform-stack';
 
 const SCXML = 'scxml';
 const STATE = 'state';
@@ -45,8 +45,10 @@ const stateVisitor = {
       type: data.type,
       idx: node.idx,
       id: node.id,
+      onInitialize: (data.onInitialize || []).map(convertExpression),
       onEnter: (data.onEnter || []).map(convertExpression),
       onExit: (data.onExit || []).map(convertExpression),
+      invocations: [],
       parent: data.parent,
       children: data.children,
       ancestors: data.ancestors,
@@ -66,7 +68,7 @@ const transitionVisitor = {
       type: data.type,
       idx: node.idx,
       source: data.source,
-      events: node.events,
+      events: node.event,
       condition: convertExpression(node.cond),
       onTransition: (data.onTransition || []).map(convertExpression),
       targets: data.targets,
@@ -113,7 +115,7 @@ function convertExpression() {
   return undefined;
 }
 
-module.exports = function(opts) {
+export default function(opts) {
   return function(root, file) {
     const stack = createStack(SCXML, init, createGroup([
       stateVisitor,

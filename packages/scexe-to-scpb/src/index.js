@@ -1,6 +1,6 @@
-const encode = require('@statechart/scpb/lib/encode');
+import { encode } from '@statechart/scpb';
 
-module.exports = function(opts) {
+export default function(opts) {
   this.Compiler = function(root, file) {
     return encode(root).finish();
   };

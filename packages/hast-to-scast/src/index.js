@@ -1,6 +1,6 @@
-var map = require('unist-util-map');
+import map from 'unist-util-map';
 
-module.exports = function() {
+export default function() {
   return function(ast) {
     return map(ast, function(node) {
       return node.type === 'element' ?

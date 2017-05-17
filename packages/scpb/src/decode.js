@@ -1,12 +1,10 @@
-var $protobuf = require('protobufjs/minimal');
-var decodeBitset = require('@statechart/scpb-bitset').decode;
-var types = require('./types');
+import $protobuf from 'protobufjs/minimal';
+import { decode as decodeBitset } from '@statechart/scpb-bitset';
+import { state as stateTypes, transition as transitionTypes } from './types';
 
 var $Reader = $protobuf.Reader;
 
-module.exports = decodeDocument;
-
-function decodeDocument(reader, length) {
+export default function decodeDocument(reader, length) {
     if (!(reader instanceof $Reader))
         reader = $Reader.create(reader);
     var end = length === undefined ? reader.len : reader.pos + length, message = {};
@@ -37,7 +35,6 @@ function decodeDocument(reader, length) {
     return message;
 }
 
-var stateTypes = types.state;
 function decodeState(reader, length) {
     if (!(reader instanceof $Reader))
         reader = $Reader.create(reader);
@@ -90,7 +87,6 @@ function decodeState(reader, length) {
     return message;
 }
 
-var transitionTypes = types.transition;
 function decodeTransition(reader, length) {
     if (!(reader instanceof $Reader))
         reader = $Reader.create(reader);

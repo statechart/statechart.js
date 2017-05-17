@@ -1,4 +1,4 @@
-exports.state = [
+export const state = [
   'compound',
   'atomic',
   'parallel',
@@ -8,7 +8,7 @@ exports.state = [
   'final',
 ];
 
-exports.transition = [
+export const transition = [
   'external',
   'targetless',
   'internal',

@@ -7,7 +7,7 @@ function getSize(size) {
   return Math.floor(size / BUCKET_SIZE) + pad;
 }
 
-exports.encode = function encode(arr, size) {
+export function encode(arr, size) {
   var bitset = new Uint8Array(getSize(size));
   arr.forEach(function(idx) {
     var arrIdx = idx >> BUCKET_ADDR;
@@ -16,7 +16,7 @@ exports.encode = function encode(arr, size) {
   return bitset;
 };
 
-exports.decode = function decode(bitset) {
+export function decode(bitset) {
   var arr = [];
   bitset.forEach(function(byte, i) {
     for (var j = 0; j < BUCKET_SIZE; j++) {
