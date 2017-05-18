@@ -11,7 +11,7 @@ export default function createInterpreter(document, ioprocessors, invokers) {
   var pendingCancellations = [];
   var internalEvents = [];
   var externalEvents = [];
-  var datamodel = document.init(api);
+  var datamodel;
   var state;
 
   var backend = {
@@ -125,7 +125,7 @@ export default function createInterpreter(document, ioprocessors, invokers) {
           configuration: conf.configuration,
           history: conf.history,
         }
-      )
+      );
       datamodel = datamodel.load(conf.datamodel);
     },
 
@@ -135,7 +135,23 @@ export default function createInterpreter(document, ioprocessors, invokers) {
         return emitter.removeListener('change', fn);
       };
     },
+
+    isActive: function(state) {
+      if (Array.isArray(state)) {
+        return state.every(function(s) { return api.isActive(s); });
+      }
+      // TODO
+      return false;
+    },
   };
+
+  datamodel = document.init({
+    isActive: api.isActive,
+    raise: api.raise,
+    send: function(event) {
+      // TODO
+    },
+  }, ioprocessors);
 
   return api;
 }

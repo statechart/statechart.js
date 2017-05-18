@@ -58,5 +58,23 @@ describe('interpreter-microstep', function() {
       </scxml>
       `, { name: 'foo' }, [0, 1]);
     });
+
+    it('should work with parallel', function() {
+      testTransition(`
+      <scxml datamodel="ecmascript">
+        <parallel id="s1">
+          <state />
+          <state>
+            <transition event="bar" target="s2" />
+          </state>
+        </parallel>
+
+        <parallel id="s2">
+          <state />
+          <state />
+        </parallel>
+      </scxml>
+      `, { name: 'bar' }, [0, 4, 5, 6]);
+    });
   });
 });
