@@ -14,13 +14,12 @@ export default function(opts) {
     }
 
     var stack = createStack('scxml', init, function(node, index, parent, datamodel) {
-      var code = node._code || {};
-      Object.keys(code).forEach(function(key) {
-        if (!datamodel) file.fail('Uninitialized datamodel', node);
-        var conf = code[key];
-        if (conf) node[key] = datamodel(code[key], key, file);
-      });
-      delete node._code;
+      // TODO iterate the properties
+      // Object.keys(code).forEach(function(key) {
+      //   if (!datamodel) file.fail('Uninitialized datamodel', node);
+      //   var conf = code[key];
+      //   if (conf) node[key] = datamodel(code[key], key, file);
+      // });
       return node;
     });
 

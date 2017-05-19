@@ -11,7 +11,9 @@ class Backend {}
 
 function testTransition(str, event, expected) {
   var backend = new Backend();
-  var doc = new Document(compile(str));
+  var doc = new Document(compile(str), {
+    ecmascript: {}
+  });
   var interpreter = init(backend, doc);
   var { configuration } = handleEvent(backend, doc, interpreter, event);
   expect(configuration).toEqual(expected);

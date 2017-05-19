@@ -1,6 +1,12 @@
 import { createTranslator } from './util';
 import { SCXML } from './identifiers';
+import inlineContent from './inline-content';
 import ifToCond from './if-to-cond';
+
+import invokeNamelist from './invoke/namelist';
+import invokeFinalize from './invoke/finalize';
+import invokeChildren from './invoke/children';
+
 import stateSort from './state/sort';
 import stateIdentify from './state/identify';
 import stateMap from './state/map';
@@ -9,6 +15,9 @@ import stateDescendants from './state/descendants';
 import stateCompletion from './state/completion';
 import stateCompletionParallel from './state/completion-parallel';
 import stateCompletionHistory from './state/completion-history';
+import stateInvocations from './state/invocations';
+import stateDatamodel from './state/datamodel';
+import stateExecutables from './state/executables';
 import stateType from './state/type';
 
 import transitionIdentify from './transition/identify';
@@ -18,7 +27,12 @@ import transitionConflicts from './transition/conflicts';
 
 export default [
   createTranslator([
+    inlineContent,
     ifToCond,
+
+    invokeNamelist,
+    invokeFinalize,
+    invokeChildren,
 
     stateSort,
 
@@ -28,6 +42,9 @@ export default [
 
     // accumulate
     stateMap,
+    stateInvocations,
+    stateDatamodel,
+    stateExecutables,
 
     // state heiarchy
     stateAncestors,

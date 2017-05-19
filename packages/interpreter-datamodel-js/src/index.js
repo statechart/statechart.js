@@ -16,7 +16,11 @@ export function init(api, ioprocessors) {
 
   var datamodel = Object.assign({
     push: function(str) {
-      var value = sandbox.exec(str);
+      try {
+        var value = sandbox.exec(str);
+      } catch (err) {
+        // TODO send error into api
+      }
       if (value && value.then) pending.push(value);
       return datamodel;
     },
@@ -37,6 +41,7 @@ export function init(api, ioprocessors) {
         })
         .catch(function(error) {
           sandbox.global._event = null;
+          // TODO send error into api
           return Promise.reject(error);
         });
     }

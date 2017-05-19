@@ -81,9 +81,7 @@ var tags = {
       event: parseStringList(props.event),
       target: parseStringList(props.target),
       t: props.type || 'external',
-      _code: {
-        cond: code(props, 'cond', 'bool'),
-      },
+      cond: code(props, 'cond', 'bool'),
     });
   },
   initial: function(node) {
@@ -120,9 +118,7 @@ var tags = {
   'if': function(node) {
     var props = node[properties];
     return h('if', node, {
-      _code: {
-        cond: code(props, 'cond', 'bool'),
-      },
+      cond: code(props, 'cond', 'bool'),
     });
   },
   elseif: function(node) {
@@ -131,9 +127,7 @@ var tags = {
       type: 'elseif',
       data: node.data || {},
       position: node.position,
-      _code: {
-        cond: code(props, 'cond', 'bool'),
-      },
+      cond: code(props, 'cond', 'bool'),
     };
   },
   'else': function(node) {
@@ -149,9 +143,7 @@ var tags = {
     return h('foreach', node, {
       item: props.item,
       index: props.index,
-      _code: {
-        array: code(props, 'array', 'location'),
-      },
+      array: code(props, 'array', 'location'),
     });
   },
   log: function(node) {
@@ -161,9 +153,7 @@ var tags = {
       data: node.data || {},
       position: node.position,
       label: props.label,
-      _code: {
-        expr: code(props, 'expr', 'expr'),
-      },
+      expr: code(props, 'expr', 'expr'),
     };
   },
   datamodel: function(node) {
@@ -174,18 +164,14 @@ var tags = {
     return h('data', node, {
       id: props.id,
       src: props.src,
-      _code: {
-        expr: code(props, 'expr', 'expr'),
-      },
+      expr: code(props, 'expr', 'expr'),
     });
   },
   assign: function(node) {
     var props = node[properties];
     return h('assign', node, {
-      _code: {
-        location: code(props, 'location', 'location'),
-        expr: code(props, 'expr', 'expr'),
-      },
+      location: code(props, 'location', 'location'),
+      expr: code(props, 'expr', 'expr'),
     });
   },
   donedata: function(node) {
@@ -194,9 +180,7 @@ var tags = {
   content: function(node) {
     var props = node[properties];
     return h('content', node, {
-      _code: {
-        expr: code(props, 'expr', 'expr'),
-      },
+      expr: code(props, 'expr', 'expr'),
     });
   },
   param: function(node) {
@@ -206,10 +190,8 @@ var tags = {
       data: node.data || {},
       position: node.position,
       name: props.name,
-      _code: {
-        location: code(props, 'location', 'location'),
-        expr: code(props, 'expr', 'expr'),
-      },
+      location: code(props, 'location', 'location'),
+      expr: code(props, 'expr', 'expr'),
     };
   },
   script: function(node) {
@@ -222,13 +204,11 @@ var tags = {
     var props = node[properties];
     return h('send', node, {
       namelist: parseStringList(props.namelist),
-      _code: {
-        event: parsePropAlias(props, 'event', 'expr'),
-        target: parsePropAlias(props, 'target', 'expr'),
-        t: parsePropAlias(props, 'type', 'expr'),
-        id: parsePropAlias(props, 'id', 'location'),
-        delay: parsePropAlias(props, 'delay', 'expr'),
-      },
+      event: parsePropAlias(props, 'event', 'expr'),
+      target: parsePropAlias(props, 'target', 'expr'),
+      t: parsePropAlias(props, 'type', 'expr'),
+      id: parsePropAlias(props, 'id', 'location'),
+      delay: parsePropAlias(props, 'delay', 'expr'),
     });
   },
   cancel: function(node) {
@@ -236,9 +216,7 @@ var tags = {
       type: 'cancel',
       data: node.data || {},
       position: node.position,
-      _code: {
-        sendid: parsePropAlias(node[properties], 'sendid', 'expr'),
-      },
+      sendid: parsePropAlias(node[properties], 'sendid', 'expr'),
     };
   },
   invoke: function(node) {
@@ -246,11 +224,9 @@ var tags = {
     return h('invoke', node, {
       namelist: parseStringList(props.namelist),
       autoforward: parseBool(props.autoforward),
-      _code: {
-        t: parsePropAlias(props, 'type', 'expr'),
-        src: parsePropAlias(props, 'src', 'expr'),
-        id: parsePropAlias(props, 'id', 'location'),
-      },
+      t: parsePropAlias(props, 'type', 'expr'),
+      src: parsePropAlias(props, 'src', 'expr'),
+      id: parsePropAlias(props, 'id', 'location'),
     });
   },
   finalize: function(node) {

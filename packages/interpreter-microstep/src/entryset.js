@@ -83,10 +83,6 @@ function exitStates(backend, doc, exitSet) {
     state.onExit.forEach(function(execution) {
       backend.exec(execution);
     });
-
-    state.invocations.forEach(function(invocation) {
-      backend.uninvoke(invocation);
-    });
   });
 }
 
@@ -111,10 +107,6 @@ function enterStates(backend, doc, interpreter, configuration, entrySet) {
       });
       initialized.add(idx);
     }
-
-    state.invocations.forEach(function(invocation) {
-      backend.invoke(invocation);
-    });
 
     state.onEnter.forEach(function(execution) {
       backend.exec(execution);

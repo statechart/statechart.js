@@ -10,6 +10,7 @@
   },
   "scripts": {
     "build": "lerna exec \"babel src --out-dir lib && rollup -c\"",
+    "rollup": "lerna exec \"rollup -c\"",
     "test": "mocha --require ./test packages/*/test/*.js",
     "test:watch": "mocha --require ./test -w packages/*/test/*.js"
   }

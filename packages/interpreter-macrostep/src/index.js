@@ -1,14 +1,12 @@
 import Emitter from 'events';
 import { init, handleEvent, synchronize } from '@statechart/interpreter-microstep';
 
-export default function createInterpreter(document, ioprocessors, invokers) {
+export default function createInterpreter(doc, ioprocessors, invokers) {
   var isRunning = false;
   var step;
   var emitter = new Emitter();
 
-  var invocations = [];
-  var pendingInvocations = [];
-  var pendingCancellations = [];
+  var invocations = new Map();
   var internalEvents = [];
   var externalEvents = [];
   var datamodel;
@@ -22,14 +20,6 @@ export default function createInterpreter(document, ioprocessors, invokers) {
     query: function(execution) {
       return datamodel.exec(execution);
     },
-
-    invoke: function(invocation) {
-      pendingInvocations.push(invocation);
-    },
-
-    uninvoke: function(invocation) {
-      pendingCancellations.push(invocation);
-    },
   };
 
   function handleError(err) {
@@ -41,9 +31,9 @@ export default function createInterpreter(document, ioprocessors, invokers) {
     if (event = internalEvents.pop()) return handleInternalEvent(event);
     if (!isRunning) return exit();
 
-    // TODO invoke
-
     if (internalEvents.length) return macrostep();
+
+    invoke();
 
     if (event = externalEvents.pop()) return handleExternalEvent(event);
 
@@ -53,12 +43,12 @@ export default function createInterpreter(document, ioprocessors, invokers) {
   }
 
   function handleInternalEvent(event) {
-    state = handleEvent(backend, document, state, event);
+    state = handleEvent(backend, doc, state, event);
     return datamodel
       .event(event)
       .flush()
       .then(function() {
-        state = synchronize(backend, document, state);
+        state = synchronize(backend, doc, state);
         return datamodel
           .flush()
           .then(macrostep)
@@ -74,11 +64,49 @@ export default function createInterpreter(document, ioprocessors, invokers) {
 
     // TODO finalize matching invocations
 
-    state = handleEvent(backend, document, state, event);
+    state = handleEvent(backend, doc, state, event);
     return datamodel
       .flush()
       .then(macrostep)
       .catch(handleError);
+  }
+
+  function invoke() {
+    var acc = new Map();
+
+    state.configuration.forEach(function(idx) {
+      var st = doc.states[idx];
+      st.invocations.forEach(function(invocation, i) {
+        var prev = invocations.get(invocation);
+        if (prev) return acc.set(invocation, prev);
+
+        try {
+          var inv = {
+            idx: i,
+            type: datamodel.exec(invocation.type),
+            src: datamodel.exec(invocation.src),
+            id: datamodel.exec(invocation.id),
+            params: datamodel.exec(invocation.params),
+            source: idx,
+            depth: st.ancestors.length,
+          };
+        } catch (err) {
+          console.error(err);
+          // TODO push internal error
+        }
+
+        var invoker = invokers[inv.type];
+        if (invoker) acc.set(invocation, invoker.invoke(inv, api.send));
+        else console.error('Invalid invocation', inv);
+      });
+    });
+
+    invocations.forEach(function(invocation, cancel) {
+      if (acc.has(invocation)) return;
+      cancel();
+    });
+
+    invocations = acc;
   }
 
   function exit() {
@@ -90,7 +118,7 @@ export default function createInterpreter(document, ioprocessors, invokers) {
 
     start: function() {
       isRunning = true;
-      state = init(backend, document);
+      state = init(backend, doc);
       return step = datamodel
         .flush()
         .then(macrostep)
@@ -100,12 +128,6 @@ export default function createInterpreter(document, ioprocessors, invokers) {
     send: function(event) {
       if (!step) return step = handleExternalEvent(event);
       externalEvents.push(event);
-      return step;
-    },
-
-    raise: function(event) {
-      if (!step) return step = handleInternalEvent(event);
-      internalEvents.push(event);
       return step;
     },
 
@@ -136,18 +158,35 @@ export default function createInterpreter(document, ioprocessors, invokers) {
       };
     },
 
-    isActive: function(state) {
-      if (Array.isArray(state)) {
+    isActive: function(s) {
+      if (Array.isArray(s)) {
         return state.every(function(s) { return api.isActive(s); });
       }
-      // TODO
+
+      var configuration = state.configuration;
+      for (var i = 0, idx; i < configuration.length; i++) {
+        idx = configuration[i];
+        if (s === idx || s === doc.states[idx].id) return true;
+      }
       return false;
+    },
+
+    getConfiguration: function() {
+      return state.configuration.reduce(function(acc, idx) {
+        var id = doc.states[idx].id;
+        if (id) acc.push(id);
+        return acc;
+      }, []);
     },
   };
 
-  datamodel = document.init({
+  datamodel = doc.init({
     isActive: api.isActive,
-    raise: api.raise,
+    raise: function(event) {
+      if (!step) return step = handleInternalEvent(event);
+      internalEvents.push(event);
+      return step;
+    },
     send: function(event) {
       // TODO
     },

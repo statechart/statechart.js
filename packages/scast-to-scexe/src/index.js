@@ -48,7 +48,8 @@ const stateVisitor = {
       onInitialize: (data.onInitialize || []).map(convertExpression),
       onEnter: (data.onEnter || []).map(convertExpression),
       onExit: (data.onExit || []).map(convertExpression),
-      invocations: [],
+      invocations: (data.invocations || []).map(convertInvoke),
+      data: (data.datamodel || []).map(convertData),
       parent: data.parent,
       children: data.children,
       ancestors: data.ancestors,
@@ -110,9 +111,26 @@ function init(scxml) {
   };
 }
 
-function convertExpression() {
-  // TODO
-  return undefined;
+function convertExpression(expr) {
+  return expr;
+}
+
+function convertInvoke(invoke) {
+  return {
+    type: convertExpression(invoke.t),
+    src: convertExpression(invoke.src),
+    id: convertExpression(invoke.id),
+    autoforward: invoke.autoforward,
+    params: (invoke.data.params || []).map(convertExpression),
+    content: convertExpression(invoke.data.content),
+    onExit: (invoke.data.onExit || []).map(convertExpression),
+  };
+}
+
+function convertData(data) {
+  return {
+    // TODO
+  };
 }
 
 export default function(opts) {

@@ -10,13 +10,12 @@ export default class Document {
         }
       )
     });
+    var dm = this.datamodel = datamodels[doc.datamodel];
+    if (!dm) throw new Error('Unsupported datamodel: ' + doc.datamodel);
   }
 
-  init() {
-    // create a datamodel instance
-    return {
-
-    };
+  init(api, ioprocessors) {
+    return this.datamodel.init(api, ioprocessors);
   }
 }
 
