@@ -4,12 +4,12 @@
   "main": "dist/index.js",
   "license": "MIT",
   "dependencies": {
-    "@statechart/hast-xml-parse": "*",
-    "@statechart/hast-to-scast": "*",
-    "@statechart/hast-scxml-lint": "*",
-    "@statechart/scast-analyze": "*",
-    "@statechart/scast-datamodel": "*",
-    "@statechart/scast-to-scexe": "*",
+    "@statechart/hast-scxml-lint": "^0.1.0",
+    "@statechart/hast-to-scast": "^0.1.0",
+    "@statechart/hast-xml-parse": "^0.1.0",
+    "@statechart/scast-analyze": "^0.1.0",
+    "@statechart/scast-datamodel": "^0.1.0",
+    "@statechart/scast-to-scexe": "^0.1.0",
     "rehype-minify-whitespace": "^2.0.0",
     "unified": "^6.1.2"
   }

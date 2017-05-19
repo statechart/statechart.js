@@ -7,8 +7,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@statechart/compiler-engine": "*",
-    "@statechart/scexe-to-scpb": "*",
+    "@statechart/compiler-engine": "^0.1.0",
+    "@statechart/scexe-to-scpb": "^0.1.0",
     "to-vfile": "^2.1.1",
     "unified-args": "^3.0.0"
   }
