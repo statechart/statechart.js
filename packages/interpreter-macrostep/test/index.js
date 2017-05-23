@@ -8,13 +8,14 @@ function compile(str) {
 }
 
 var ecmascript = {
-  load: function(ast) {
-    return ast;
+  load: function(node) {
+    if (node.type === 'literal') return JSON.stringify(node.value);
+    return node.value;
   },
   init: function(api, ioprocessors) {
     return {
       exec: function(ast) {
-        return ast;
+        return eval(ast);
       },
       push: function() {
         return ecmascript;

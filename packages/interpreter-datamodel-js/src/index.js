@@ -1,7 +1,9 @@
 import createSandbox from './sandbox';
+import loaders from './loader';
 
 export function load(ast) {
-  // TODO
+  const loader = loaders[ast.type];
+  return loader(ast);
 }
 
 export function init(api, ioprocessors) {

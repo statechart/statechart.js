@@ -4,7 +4,7 @@ export default function() {
       'invoke',
       'send'
     ],
-    enter: function(node, index, parent) {
+    exit: function(node, index, parent) {
       var data = node.data;
       node.children.forEach(function(child) {
         if (child.type === 'content') data.content = child.expr;

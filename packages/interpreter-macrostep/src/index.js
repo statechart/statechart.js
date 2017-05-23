@@ -86,18 +86,23 @@ export default function createInterpreter(doc, ioprocessors, invokers) {
             type: datamodel.exec(invocation.type),
             src: datamodel.exec(invocation.src),
             id: datamodel.exec(invocation.id),
-            params: datamodel.exec(invocation.params),
+            content: datamodel.exec(invocation.content),
             source: idx,
+            parent: st.parent,
             depth: st.ancestors.length,
           };
+
+          var invoker = invokers[inv.type];
+          if (invoker) {
+            var cancel = invoker(inv, api.send);
+            acc.set(invocation, cancel);
+          } else {
+            console.error('Invalid invocation', inv);
+          }
         } catch (err) {
           console.error(err);
           // TODO push internal error
         }
-
-        var invoker = invokers[inv.type];
-        if (invoker) acc.set(invocation, invoker.invoke(inv, api.send));
-        else console.error('Invalid invocation', inv);
       });
     });
 
