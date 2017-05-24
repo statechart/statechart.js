@@ -1,13 +1,13 @@
 {
   "name": "@statechart/compiler-cli",
   "description": "",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "bin": {
     "statechart": "dist/index.js"
   },
   "license": "MIT",
   "dependencies": {
-    "@statechart/compiler-engine": "^0.1.2",
+    "@statechart/compiler-engine": "^0.1.3",
     "@statechart/scexe-to-scpb": "^0.1.2",
     "to-vfile": "^2.1.1",
     "unified-args": "^3.0.0"
