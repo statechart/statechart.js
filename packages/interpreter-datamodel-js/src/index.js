@@ -2,7 +2,9 @@ import createSandbox from './sandbox';
 import loaders from './loader';
 
 export function load(ast) {
-  const loader = loaders[ast.type];
+  const type = ast.type;
+  const loader = loaders[type];
+  if (!loader) throw new Error('Invalid expr type: ' + type);
   return loader(ast);
 }
 

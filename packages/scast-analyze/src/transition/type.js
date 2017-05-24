@@ -28,5 +28,5 @@ export default function() {
 };
 
 function isEmpty(arr) {
-  return !arr || arr.length;
+  return !arr || !arr.length;
 }

@@ -14,6 +14,7 @@ export default function() {
       const conflicts = node.data.conflicts = [];
       const states = scxml.states;
       scxml.transitions.forEach(function(t2) {
+        if (node.idx === t2.idx) return;
         if (hasConflict(states, node, t2)) conflicts.push(t2.idx);
       });
       return node;

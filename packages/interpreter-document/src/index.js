@@ -54,7 +54,7 @@ function loadTransition(transition) {
     transition,
     {
       events: createMatcher(transition.events),
-      condition: loadExpr(transition.cond),
+      condition: loadExpr(transition.condition),
       onTransition: (transition.onTransition || []).map(loadExpr),
     }
   );

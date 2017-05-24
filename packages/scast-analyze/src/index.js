@@ -24,6 +24,7 @@ import transitionIdentify from './transition/identify';
 import transitionType from './transition/type';
 import transitionExitSet from './transition/exit-set';
 import transitionConflicts from './transition/conflicts';
+import transitionExecutables from './transition/executables';
 
 export default [
   createTranslator([
@@ -45,6 +46,7 @@ export default [
     stateInvocations,
     stateDatamodel,
     stateExecutables,
+    transitionExecutables,
 
     // state heiarchy
     stateAncestors,

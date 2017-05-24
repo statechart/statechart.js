@@ -39,6 +39,10 @@ export default function createInterpreter(doc, ioprocessors, invokers) {
 
     step = null;
     // TODO emit stable event
+    setTimeout(function() {
+      emitter.emit('stable');
+    });
+
     return Promise.resolve(state.configuration);
   }
 
@@ -94,7 +98,7 @@ export default function createInterpreter(doc, ioprocessors, invokers) {
 
           var invoker = invokers[inv.type];
           if (invoker) {
-            var cancel = invoker(inv, api.send);
+            var cancel = invoker(inv, api);
             acc.set(invocation, cancel);
           } else {
             console.error('Invalid invocation', inv);
@@ -106,9 +110,14 @@ export default function createInterpreter(doc, ioprocessors, invokers) {
       });
     });
 
-    invocations.forEach(function(invocation, cancel) {
+    invocations.forEach(function(cancel, invocation) {
       if (acc.has(invocation)) return;
-      cancel();
+      try {
+        cancel();
+      } catch (err) {
+        console.error(err);
+        // TODO push internal error
+      }
     });
 
     invocations = acc;
@@ -131,8 +140,16 @@ export default function createInterpreter(doc, ioprocessors, invokers) {
     },
 
     send: function(event) {
+      if (typeof event === 'string') event = {name: event};
       if (!step) return step = handleExternalEvent(event);
       externalEvents.push(event);
+      return step;
+    },
+
+    raise: function(event) {
+      if (typeof event === 'string') event = {name: event};
+      if (!step) return step = handleInternalEvent(event);
+      internalEvents.push(event);
       return step;
     },
 
@@ -187,11 +204,7 @@ export default function createInterpreter(doc, ioprocessors, invokers) {
 
   datamodel = doc.init({
     isActive: api.isActive,
-    raise: function(event) {
-      if (!step) return step = handleInternalEvent(event);
-      internalEvents.push(event);
-      return step;
-    },
+    raise: api.raise,
     send: function(event) {
       // TODO
     },

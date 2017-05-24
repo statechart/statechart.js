@@ -1,20 +1,12 @@
 import { stateTypes } from '../util';
 
-const types = {
-  'onentry': 'onEnter',
-  'onexit': 'onExit',
-};
-
 export default function() {
   return {
-    types: stateTypes,
+    types: ['transition'],
     exit: function(node) {
       var data = node.data;
-      node.children = node.children.filter(function(child) {
-        var t = types[child.type];
-        if (!t) return true;
-        data[t] = (data[t] || []).concat(child.children);
-      });
+      data.onTransition = (data.onTransition || []).concat(node.children);
+      node.children = [];
       return node;
     }
   };
