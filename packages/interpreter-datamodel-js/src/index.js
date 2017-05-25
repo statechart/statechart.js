@@ -1,19 +1,13 @@
 import createSandbox from './sandbox';
-import loaders from './loader';
-
-export function load(ast) {
-  const type = ast.type;
-  const loader = loaders[type];
-  if (!loader) throw new Error('Invalid expr type: ' + type);
-  return loader(ast);
-}
+export { default as load } from './loader';
 
 export function init(api, ioprocessors) {
   var sandbox = createSandbox({
     _ioprocessors: ioprocessors,
     In: api.isActive,
-    __raise: api.raise,
-    __send: api.send,
+    _raise: api.raise,
+    _send: api.send,
+    _cancel: api.cancel,
   });
 
   var pending = [];
@@ -24,6 +18,7 @@ export function init(api, ioprocessors) {
         var value = sandbox.exec(str);
       } catch (err) {
         // TODO send error into api
+        console.error(err);
       }
       if (value && value.then) pending.push(value);
       return datamodel;

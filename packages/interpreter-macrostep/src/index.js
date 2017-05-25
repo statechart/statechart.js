@@ -1,5 +1,9 @@
 import Emitter from 'events';
 import { init, handleEvent, synchronize } from '@statechart/interpreter-microstep';
+import parseDuration from 'parse-duration';
+import CancelablePromise from 'cancelable-promise';
+
+const SCXML_SEND_TYPE = 'http://www.w3.org/TR/scxml/#SCXMLEventProcessor';
 
 export default function createInterpreter(doc, ioprocessors, invokers) {
   var isRunning = false;
@@ -7,6 +11,7 @@ export default function createInterpreter(doc, ioprocessors, invokers) {
   var emitter = new Emitter();
 
   var invocations = new Map();
+  var pendingSends = new Map();
   var internalEvents = [];
   var externalEvents = [];
   var datamodel;
@@ -205,10 +210,52 @@ export default function createInterpreter(doc, ioprocessors, invokers) {
   datamodel = doc.init({
     isActive: api.isActive,
     raise: api.raise,
-    send: function(event) {
-      // TODO
+    send: function send(event) {
+      var type = event.type || SCXML_SEND_TYPE;
+      var target = event.target;
+
+      try {
+        var sender = type === SCXML_SEND_TYPE && !target || target === "#_internal" ?
+          api :
+          ioprocessors[type];
+
+        if (sender) {
+          var receipt = maybeDelay(sender, event, api);
+          if (!receipt || !receipt.cancel || !event.id) return;
+
+          var id = event.id;
+          pendingSends.set(id, receipt);
+
+          function onDone() {
+            pendingSends.delete(id);
+          }
+
+          receipt
+            .then(onDone.bind(null, null))
+            .catch(onDone);
+        } else {
+          console.error('Invalid send type', event);
+        }
+      } catch (err) {
+        console.error(err);
+        // TODO push internal error
+      }
     },
+    cancel: function(id) {
+      var promise = pendingSends.get(id);
+      if (promise && promise.cancel) return promise.cancel();
+    }
   }, ioprocessors);
 
   return api;
+}
+
+function maybeDelay(sender, event, api) {
+  var delay = event.delay;
+  if (typeof delay === 'undefined') return sender.send(event, api);
+  return new CancelablePromise(function(resolve) {
+    setTimeout(function() {
+      resolve(sender.send(event, api));
+    }, parseDuration(delay));
+  });
 }

@@ -45,8 +45,13 @@ export default function createIframe(context) {
   doc.close();
 
   contentWindow._sessionid = sessionid;
-  contentWindow.__load = initLoad(contentWindow);
+  contentWindow._load = initLoad(contentWindow);
   contentWindow.fetch = createFetch().fetch;
+  for (var key in context) {
+    if (context.hasOwnProperty(key)) {
+      contentWindow[key] = context[key];
+    }
+  }
 
   return contentWindow.__(window, document, history, context);
 }
