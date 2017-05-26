@@ -20,9 +20,9 @@ export default function() {
   }, {
     types: [TRANSITION],
     enter: function(node, index, parent, conf) {
-      const targets = node.data.targets = (node.target || []).map(function(target) {
+      const targets = node.data.targets = (node.target && node.target.length) ? node.target.map(function(target) {
         return conf.ids.get(target) || unknownTarget(target);
-      });
+      }) : [node.data.source];
 
       node.data.exits = targets.length ?
         getExitSet(conf.states, node, targets) :

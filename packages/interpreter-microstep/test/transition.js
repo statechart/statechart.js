@@ -101,5 +101,15 @@ describe('interpreter-microstep', function() {
       </scxml>
       `, { name: 'bar' }, [0, 3]);
     });
+
+    it('should work with targetless transitions', function() {
+      testTransition(`
+      <scxml datamodel="ecmascript">
+        <state id="s1">
+          <transition event="bar" />
+        </state>
+      </scxml>
+      `, { name: 'bar' }, [0, 1]);
+    });
   });
 });
