@@ -10,12 +10,16 @@ function compile(str) {
 class Backend {}
 
 function testTransition(str, event, expected) {
-  var backend = new Backend();
+  var backend = {
+    query: function(value) {
+      return value;
+    }
+  };
   var doc = new Document(compile(str), {
     ecmascript: {
       load: function(node) {
-        if (node.type === 'literal') return JSON.stringify(node.value);
-        return node.value;
+        if (node.type === 'literal') return node.value;
+        return JSON.parse(node.value);
       },
     }
   });
@@ -82,6 +86,20 @@ describe('interpreter-microstep', function() {
         </parallel>
       </scxml>
       `, { name: 'bar' }, [0, 4, 5, 6]);
+    });
+
+    it('should skip false conditions', function() {
+      testTransition(`
+      <scxml datamodel="ecmascript">
+        <state id="s1">
+          <transition event="bar" cond="false" target="s2" />
+          <transition event="bar" target="s3" />
+        </state>
+
+        <state id="s2" />
+        <state id="s3" />
+      </scxml>
+      `, { name: 'bar' }, [0, 3]);
     });
   });
 });

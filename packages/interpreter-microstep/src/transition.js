@@ -48,7 +48,7 @@ function isTransitionApplicable(transition, event) {
 }
 
 function isTransitionEnabled(transition, backend) {
-  var cond = transition.cond;
+  var cond = transition.condition;
   return typeof cond === 'undefined' ?
     true :
     backend.query(cond);
