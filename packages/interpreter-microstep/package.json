@@ -1,11 +1,8 @@
 {
   "name": "@statechart/interpreter-microstep",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "main": "dist/index.js",
   "license": "MIT",
-  "dependencies": {
-    
-  },
   "devDependencies": {
     "@statechart/compiler-engine": "^0.1.6",
     "@statechart/interpreter-document": "^0.1.3"
