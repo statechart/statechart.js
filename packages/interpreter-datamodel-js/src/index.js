@@ -8,6 +8,11 @@ export function init(api, ioprocessors) {
     _raise: api.raise,
     _send: api.send,
     _cancel: api.cancel,
+    _log: function(props) {
+      // TODO
+      console.log(props);
+    },
+    _foreach: foreach,
   });
 
   var pending = [];
@@ -47,4 +52,27 @@ export function init(api, ioprocessors) {
   }, sandbox);
 
   return datamodel;
+}
+
+function foreach(collection, fn) {
+  var out = [];
+  if (!collection) return out;
+
+  var i = 0;
+
+  if (typeof collection.length === 'number') {
+    for (var l = collection.length; i < l; i++) {
+      fn(collection[i], i);
+    }
+  } else if (typeof collection[Symbol.iterator] === 'function') {
+    for (var value of iterable) {
+      fn(value, i++);
+    }
+  } else {
+    Object.keys(collection).forEach(function(k) {
+      fn(collection[k], k);
+    });
+  }
+
+  return out;
 }
