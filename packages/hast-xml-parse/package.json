@@ -1,6 +1,6 @@
 {
   "name": "@statechart/hast-xml-parse",
-  "version": "0.1.4",
+  "version": "0.1.9",
   "main": "dist/index.js",
   "license": "MIT",
   "dependencies": {

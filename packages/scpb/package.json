@@ -1,6 +1,6 @@
 {
   "name": "@statechart/scpb",
-  "version": "0.1.2",
+  "version": "0.1.9",
   "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
