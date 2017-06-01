@@ -1,6 +1,6 @@
 var subject = require('../');
 
-describe('', function() {
+describe('scexe-to-scpb', function() {
   it('', function() {
 
   });

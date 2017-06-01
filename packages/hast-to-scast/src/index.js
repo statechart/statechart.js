@@ -81,7 +81,7 @@ var tags = {
       event: parseStringList(props.event),
       target: parseStringList(props.target),
       t: props.type || 'external',
-      cond: code(props, 'cond', 'bool'),
+      cond: code(props, 'cond', 'expr'),
     });
   },
   initial: function(node) {
@@ -118,7 +118,7 @@ var tags = {
   'if': function(node) {
     var props = node[properties];
     return h('if', node, {
-      cond: code(props, 'cond', 'bool'),
+      cond: code(props, 'cond', 'expr'),
     });
   },
   elseif: function(node) {
@@ -127,7 +127,7 @@ var tags = {
       type: 'elseif',
       data: node.data || {},
       position: node.position,
-      cond: code(props, 'cond', 'bool'),
+      cond: code(props, 'cond', 'expr'),
     };
   },
   'else': function(node) {

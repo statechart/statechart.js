@@ -3,6 +3,9 @@
   "version": "0.1.2",
   "main": "dist/index.js",
   "license": "MIT",
+  "scripts": {
+    "build": "pbjs statechart.proto -t static-module -w es6 --no-create --no-verify --no-convert --no-delimited -o src/_initial.js"
+  },
   "dependencies": {
     "@statechart/scpb-bitset": "^0.1.2",
     "protobufjs": "^6.7.3"

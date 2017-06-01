@@ -2,9 +2,6 @@ const loaders = {
   assign: function(node) {
     return loaders.location(node.location) + '=' + node.expr.value;
   },
-  bool: function(node) {
-    return '!!' + loaders.expr(node);
-  },
   literal: function(node) {
     return JSON.stringify(node.value);
   },
@@ -19,7 +16,7 @@ const loaders = {
     const props = [
       optionLoad(node, 'event', 'name'),
       optionLoad(node, 'target'),
-      optionLoad(node, 't', 'type'),
+      optionLoad(node, 'type'),
       optionLoad(node, 'id'),
       optionLoad(node, 'delay'),
       optionLoad(node, 'params'),
@@ -31,7 +28,7 @@ const loaders = {
 
 function optionLoad(node, name, propName) {
   propName = propName || name;
-  var value = node[name];
+  var value = node.props[name];
   return value ?
     `${propName}:${load(value)}` :
     '';

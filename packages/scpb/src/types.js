@@ -16,3 +16,19 @@ export const transition = [
   'history',
   'initial',
 ];
+
+export const expression = [
+  "raise",
+  "cond",
+  "clause",
+  "foreach",
+  "log",
+  "assign",
+  "param",
+  "script",
+  "send",
+  "cancel",
+  "expr",
+  "literal",
+  "location",
+];

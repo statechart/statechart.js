@@ -24,12 +24,14 @@ message State {
   string id = 3;
   repeated Expression on_enter = 4;
   repeated Expression on_exit = 5;
-  uint32 parent = 6;
-  bytes children = 7;
-  bytes ancestors = 8;
-  bytes completion = 9;
-  bytes transitions = 10;
-  bool has_history = 11;
+  repeated Invocation invocations = 6;
+  repeated Data data = 7;
+  uint32 parent = 8;
+  bytes children = 9;
+  bytes ancestors = 10;
+  bytes completion = 11;
+  bytes transitions = 12;
+  bool has_history = 13;
 }
 
 message Transition {
@@ -53,8 +55,40 @@ message Transition {
 }
 
 message Expression {
-  string eval = 1;
-  string string = 2;
-  repeated Expression children = 3;
-  Document document = 4;
+  enum Type {
+    raise = 0;
+    cond = 1;
+    clause = 2;
+    foreach = 3;
+    log = 4;
+    assign = 5;
+    param = 6;
+    script = 7;
+    send = 8;
+    cancel = 9;
+    expr = 10;
+    literal = 11;
+    location = 12;
+  }
+
+  Type type = 1;
+  string value = 2;
+  map<string, Expression> props = 3;
+  repeated Expression children = 4;
+}
+
+message Invocation {
+  Expression type = 1;
+  Expression src = 2;
+  Expression id = 3;
+  repeated Expression params = 4;
+  Expression content = 5;
+  repeated Expression on_exit = 6;
+  bool autoforward = 7;
+}
+
+message Data {
+  string id = 1;
+  Expression value = 2;
+  string src = 3;
 }

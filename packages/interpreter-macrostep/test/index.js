@@ -65,7 +65,7 @@ function loop(interpreter, events) {
     });
 }
 
-describe('interpreter-microstep', function() {
+describe('interpreter-macrostep', function() {
   describe('handleEvent', function() {
     it('should pick the correct states', testTransition(`
       <scxml datamodel="ecmascript">
