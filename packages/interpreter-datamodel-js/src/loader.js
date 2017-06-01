@@ -1,6 +1,6 @@
 const loaders = {
   assign: function(node) {
-    const props = node.props;
+    const props = node.props || {};
     return load(props.location) + '=' + load(props.value);
   },
   literal: function(node) {
@@ -24,7 +24,7 @@ const loaders = {
   },
   cond: function(node) {
     return node.children.map(function(clause) {
-      const props = clause.props;
+      const props = clause.props || {};
       return `(${
         props.condition ? load(props.condition) : 'true'
       } && (function() {
@@ -48,14 +48,17 @@ const loaders = {
   },
   send: function(node) {
     // TODO setup the correct properties
+    const children = node.children || [];
     const props = formatProps([
       optionLoad(node, 'event', 'name'),
       optionLoad(node, 'target'),
       optionLoad(node, 'type'),
       optionLoad(node, 'id'),
       optionLoad(node, 'delay'),
-      optionLoad(node, 'params'),
       optionLoad(node, 'content'),
+      children.length ?
+        `params:[${children.map(load).join(',')}]` :
+        '',
     ]);
     return `_send(${props})`;
   },
@@ -68,13 +71,9 @@ function formatProps(props) {
 
 function optionLoad(node, name, propName) {
   propName = propName || name;
-  var value = node.props[name];
+  var value = (node.props || {})[name];
   return value ?
-    `${propName}:${
-      Array.isArray(value) ?
-        `[${value.map(load).join(',')}]` :
-        load(value)
-      }` :
+    `${propName}:${load(value)}` :
     '';
 }
 

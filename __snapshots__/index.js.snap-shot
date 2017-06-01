@@ -5,9 +5,13 @@ exports['should properly encode expressions 1'] = {
         "type": "compound",
         "idx": 0,
         "parent": 0,
-        "children": [],
+        "children": [
+          1
+        ],
         "ancestors": [],
-        "completion": []
+        "completion": [
+          1
+        ]
       },
       {
         "type": "atomic",
@@ -108,8 +112,7 @@ exports['should properly encode expressions 1'] = {
                       "type": {
                         "type": "literal",
                         "value": "testing"
-                      },
-                      "params": {}
+                      }
                     }
                   }
                 ]
@@ -119,7 +122,9 @@ exports['should properly encode expressions 1'] = {
         ],
         "parent": 0,
         "children": [],
-        "ancestors": [],
+        "ancestors": [
+          0
+        ],
         "completion": []
       }
     ]

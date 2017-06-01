@@ -198,9 +198,9 @@ const expressions = {
         type: covExpr(expr.t),
         id: covExpr(expr.id),
         delay: covExpr(expr.delay),
-        params: (expr.data.params || []).map(covExpr).filter(isDefined),
         content: covExpr(expr.data.content),
       },
+      children: (expr.data.params || []).map(covExpr).filter(isDefined),
     };
   },
   cancel: function(expr) {

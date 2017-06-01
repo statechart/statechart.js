@@ -11,12 +11,16 @@ export default function encodeDocument(message, writer) {
         writer = $Writer.create();
     if (message.name != null && message.hasOwnProperty("name"))
         writer.uint32(/* id 1, wireType 2 =*/10).string(message.name);
-    if (message.states != null && message.states.length)
-        for (let i = 0; i < message.states.length; ++i)
-            encodeState(message.states[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
-    if (message.transitions != null && message.transitions.length)
-        for (let i = 0; i < message.transitions.length; ++i)
-            encodeTransition(message.transitions[i], writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+    var states = message.states || [];
+    var stateSize = states.length;
+    var transitions = message.transitions || [];
+    var transitionSize = transitions.length;
+    if (states.length)
+        for (let i = 0; i < states.length; ++i)
+            encodeState(states[i], writer.uint32(/* id 2, wireType 2 =*/18).fork(), stateSize, transitionSize).ldelim();
+    if (transitions.length)
+        for (let i = 0; i < transitions.length; ++i)
+            encodeTransition(transitions[i], writer.uint32(/* id 3, wireType 2 =*/26).fork(), stateSize, transitionSize).ldelim();
     if (message.datamodel != null && message.hasOwnProperty("datamodel"))
         writer.uint32(/* id 4, wireType 2 =*/34).string(message.datamodel);
     return writer;
@@ -46,13 +50,13 @@ function encodeState(message, writer, stateSize, transitionSize) {
     if (message.parent != null && message.hasOwnProperty("parent"))
         writer.uint32(/* id 8, wireType 0 =*/64).uint32(message.parent);
     if (message.children != null && message.hasOwnProperty("children"))
-        writer.uint32(/* id 9, wireType 2 =*/74).bytes(encodeBitset(message.children));
+        writer.uint32(/* id 9, wireType 2 =*/74).bytes(encodeBitset(message.children, stateSize));
     if (message.ancestors != null && message.hasOwnProperty("ancestors"))
-        writer.uint32(/* id 10, wireType 2 =*/82).bytes(encodeBitset(message.ancestors));
+        writer.uint32(/* id 10, wireType 2 =*/82).bytes(encodeBitset(message.ancestors, stateSize));
     if (message.completion != null && message.hasOwnProperty("completion"))
-        writer.uint32(/* id 11, wireType 2 =*/90).bytes(encodeBitset(message.completion));
+        writer.uint32(/* id 11, wireType 2 =*/90).bytes(encodeBitset(message.completion, stateSize));
     if (message.transitions != null && message.hasOwnProperty("transitions"))
-        writer.uint32(/* id 12, wireType 2 =*/98).bytes(encodeBitset(message.transitions));
+        writer.uint32(/* id 12, wireType 2 =*/98).bytes(encodeBitset(message.transitions, transitionSize));
     if (message.hasHistory != null && message.hasOwnProperty("hasHistory"))
         writer.uint32(/* id 13, wireType 0 =*/104).bool(message.hasHistory);
     return writer;
@@ -76,11 +80,11 @@ function encodeTransition(message, writer, stateSize, transitionSize) {
         for (let i = 0; i < message.onTransition.length; ++i)
             encodeExpression(message.onTransition[i], writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
     if (message.targets != null && message.hasOwnProperty("targets"))
-        writer.uint32(/* id 7, wireType 2 =*/58).bytes(encodeBitset(message.targets));
+        writer.uint32(/* id 7, wireType 2 =*/58).bytes(encodeBitset(message.targets, stateSize));
     if (message.conflicts != null && message.hasOwnProperty("conflicts"))
-        writer.uint32(/* id 8, wireType 2 =*/66).bytes(encodeBitset(message.conflicts));
+        writer.uint32(/* id 8, wireType 2 =*/66).bytes(encodeBitset(message.conflicts, transitionSize));
     if (message.exits != null && message.hasOwnProperty("exits"))
-        writer.uint32(/* id 9, wireType 2 =*/74).bytes(encodeBitset(message.exits));
+        writer.uint32(/* id 9, wireType 2 =*/74).bytes(encodeBitset(message.exits, stateSize));
     return writer;
 }
 
