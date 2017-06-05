@@ -1,4 +1,4 @@
-import SaxParser from 'parse5/lib/sax';
+import { SAXParser } from 'sax';
 
 function getParent(stack) {
   return stack[stack.length - 1];
@@ -9,27 +9,18 @@ function getSiblings(stack, dom) {
 }
 
 function formatAttrs(attrs) {
-  return attrs.reduce(function(acc, attr) {
-    var name = attr.name;
+  return Object.keys(attrs).reduce(function(acc, name) {
+    var attr = attrs[name];
     if (!acc.hasOwnProperty(name)) acc[name] = attr.value;
     return acc;
   }, {});
 }
 
-function formatLocation(location) {
+function formatLocation(parser) {
   return {
-    line: location.line,
-    column: location.col,
-    offset: location.startOffset,
-  };
-}
-
-function closeLocation(location) {
-  var offset = location.endOffset - location.startOffset;
-  return {
-    line: location.line,
-    col: location.col + offset,
-    startOffset: location.endOffset,
+    line: parser.line,
+    column: parser.column,
+    offset: parser.position,
   };
 }
 
@@ -42,68 +33,90 @@ export default function(options) {
 function parse(str) {
   var dom = [];
   var tagStack = [];
-  var parser = new SaxParser({locationInfo: true});
+  var parser = new SAXParser(false, {
+    trim: true,
+    normalize: false,
+    lowercase: true,
+    xmlns: true,
+    position: true,
+  });
 
-  function endTag(name, location) {
+  function onclosetag(name) {
     if (!tagStack.length) return;
 
     var elem = tagStack.pop();
-    if (location) elem.position.end = formatLocation(closeLocation(location));
-    if (elem.tagName !== name) endTag(name, location);
+    elem.position.end = formatLocation(parser);
+    if (elem.tagName !== name) onclosetag(name);
   }
 
-  parser.on('endTag', endTag);
-
-  parser.on('startTag', function startTag(name, attrs, selfClosing, location) {
+  parser.onopentag = function onopentag(node) {
     var elem = {
       type: 'element',
-      tagName: name,
-      properties: formatAttrs(attrs),
+      tagName: node.name,
+      properties: formatAttrs(node.attributes),
       children: [],
       position: {
-        start: formatLocation(location),
-        end: formatLocation(closeLocation(location))
-      }
+        start: formatLocation(parser),
+        end: formatLocation(parser),
+      },
     };
 
     getSiblings(tagStack, dom).push(elem);
 
-    if (!selfClosing) tagStack.push(elem);
-  });
+    tagStack.push(elem);
+  };
 
-  parser.on('comment', function(data, location) {
+  parser.onclosetag = onclosetag;
+
+  parser.oncomment = function(data) {
     if (data.charAt(0) === '?') return;
     getSiblings(tagStack, dom).push({
       type: 'comment',
       value: data,
       position: {
-        start: formatLocation(location),
-        end: formatLocation(closeLocation(location)),
+        start: formatLocation(parser),
+        end: formatLocation(parser),
       }
     });
-  });
+  };
 
-  parser.on('text', function(text, location) {
+  parser.ontext =
+  parser.onscript =
+  parser.oncdata =
+  function(text) {
     getSiblings(tagStack, dom).push({
       type: 'text',
       value: text,
       position: {
-        start: formatLocation(location),
-        end: formatLocation(closeLocation(location)),
+        // TODO get the correct starting location
+        start: formatLocation(parser),
+        end: formatLocation(parser),
       }
     });
-  });
+  };
 
-  parser.end(str);
+  parser.looseCase = 'slice';
 
-  endTag('');
+  parser.write(str);
+
+  onclosetag('');
+  var endLocation = formatLocation(parser);
+
+  parser.end();
 
   return {
     type: 'root',
     children: dom,
     data: {
       quirksMode: false
-    }
-    // TODO add position information
+    },
+    position: {
+      start: {
+        line: 0,
+        column: 0,
+        offset: 0,
+      },
+      end: endLocation,
+    },
   };
 }

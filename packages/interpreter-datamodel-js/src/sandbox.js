@@ -36,6 +36,18 @@ export default function createIframe(context) {
   iframe.style.width = 0;
   iframe.style.position = 'fixed';
   iframe.name = `scxml ${sessionid}`;
+  iframe.sandbox = [
+    'forms',
+    'modals',
+    'orientation-lock',
+    'pointer-lock',
+    'popups',
+    'popups-to-escape-sandbox',
+    'presentation',
+    'same-origin',
+    'scripts',
+    'top-navigation',
+  ].map(name => `allow-${name}`).join(' ');
   document.body.parentElement.appendChild(iframe);
   var contentWindow = iframe.contentWindow;
 
