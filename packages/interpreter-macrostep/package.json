@@ -1,15 +1,15 @@
 {
   "name": "@statechart/interpreter-macrostep",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "main": "dist/index.js",
   "license": "MIT",
   "dependencies": {
-    "@statechart/interpreter-microstep": "^0.1.11",
+    "@statechart/interpreter-microstep": "^0.1.12",
     "cancelable-promise": "^2.2.0",
     "parse-duration": "^0.1.1"
   },
   "devDependencies": {
-    "@statechart/compiler-engine": "^0.1.11",
+    "@statechart/compiler-engine": "^0.1.12",
     "@statechart/interpreter-document": "^0.1.3"
   }
 }
