@@ -2,8 +2,10 @@
   "name": "@statechart/interpreter-datamodel-js",
   "version": "0.1.12",
   "main": "dist/index.js",
+  "module": "dist/index.es.js",
   "license": "MIT",
   "dependencies": {
+    "babel-runtime": "^6.23.0",
     "fetch-ponyfill": "^4.0.0",
     "uuid": "^3.0.1"
   }

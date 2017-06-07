@@ -2,8 +2,10 @@
   "name": "@statechart/hast-to-scast",
   "version": "0.1.9",
   "main": "dist/index.js",
+  "module": "dist/index.es.js",
   "license": "MIT",
   "dependencies": {
+    "babel-runtime": "^6.23.0",
     "unist-util-map": "^1.0.3"
   }
 }

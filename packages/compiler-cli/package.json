@@ -9,6 +9,7 @@
   "dependencies": {
     "@statechart/compiler-engine": "^0.1.12",
     "@statechart/scexe-to-scpb": "^0.1.11",
+    "babel-runtime": "^6.23.0",
     "to-vfile": "^2.1.1",
     "unified-args": "^3.0.0"
   }

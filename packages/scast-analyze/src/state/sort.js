@@ -8,7 +8,7 @@ import { stateTypes } from '../util';
 
 const scores = {};
 scores[INITIAL] = 3;
-scores[HISTORY_DEEP] = 3;
+scores[HISTORY_DEEP] = 2;
 scores[HISTORY_SHALLOW] = 1;
 
 function getScore(node) {

@@ -1,8 +1,7 @@
-export default {
-  entry: 'src/index.js',
-  dest: 'dist/index.js',
-  format: 'cjs',
-  external: Object.keys(require('./package.json').dependencies).concat([
-    'events'
-  ]),
-};
+import createConfig from '../../create-rollup';
+
+const external = Object.keys(require('./package.json').dependencies || {}).concat([
+  'events'
+]);
+
+export default createConfig(external);

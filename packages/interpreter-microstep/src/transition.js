@@ -1,5 +1,5 @@
+import { union, intersection, difference, toArray } from '@statechart/util-set';
 import establishEntryset from './entryset';
-import { union, intersection, difference, toArray } from './set';
 
 export default function selectTransitions(backend, doc, interpreter, event) {
   var configuration = new Set(interpreter.configuration);

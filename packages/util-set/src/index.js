@@ -32,7 +32,7 @@ export function toArray(subject) {
   return arr.sort();
 }
 
-const INTERSECTS = '@statechart/intersects';
+const INTERSECTS = {};
 export function hasIntersection(subject, set) {
   try {
     set.forEach(function(element) {

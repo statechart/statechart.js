@@ -1,17 +1,20 @@
 {
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-preset-env": "^1.4.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.5.2",
     "expect": "^1.20.2",
     "lerna": "^2.0.0-rc.5",
     "mocha": "^3.4.1",
     "rollup": "^0.41.6",
+    "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-json": "^2.1.1"
   },
   "scripts": {
-    "build": "lerna exec \"babel src --out-dir lib && rollup -c\"",
-    "rollup": "lerna exec \"rollup -c\"",
+    "build": "lerna exec \"rollup -c\"",
     "test": "mocha --require ./test packages/*/test/*.js",
     "test:watch": "mocha --require ./test -w packages/*/test/*.js"
+  },
+  "dependencies": {
+    "babel-runtime": "^6.23.0"
   }
 }

@@ -1,4 +1,4 @@
-import { union, toArray, hasIntersection } from './set';
+import { union, toArray, hasIntersection } from '@statechart/util-set';
 
 export default function establishEntryset(backend, doc, interpreter, entrySet, transSet, exitSet) {
   var configuration = new Set(interpreter.configuration);

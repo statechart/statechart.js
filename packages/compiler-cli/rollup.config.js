@@ -1,12 +1,10 @@
-import json from 'rollup-plugin-json';
+import createConfig from '../../create-rollup';
 
-export default {
-  entry: 'src/index.js',
-  dest: 'dist/index.js',
-  format: 'cjs',
-  banner: '#!/usr/bin/env node',
-  external: Object.keys(require('./package.json').dependencies),
-  plugins: [
-    json()
-  ]
-};
+const external = Object.keys(require('./package.json').dependencies || {});
+
+export default Object.assign(
+  createConfig(external),
+  {
+    banner: '#!/usr/bin/env node',
+  }
+);

@@ -2,8 +2,10 @@
   "name": "@statechart/scast-analyze",
   "version": "0.1.8",
   "main": "dist/index.js",
+  "module": "dist/index.es.js",
   "license": "MIT",
   "dependencies": {
+    "babel-runtime": "^6.23.0",
     "unist-util-transform": "^1.0.1",
     "unist-util-transform-group": "^1.0.1",
     "unist-util-transform-stack": "^1.0.0"
