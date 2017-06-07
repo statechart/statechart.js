@@ -62,7 +62,7 @@ const elements = {
   finalize: ruleFinalize,
 };
 
-module.exports = function lint(opts) {
+export default function lint(opts) {
   opts = opts || {};
   return function transformer(ast, file) {
     visit(ast, 'element', function(node) {
