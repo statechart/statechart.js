@@ -35,6 +35,9 @@ function stateVisitor(file) {
   function covInvoke(invoke) {
     return convertInvoke(invoke, file);
   }
+  function covData(invoke) {
+    return convertData(invoke, file);
+  }
   return {
     types: [
       SCXML,
@@ -53,7 +56,7 @@ function stateVisitor(file) {
         onEnter: (data.onEnter || []).map(covExpr).filter(isDefined),
         onExit: (data.onExit || []).map(covExpr).filter(isDefined),
         invocations: (data.invocations || []).map(covInvoke).filter(isDefined),
-        data: (data.datamodel || []).map(convertData).filter(isDefined),
+        data: (data.datamodel || []).map(covData).filter(isDefined),
         parent: data.parent,
         children: data.children,
         ancestors: data.ancestors,
@@ -182,11 +185,14 @@ const expressions = {
   script: function(expr) {
     const src = expr.src;
     return src ? {
-      type: 'script',
+      type: 'script_ext',
       props: {
         src: createLiteral(src),
       },
-    } : undefined;
+    } : {
+      type: 'script',
+      value: expr.children.map(child => child.value || '').join(''),
+    };
   },
   send: function(expr, file) {
     const covExpr = convertExpression.bind(null, file);
@@ -248,9 +254,11 @@ function convertInvoke(invoke, file) {
   };
 }
 
-function convertData(data) {
+function convertData(data, file) {
   return {
-    // TODO
+    id: data.id,
+    value: convertExpression(file, data.expr),
+    src: data.src,
   };
 }
 

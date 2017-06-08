@@ -7,10 +7,16 @@ const loaders = {
     return JSON.stringify(node.value);
   },
   location: function(node) {
-    return '_window[' + JSON.stringify(node.value) + ']';
+    return `_window[${JSON.stringify(node.value)}]`;
   },
   expr: function(node) {
-    return '(function() { return ' + node.value + ' })()';
+    return `(function() { return ${node.value} }).call(_window)`;
+  },
+  script: function(node) {
+    return `(function() { ${node.value} }).call(_window)`;
+  },
+  script_ext: function(node) {
+    return `_load(${JSON.stringify(node.src)})`;
   },
   foreach: function(node) {
     const props = node.props;
@@ -62,10 +68,18 @@ const loaders = {
     ]);
     return `_send(${props})`;
   },
+  data: function(node) {
+    const { id, value, src } = node;
+    const location = loaders.location({value: id});
+    const expr = src ?
+      `fetch(${JSON.stringify(src)})` :
+      load(value);
+    return `${location}=${expr}`;
+  },
 }
 
 function formatProps(props) {
-  const formatted = props.filter(function(p) { return p; }).join(',');
+  const formatted = props.filter(p => p).join(',');
   return `{${formatted}}`;
 }
 
