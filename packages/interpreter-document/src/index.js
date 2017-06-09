@@ -4,16 +4,12 @@ export default class Document {
   constructor(doc, datamodels) {
     var dm = datamodels[doc.datamodel];
     this.datamodel = {
-      load: function(node) {
-        return node && dm.load(node);
-      },
+      load: node => node && dm.load(node),
       init: function(node) {
         var d = dm.init(node);
 
         return Object.assign({}, d, {
-          exec: function(node) {
-            return node && d.exec(node);
-          },
+          exec: node => node && d.exec(node),
         });
       }
     };
@@ -38,11 +34,12 @@ function loadState(state) {
     {},
     state,
     {
-      onInitialize: (state.onInitialize || []).map(loadExpr),
       onEnter: (state.onEnter || []).map(loadExpr),
       onExit: (state.onExit || []).map(loadExpr),
       invocations: (state.invocations || []).map(loadInvoke.bind(this)),
-      data: (state.datamodel || []).map(loadExpr),
+      data: (state.data || []).map(data =>
+        loadExpr(Object.assign({type: 'data'}, data))
+      ),
     }
   );
 }
@@ -78,14 +75,12 @@ function loadInvoke(invoke) {
 }
 
 function createMatcher(matches) {
-  if (matches[0] === '*') return function() { return true; }
-  var regexps = matches.map(function(match) {
+  if (matches[0] === '*') return () => true;
+  var regexps = matches.map((match) => {
     var pattern = escape(match).replace(/\\\*/g, '.+')
     return new RegExp('^' + pattern + '$');
   });
-  return function(event) {
-    return regexps.some(function(re) {
-      return re.test(event.name);
-    });
-  };
+  return (event) => (
+    regexps.some(re => re.test(event.name))
+  );
 }

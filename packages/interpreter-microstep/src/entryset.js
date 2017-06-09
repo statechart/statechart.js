@@ -102,8 +102,8 @@ function enterStates(backend, doc, interpreter, configuration, entrySet) {
     if (configuration.has(idx)) return;
 
     if (!initialized.has(idx)) {
-      state.onInitialize.forEach(function(execution) {
-        backend.exec(execution);
+      state.data.forEach(function(data) {
+        backend.exec(data);
       });
       initialized.add(idx);
     }
