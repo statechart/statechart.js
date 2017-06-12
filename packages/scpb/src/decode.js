@@ -9,7 +9,10 @@ import {
 export default function decodeDocument(reader, length) {
     if (!(reader instanceof $Reader))
         reader = $Reader.create(reader);
-    var end = length === undefined ? reader.len : reader.pos + length, message = {};
+    var end = length === undefined ? reader.len : reader.pos + length, message = {
+      states: [],
+      transitions: [],
+    };
     while (reader.pos < end) {
         var tag = reader.uint32();
         switch (tag >>> 3) {
@@ -17,13 +20,9 @@ export default function decodeDocument(reader, length) {
             message.name = reader.string();
             break;
         case 2:
-            if (!(message.states && message.states.length))
-                message.states = [];
             message.states.push(decodeState(reader, reader.uint32()));
             break;
         case 3:
-            if (!(message.transitions && message.transitions.length))
-                message.transitions = [];
             message.transitions.push(decodeTransition(reader, reader.uint32()));
             break;
         case 4:
@@ -40,7 +39,12 @@ export default function decodeDocument(reader, length) {
 function decodeState(reader, length) {
     if (!(reader instanceof $Reader))
         reader = $Reader.create(reader);
-    let end = length === undefined ? reader.len : reader.pos + length, message = {};
+    let end = length === undefined ? reader.len : reader.pos + length, message = {
+      onEnter: [],
+      onExit: [],
+      invocations: [],
+      data: [],
+    };
     while (reader.pos < end) {
         let tag = reader.uint32();
         switch (tag >>> 3) {
@@ -54,23 +58,15 @@ function decodeState(reader, length) {
             message.id = reader.string();
             break;
         case 4:
-            if (!(message.onEnter && message.onEnter.length))
-                message.onEnter = [];
             message.onEnter.push(decodeExpression(reader, reader.uint32()));
             break;
         case 5:
-            if (!(message.onExit && message.onExit.length))
-                message.onExit = [];
             message.onExit.push(decodeExpression(reader, reader.uint32()));
             break;
         case 6:
-            if (!(message.invocations && message.invocations.length))
-                message.invocations = [];
             message.invocations.push(decodeInvocation(reader, reader.uint32()));
             break;
         case 7:
-            if (!(message.data && message.data.length))
-                message.data = [];
             message.data.push(decodeData(reader, reader.uint32()));
             break;
         case 8:
@@ -102,7 +98,10 @@ function decodeState(reader, length) {
 function decodeTransition(reader, length) {
     if (!(reader instanceof $Reader))
         reader = $Reader.create(reader);
-    var end = length === undefined ? reader.len : reader.pos + length, message = {};
+    var end = length === undefined ? reader.len : reader.pos + length, message = {
+      events: [],
+      onTransition: [],
+    };
     while (reader.pos < end) {
         var tag = reader.uint32();
         switch (tag >>> 3) {
@@ -116,16 +115,12 @@ function decodeTransition(reader, length) {
             message.source = reader.uint32();
             break;
         case 4:
-            if (!(message.events && message.events.length))
-                message.events = [];
             message.events.push(reader.string());
             break;
         case 5:
             message.condition = decodeExpression(reader, reader.uint32());
             break;
         case 6:
-            if (!(message.onTransition && message.onTransition.length))
-                message.onTransition = [];
             message.onTransition.push(decodeExpression(reader, reader.uint32()));
             break;
         case 7:
@@ -148,7 +143,9 @@ function decodeTransition(reader, length) {
 function decodeExpression(reader, length) {
     if (!(reader instanceof $Reader))
         reader = $Reader.create(reader);
-    let end = length === undefined ? reader.len : reader.pos + length, message = {}, key;
+    let end = length === undefined ? reader.len : reader.pos + length, message = {
+      children: [],
+    }, key;
     while (reader.pos < end) {
         let tag = reader.uint32();
         switch (tag >>> 3) {
@@ -167,8 +164,6 @@ function decodeExpression(reader, length) {
             message.props[key] = decodeExpression(reader, reader.uint32());
             break;
         case 4:
-            if (!(message.children && message.children.length))
-                message.children = [];
             message.children.push(decodeExpression(reader, reader.uint32()));
             break;
         default:
@@ -182,7 +177,10 @@ function decodeExpression(reader, length) {
 function decodeInvocation(reader, length) {
     if (!(reader instanceof $Reader))
         reader = $Reader.create(reader);
-    let end = length === undefined ? reader.len : reader.pos + length, message = {};
+    let end = length === undefined ? reader.len : reader.pos + length, message = {
+      params: [],
+      onExit: [],
+    };
     while (reader.pos < end) {
         let tag = reader.uint32();
         switch (tag >>> 3) {
@@ -196,16 +194,12 @@ function decodeInvocation(reader, length) {
             message.id = decodeExpression(reader, reader.uint32());
             break;
         case 4:
-            if (!(message.params && message.params.length))
-                message.params = [];
             message.params.push(decodeExpression(reader, reader.uint32()));
             break;
         case 5:
             message.content = decodeExpression(reader, reader.uint32());
             break;
         case 6:
-            if (!(message.onExit && message.onExit.length))
-                message.onExit = [];
             message.onExit.push(decodeExpression(reader, reader.uint32()));
             break;
         case 7:
