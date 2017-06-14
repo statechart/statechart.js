@@ -1,11 +1,11 @@
 {
   "name": "@statechart/scast-to-scexe",
-  "version": "0.1.18",
+  "version": "0.1.20",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "license": "MIT",
   "dependencies": {
-    "@statechart/scpb": "^0.1.18",
+    "@statechart/scpb": "^0.1.20",
     "babel-runtime": "^6.23.0",
     "unist-util-transform": "*",
     "unist-util-transform-group": "*",
