@@ -9,8 +9,9 @@ export function init(api, ioprocessors) {
     _send: api.send,
     _cancel: api.cancel,
     _log: function(props) {
-      // TODO
-      console.log(props);
+      const { label, value } = props;
+      if (label) console.log(label, value);
+      else console.log(value);
     },
     _foreach: foreach,
   });
