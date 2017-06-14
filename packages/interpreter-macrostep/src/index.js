@@ -207,7 +207,7 @@ export default function createInterpreter(doc, ioprocessors, invokers) {
     },
   };
 
-  datamodel = doc.init({
+  datamodel = api.datamodel = doc.init({
     isActive: api.isActive,
     raise: api.raise,
     send: function send(event) {

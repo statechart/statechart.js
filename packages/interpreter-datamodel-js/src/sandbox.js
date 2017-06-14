@@ -2,7 +2,7 @@ import uuid from 'uuid/v4';
 import createFetch from 'fetch-ponyfill';
 
 const SCRIPT = `
-<script>_window=window;var _event;
+<script>_window=global=window;var _event;
 function __(window,document,history,context) {
   var self = window;
   return {
