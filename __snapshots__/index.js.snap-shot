@@ -2,6 +2,10 @@ exports['should properly encode expressions 1'] = {
   "contents": {
     "states": [
       {
+        "onEnter": [],
+        "onExit": [],
+        "invocations": [],
+        "data": [],
         "type": "compound",
         "idx": 0,
         "parent": 0,
@@ -14,112 +18,133 @@ exports['should properly encode expressions 1'] = {
         ]
       },
       {
-        "type": "atomic",
-        "idx": 1,
         "onEnter": [
           {
+            "children": [],
             "type": "raise",
             "props": {
               "event": {
+                "children": [],
                 "type": "literal",
                 "value": "bar"
               }
             }
           },
           {
+            "children": [],
             "type": "log",
             "props": {
               "value": {
+                "children": [],
                 "type": "expr",
                 "value": "'foo'"
               }
             }
           },
           {
-            "type": "cond",
             "children": [
               {
-                "type": "clause",
-                "props": {
-                  "condition": {
-                    "type": "expr",
-                    "value": "foo"
-                  }
-                },
                 "children": [
                   {
+                    "children": [],
                     "type": "assign",
                     "props": {
                       "location": {
+                        "children": [],
                         "type": "location",
                         "value": "baz"
                       },
                       "value": {
+                        "children": [],
                         "type": "expr",
                         "value": "foo"
                       }
                     }
                   }
-                ]
-              },
-              {
+                ],
                 "type": "clause",
                 "props": {
                   "condition": {
+                    "children": [],
                     "type": "expr",
-                    "value": "bar"
+                    "value": "foo"
                   }
-                },
+                }
+              },
+              {
                 "children": [
                   {
+                    "children": [],
                     "type": "assign",
                     "props": {
                       "location": {
+                        "children": [],
                         "type": "location",
                         "value": "bang"
                       },
                       "value": {
+                        "children": [],
                         "type": "expr",
                         "value": "bar"
                       }
                     }
                   }
-                ]
+                ],
+                "type": "clause",
+                "props": {
+                  "condition": {
+                    "children": [],
+                    "type": "expr",
+                    "value": "bar"
+                  }
+                }
               },
               {
-                "type": "clause",
                 "children": [
                   {
+                    "children": [],
                     "type": "assign",
                     "props": {
                       "location": {
+                        "children": [],
                         "type": "location",
                         "value": "foobar"
                       },
                       "value": {
+                        "children": [],
                         "type": "expr",
                         "value": "true"
                       }
                     }
                   },
                   {
+                    "children": [],
                     "type": "send",
                     "props": {
                       "event": {
+                        "children": [],
                         "type": "literal",
                         "value": "external"
                       },
                       "type": {
+                        "children": [],
                         "type": "literal",
                         "value": "testing"
                       }
                     }
                   }
-                ]
+                ],
+                "type": "clause"
               }
-            ]
+            ],
+            "type": "cond"
           }
         ],
+        "onExit": [],
+        "invocations": [],
+        "data": [],
+        "type": "atomic",
+        "idx": 1,
         "parent": 0,
         "children": [],
         "ancestors": [
@@ -127,7 +152,8 @@ exports['should properly encode expressions 1'] = {
         ],
         "completion": []
       }
-    ]
+    ],
+    "transitions": []
   },
   "messages": []
 }

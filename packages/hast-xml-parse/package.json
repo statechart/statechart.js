@@ -6,7 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "babel-runtime": "^6.23.0",
-    "sax": "^1.2.2",
+    "sax": "camshaft/sax-js",
     "vfile-location": "^2.0.1"
   },
   "devDependencies": {

@@ -26,20 +26,20 @@ function formatLocation(parser) {
 
 export default function(options) {
   this.Parser = function XMLParser(doc, file) {
-    return parse(String(file));
+    return parse(String(file), options);
   }
 };
 
-function parse(str) {
+function parse(str, options) {
   var dom = [];
   var tagStack = [];
-  var parser = new SAXParser(false, {
+  var parser = new SAXParser(false, Object.assign({
     trim: true,
     normalize: false,
     lowercase: true,
     xmlns: true,
     position: true,
-  });
+  }, options));
 
   function onclosetag(name) {
     if (!tagStack.length) return;
