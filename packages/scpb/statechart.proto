@@ -7,6 +7,7 @@ message Document {
   repeated State states = 2;
   repeated Transition transitions = 3;
   string datamodel = 4;
+  map<string, string> meta = 5;
 }
 
 message State {

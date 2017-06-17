@@ -23,6 +23,9 @@ export default function encodeDocument(message, writer) {
             encodeTransition(transitions[i], writer.uint32(/* id 3, wireType 2 =*/26).fork(), stateSize, transitionSize).ldelim();
     if (message.datamodel != null && message.hasOwnProperty("datamodel"))
         writer.uint32(/* id 4, wireType 2 =*/34).string(message.datamodel);
+    if (message.meta != null && message.hasOwnProperty("meta"))
+        for (let keys = Object.keys(message.meta), i = 0; i < keys.length; ++i)
+            writer.uint32(/* id 5, wireType 2 =*/42).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.meta[keys[i]]).ldelim();
     return writer;
 }
 

@@ -12,6 +12,7 @@ export default function decodeDocument(reader, length) {
     var end = length === undefined ? reader.len : reader.pos + length, message = {
       states: [],
       transitions: [],
+      meta: {},
     };
     while (reader.pos < end) {
         var tag = reader.uint32();
@@ -27,6 +28,12 @@ export default function decodeDocument(reader, length) {
             break;
         case 4:
             message.datamodel = reader.string();
+            break;
+        case 5:
+            reader.skip().pos++;
+            key = reader.string();
+            reader.pos++;
+            message.meta[key] = reader.string();
             break;
         default:
             reader.skipType(tag & 7);

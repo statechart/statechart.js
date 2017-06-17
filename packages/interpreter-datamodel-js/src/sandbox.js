@@ -65,7 +65,11 @@ export default function createIframe(context) {
     }
   }
 
-  return contentWindow.__(window, document, history, context);
+  const api = contentWindow.__(window, document, history, context);
+  api.exit = function() {
+    iframe.parentNode.removeChild(iframe);
+  };
+  return api;
 }
 
 function initLoad(window) {

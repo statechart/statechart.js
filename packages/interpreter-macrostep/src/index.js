@@ -129,7 +129,14 @@ export default function createInterpreter(doc, ioprocessors, invokers) {
   }
 
   function exit() {
-    // TODO
+    invocations.forEach(function(cancel) {
+      try {
+        cancel();
+      } catch (err) {
+        console.error(err);
+      }
+    });
+    datamodel.exit();
   }
 
   var api = {
@@ -142,6 +149,11 @@ export default function createInterpreter(doc, ioprocessors, invokers) {
         .flush()
         .then(macrostep)
         .catch(handleError);
+    },
+
+    stop: function() {
+      isRunning = false;
+      if (!step) exit();
     },
 
     send: function(event) {
