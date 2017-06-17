@@ -9,13 +9,13 @@ import {
 export default function decodeDocument(reader, length) {
     if (!(reader instanceof $Reader))
         reader = $Reader.create(reader);
-    var end = length === undefined ? reader.len : reader.pos + length, message = {
+    let end = length === undefined ? reader.len : reader.pos + length, message = {
       states: [],
       transitions: [],
       meta: {},
     };
     while (reader.pos < end) {
-        var tag = reader.uint32();
+        let tag = reader.uint32();
         switch (tag >>> 3) {
         case 1:
             message.name = reader.string();
@@ -31,7 +31,7 @@ export default function decodeDocument(reader, length) {
             break;
         case 5:
             reader.skip().pos++;
-            key = reader.string();
+            let key = reader.string();
             reader.pos++;
             message.meta[key] = reader.string();
             break;
@@ -105,12 +105,12 @@ function decodeState(reader, length) {
 function decodeTransition(reader, length) {
     if (!(reader instanceof $Reader))
         reader = $Reader.create(reader);
-    var end = length === undefined ? reader.len : reader.pos + length, message = {
+    let end = length === undefined ? reader.len : reader.pos + length, message = {
       events: [],
       onTransition: [],
     };
     while (reader.pos < end) {
-        var tag = reader.uint32();
+        let tag = reader.uint32();
         switch (tag >>> 3) {
         case 1:
             message.type = transitionTypes[reader.uint32()];
@@ -152,7 +152,7 @@ function decodeExpression(reader, length) {
         reader = $Reader.create(reader);
     let end = length === undefined ? reader.len : reader.pos + length, message = {
       children: [],
-    }, key;
+    };
     while (reader.pos < end) {
         let tag = reader.uint32();
         switch (tag >>> 3) {
@@ -166,7 +166,7 @@ function decodeExpression(reader, length) {
             reader.skip().pos++;
             if (!message.props)
                 message.props = {};
-            key = reader.string();
+            let key = reader.string();
             reader.pos++;
             message.props[key] = decodeExpression(reader, reader.uint32());
             break;
