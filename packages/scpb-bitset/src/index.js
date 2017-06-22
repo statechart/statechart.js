@@ -3,7 +3,7 @@ const BUCKET_ADDR = 3;
 const BUCKET_MASK = BUCKET_SIZE - 1;
 
 function getSize(size) {
-  var pad = size % BUCKET_MASK ? 1 : 0;
+  var pad = size & BUCKET_MASK ? 1 : 0;
   return Math.floor(size / BUCKET_SIZE) + pad;
 }
 
