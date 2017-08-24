@@ -158,6 +158,7 @@ export default function createInterpreter(doc, ioprocessors, invokers) {
 
     send: function(event) {
       if (typeof event === 'string') event = {name: event};
+      emitter.emit('event', event);
       if (!step) return step = handleExternalEvent(event);
       externalEvents.push(event);
       return step;
@@ -165,6 +166,7 @@ export default function createInterpreter(doc, ioprocessors, invokers) {
 
     raise: function(event) {
       if (typeof event === 'string') event = {name: event};
+      emitter.emit('event', event);
       if (!step) return step = handleInternalEvent(event);
       internalEvents.push(event);
       return step;

@@ -2,13 +2,9 @@ const BUCKET_SIZE = 8;
 const BUCKET_ADDR = 3;
 const BUCKET_MASK = BUCKET_SIZE - 1;
 
-function getSize(size) {
-  var pad = size & BUCKET_MASK ? 1 : 0;
-  return Math.floor(size / BUCKET_SIZE) + pad;
-}
-
-export function encode(arr, size) {
-  var bitset = new Uint8Array(getSize(size));
+export function encode(arr, bitSize) {
+  const byteSize = Math.ceil(bitSize / BUCKET_SIZE);
+  var bitset = new Uint8Array(byteSize);
   arr.forEach(function(idx) {
     var arrIdx = idx >> BUCKET_ADDR;
     bitset[arrIdx] |= 1 << (idx & BUCKET_MASK);
