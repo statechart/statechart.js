@@ -1,11 +1,11 @@
 {
   "name": "@statechart/scexe-to-scpb",
-  "version": "0.1.26",
+  "version": "0.1.27",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "license": "MIT",
   "dependencies": {
-    "@statechart/scpb": "^0.1.26",
+    "@statechart/scpb": "^0.1.27",
     "babel-runtime": "^6.23.0",
     "unist-util-transform": "*",
     "unist-util-transform-group": "*",
