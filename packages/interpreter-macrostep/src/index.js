@@ -43,7 +43,6 @@ export default function createInterpreter(doc, ioprocessors, invokers) {
     if (event = externalEvents.pop()) return handleExternalEvent(event);
 
     step = null;
-    // TODO emit stable event
     setTimeout(function() {
       emitter.emit('stable');
     });
