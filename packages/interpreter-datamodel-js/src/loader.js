@@ -16,7 +16,8 @@ const loaders = {
     return `(function() { ${node.value} }).call(_window)`;
   },
   script_ext: function(node) {
-    return `_load(${JSON.stringify(node.src)})`;
+    const props = node.props || {};
+    return `_load(${load(props.src)})`;
   },
   foreach: function(node) {
     const props = node.props;
