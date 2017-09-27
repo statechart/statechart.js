@@ -1,6 +1,6 @@
 {
   "name": "@statechart/interpreter-document",
-  "version": "0.1.19",
+  "version": "0.1.35",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "license": "MIT",
