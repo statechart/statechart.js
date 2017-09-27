@@ -1,23 +1,23 @@
 {
   "name": "@statechart/compiler-engine",
-  "version": "0.1.31",
+  "version": "0.1.32",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "license": "MIT",
   "dependencies": {
-    "@statechart/hast-scxml-lint": "^0.1.31",
-    "@statechart/hast-to-scast": "^0.1.31",
+    "@statechart/hast-scxml-lint": "^0.1.32",
+    "@statechart/hast-to-scast": "^0.1.32",
     "@statechart/hast-xml-parse": "^0.1.22",
     "@statechart/scast-analyze": "^0.1.13",
     "@statechart/scast-datamodel": "^0.1.13",
-    "@statechart/scast-to-scexe": "^0.1.31",
-    "@statechart/scexe-to-scpb": "^0.1.31",
+    "@statechart/scast-to-scexe": "^0.1.32",
+    "@statechart/scexe-to-scpb": "^0.1.32",
     "babel-runtime": "^6.23.0",
     "rehype-minify-whitespace": "^2.0.0",
     "unified": "^6.1.2"
   },
   "devDependencies": {
-    "@statechart/scpb": "^0.1.31",
+    "@statechart/scpb": "^0.1.32",
     "snap-shot": "^2.17.0"
   }
 }
