@@ -53,6 +53,7 @@ function stateVisitor(file) {
         type: data.type,
         idx: node.idx,
         id: node.id,
+        name: node.name,
         onEnter: (data.onEnter || []).map(covExpr).filter(isDefined),
         onExit: (data.onExit || []).map(covExpr).filter(isDefined),
         invocations: (data.invocations || []).map(covInvoke).filter(isDefined),
@@ -78,6 +79,7 @@ function transitionVisitor(file) {
       doc.transitions[node.idx] = {
         type: data.type,
         idx: node.idx,
+        name: node.name,
         source: data.source,
         events: node.event,
         condition: covExpr(node.cond),
