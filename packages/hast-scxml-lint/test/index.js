@@ -1,7 +1,7 @@
 var subject = require('../');
 
-describe('', function() {
-  it('', function() {
+describe('hast-scxml-lint', function() {
+  it('work', function() {
 
   });
 });

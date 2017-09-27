@@ -5,7 +5,9 @@ const validChildren = {
 };
 
 export default function initial(node, check) {
-  props(node, check, {});
+  props(node, check, {
+    'name': false,
+  });
   childTypes(node, check, validChildren, function(type, props, child) {
     check(
       props.target,

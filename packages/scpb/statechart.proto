@@ -33,6 +33,7 @@ message State {
   bytes completion = 11;
   bytes transitions = 12;
   bool has_history = 13;
+  string name = 14;
 }
 
 message Transition {
@@ -53,6 +54,7 @@ message Transition {
   bytes targets = 7;
   bytes conflicts = 8;
   bytes exits = 9;
+  string name = 10;
 }
 
 message Expression {

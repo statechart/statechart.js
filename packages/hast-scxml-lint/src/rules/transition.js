@@ -8,7 +8,8 @@ export default function transition(node, check) {
     'event': false,
     'cond': false,
     'target': false,
-    'type': ['external', 'internal']
+    'type': ['external', 'internal'],
+    'name': false,
   });
 
   childTypes(node, check, validChildren);

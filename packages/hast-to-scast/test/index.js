@@ -1,7 +1,7 @@
 var subject = require('../');
 
-describe('', function() {
-  it('', function() {
+describe('hast-to-scast', function() {
+  it('work', function() {
 
   });
 });

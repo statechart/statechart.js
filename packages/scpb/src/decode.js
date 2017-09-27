@@ -94,6 +94,9 @@ function decodeState(reader, length) {
         case 13:
             message.hasHistory = reader.bool();
             break;
+        case 14:
+            message.name = reader.string();
+            break;
         default:
             reader.skipType(tag & 7);
             break;
@@ -138,6 +141,9 @@ function decodeTransition(reader, length) {
             break;
         case 9:
             message.exits = decodeBitset(reader.bytes());
+            break;
+        case 10:
+            message.name = reader.string();
             break;
         default:
             reader.skipType(tag & 7);

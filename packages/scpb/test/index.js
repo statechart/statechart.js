@@ -1,7 +1,7 @@
 var subject = require('../');
 
-describe('', function() {
-  it('', function() {
-
+describe('scpb', function() {
+  it('should roundtrip', function() {
+    // TODO
   });
 });

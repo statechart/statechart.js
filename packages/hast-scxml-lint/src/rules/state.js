@@ -17,6 +17,7 @@ export default function state(node, check) {
   props(node, check, {
     'initial': false,
     'id': false,
+    'name': false,
   });
 
   var initialProp = node.properties.initial;

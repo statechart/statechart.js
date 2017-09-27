@@ -14,6 +14,7 @@ const validChildren = {
 export default function parallel(node, check) {
   props(node, check, {
     'id': false,
+    'name': false,
   });
 
   childTypes(node, check, validChildren);

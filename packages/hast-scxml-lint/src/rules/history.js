@@ -8,6 +8,7 @@ export default function history(node, check) {
   props(node, check, {
     'id': false,
     'type': ['shallow', 'deep'],
+    'name': false,
   });
 
   childTypes(node, check, validChildren, function(type, props, child) {

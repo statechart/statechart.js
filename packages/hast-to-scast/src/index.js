@@ -60,6 +60,7 @@ var tags = {
       initial: parseStringList(props.initial),
       datamodel: props.datamodel,
       binding: props.binding || 'early',
+      name: props.name,
     });
   },
   state: function(node) {
@@ -67,12 +68,14 @@ var tags = {
     return h('state', node, {
       id: props.id,
       initial: parseStringList(props.initial),
+      name: props.name,
     });
   },
   parallel: function(node) {
     var props = node[properties];
     return h('parallel', node, {
       id: props.id,
+      name: props.name,
     });
   },
   transition: function(node) {
@@ -82,15 +85,19 @@ var tags = {
       target: parseStringList(props.target),
       t: props.type || 'external',
       cond: code(props, 'cond', 'expr'),
+      name: props.name,
     });
   },
   initial: function(node) {
-    return h('initial', node);
+    return h('initial', node, {
+      name: props.name,
+    });
   },
   final: function(node) {
     var props = node[properties];
     return h('final', node, {
       id: props.id,
+      name: props.name,
     });
   },
   onentry: function(node) {
@@ -104,6 +111,7 @@ var tags = {
     return h('history', node, {
       id: props.id,
       t: props.type || 'shallow',
+      name: props.name,
     });
   },
   raise: function(node) {

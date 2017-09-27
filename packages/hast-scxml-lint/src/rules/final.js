@@ -8,7 +8,8 @@ var validChildren = {
 
 export default function final(node, check) {
   props(node, check, {
-    'id': false
+    'id': false,
+    'name': false,
   });
   childTypes(node, check, validChildren);
 };

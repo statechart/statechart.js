@@ -62,6 +62,8 @@ function encodeState(message, writer, stateSize, transitionSize) {
         writer.uint32(/* id 12, wireType 2 =*/98).bytes(encodeBitset(message.transitions, transitionSize));
     if (message.hasHistory != null && message.hasOwnProperty("hasHistory"))
         writer.uint32(/* id 13, wireType 0 =*/104).bool(message.hasHistory);
+    if (message.name != null && message.hasOwnProperty("name"))
+        writer.uint32(/* id 14, wireType 2 =*/114).string(message.name);
     return writer;
 }
 
@@ -88,6 +90,8 @@ function encodeTransition(message, writer, stateSize, transitionSize) {
         writer.uint32(/* id 8, wireType 2 =*/66).bytes(encodeBitset(message.conflicts, transitionSize));
     if (message.exits != null && message.hasOwnProperty("exits"))
         writer.uint32(/* id 9, wireType 2 =*/74).bytes(encodeBitset(message.exits, stateSize));
+    if (message.name != null && message.hasOwnProperty("name"))
+        writer.uint32(/* id 10, wireType 2 =*/82).string(message.name);
     return writer;
 }
 
