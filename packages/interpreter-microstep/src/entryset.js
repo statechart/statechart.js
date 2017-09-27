@@ -119,6 +119,7 @@ function enterStates(backend, doc, interpreter, configuration, entrySet) {
     {
       configuration: toArray(entrySet),
       initialized: toArray(initialized),
+      isStable: false,
     }
   );
 }

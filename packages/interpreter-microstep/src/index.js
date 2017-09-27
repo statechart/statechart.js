@@ -20,5 +20,6 @@ function initialState() {
     configuration: [],
     history: [],
     initialized: [],
+    isStable: false,
   };
 }

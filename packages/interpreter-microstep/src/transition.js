@@ -26,7 +26,7 @@ export default function selectTransitions(backend, doc, interpreter, event) {
     }
   });
 
-  if (!transSet.size) return interpreter;
+  if (!transSet.size) return Object.assign({}, interpreter, { isStable: true });
 
   interpreter = rememberHistory(doc, interpreter, exitSet);
   return establishEntryset(backend, doc, interpreter, entrySet, transSet, exitSet);

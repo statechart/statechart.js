@@ -137,6 +137,18 @@ describe('interpreter-macrostep', function() {
       ]
     ));
 
+    it('should transition without events', testTransition(`
+      <scxml datamodel="ecmascript">
+        <state id="s1">
+          <transition cond="true" target="s2" />
+        </state>
+
+        <state id="s2" />
+      </scxml>
+    `,
+      [ 's2' ]
+    ));
+
     it('should invoke', testTransition(`
       <scxml datamodel="ecmascript">
         <state>

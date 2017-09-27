@@ -75,6 +75,7 @@ function loadInvoke(invoke) {
 }
 
 function createMatcher(matches) {
+  if (!matches.length) return undefined;
   if (matches[0] === '*') return () => true;
   var regexps = matches.map((match) => {
     var pattern = escape(match).replace(/\\\*/g, '.+')

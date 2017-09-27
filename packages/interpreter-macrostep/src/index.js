@@ -31,7 +31,17 @@ export default function createInterpreter(doc, ioprocessors, invokers) {
     // TODO
   }
 
+  function stabilize() {
+    state = synchronize(backend, doc, state);
+    return datamodel
+      .flush()
+      .then(macrostep)
+      .catch(handleError);
+  }
+
   function macrostep() {
+    if (!state.isStable) return stabilize();
+
     var event;
     if (event = internalEvents.pop()) return handleInternalEvent(event);
     if (!isRunning) return exit();
@@ -55,13 +65,7 @@ export default function createInterpreter(doc, ioprocessors, invokers) {
     return datamodel
       .event(event)
       .flush()
-      .then(function() {
-        state = synchronize(backend, doc, state);
-        return datamodel
-          .flush()
-          .then(macrostep)
-          .catch(handleError);
-      })
+      .then(macrostep)
       .catch(handleError);
   }
 
