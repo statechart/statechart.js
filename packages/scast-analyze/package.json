@@ -1,6 +1,6 @@
 {
   "name": "@statechart/scast-analyze",
-  "version": "0.1.36",
+  "version": "0.1.38",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "license": "MIT",
