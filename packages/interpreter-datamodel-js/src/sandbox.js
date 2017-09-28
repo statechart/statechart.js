@@ -51,6 +51,10 @@ export default function createIframe(context) {
   document.body.parentElement.appendChild(iframe);
   var contentWindow = iframe.contentWindow;
 
+  // TODO make the async version work:
+  // contentWindow._ = SCRIPT;
+  // iframe.src = 'javascript:window._';
+
   var doc = contentWindow.document;
   doc.open();
   doc.write(SCRIPT);

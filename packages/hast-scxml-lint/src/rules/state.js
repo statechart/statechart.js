@@ -4,6 +4,7 @@ const validChildren = {
   'onentry': true,
   'onexit': true,
   'transition': true,
+  'onevent': true,
   'initial': [0, 1],
   'state': true,
   'parallel': true,

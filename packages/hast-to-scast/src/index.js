@@ -106,6 +106,17 @@ var tags = {
   onexit: function(node) {
     return h('onexit', node);
   },
+  onevent: function(node) {
+    var props = node[properties];
+    const event = parseStringList(props.event);
+    if (!event.length) event.push('*');
+    return h('transition', node, {
+      event: event,
+      cond: code(props, 'cond', 'expr'),
+      name: props.name,
+      target: false,
+    });
+  },
   history: function(node) {
     var props = node[properties];
     return h('history', node, {

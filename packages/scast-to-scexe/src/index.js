@@ -13,7 +13,15 @@ const TRANSITION = 'transition';
 const ROOT = 'root';
 const DOCUMENT = 'document';
 
-function rootVisitor(file, stateNodes) {
+function recordSource(sources, source) {
+  return id => {
+    const states = sources.get(id) || new Set();
+    states.add(source);
+    sources.set(id, states);
+  };
+}
+
+function rootVisitor(file, sources, stateNodes) {
   return {
     types: [ROOT],
     exit: function(node) {
@@ -26,21 +34,6 @@ function rootVisitor(file, stateNodes) {
       }
 
       const document = documents[0];
-
-      const sources = new Map([[0, 0]]);
-
-      const addSource = source => id => {
-        const states = sources.get(id) || new Set();
-        states.add(source);
-        sources.set(id, states);
-      };
-
-      document.states.forEach((state) => {
-        state.completion.forEach(addSource(state.idx));
-      });
-      document.transitions.forEach((transition) => {
-        transition.targets.forEach(addSource(transition.source));
-      });
 
       const reachableStates = new Map([[0, true]]);
       const isReachable = idx => {
@@ -74,7 +67,7 @@ function rootVisitor(file, stateNodes) {
   };
 }
 
-function stateVisitor(file, stateNodes) {
+function stateVisitor(file, sources, stateNodes) {
   const covExpr = convertExpression.bind(null, file);
   function covInvoke(invoke) {
     return convertInvoke(invoke, file);
@@ -91,6 +84,11 @@ function stateVisitor(file, stateNodes) {
       FINAL,
       HISTORY,
     ],
+    enter: function(node, index, parent, doc) {
+      node.data.completion.forEach(recordSource(sources, node.idx));
+      stateNodes[node.idx] = node;
+      return node;
+    },
     exit: function(node, index, parent, doc) {
       var data = node.data;
       var state = doc.states[node.idx] = {
@@ -109,19 +107,22 @@ function stateVisitor(file, stateNodes) {
         hasHistory: data.hasHistory,
         name: node.name,
       };
-      stateNodes[node.idx] = node;
       return node.type !== SCXML ? null : doc;
     },
   };
 }
 
-function transitionVisitor(file) {
+function transitionVisitor(file, sources) {
   const covExpr = convertExpression.bind(null, file);
   return {
     types: [TRANSITION],
+    enter: function(node) {
+      node.data.targets.forEach(recordSource(sources, node.data.source));
+      return node;
+    },
     exit: function(node, index, parent, doc) {
       var data = node.data;
-      doc.transitions[node.idx] = {
+      var transition = doc.transitions[node.idx] = {
         type: data.type,
         idx: node.idx,
         source: data.source,
@@ -327,12 +328,13 @@ function invalidElement(node, file) {
 
 export default function(opts) {
   return function(root, file) {
+    const sources = new Map([[0, new Set([0])]]);
     const stateNodes = [];
     const stack = createStack(SCXML, init, createGroup([
-      stateVisitor(file, stateNodes),
-      transitionVisitor(file),
+      stateVisitor(file, sources, stateNodes),
+      transitionVisitor(file, sources),
       ignoreVisitor(file),
-      rootVisitor(file, stateNodes),
+      rootVisitor(file, sources, stateNodes),
     ]));
 
     return transform(root, stack);

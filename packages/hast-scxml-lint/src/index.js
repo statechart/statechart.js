@@ -4,6 +4,7 @@ import ruleScxml from './rules/scxml';
 import ruleState from './rules/state';
 import ruleParallel from './rules/parallel';
 import ruleTransition from './rules/transition';
+import ruleOnevent from './rules/onevent';
 import ruleInitial from './rules/initial';
 import ruleFinal from './rules/final';
 import ruleOnentry from './rules/onentry';
@@ -35,6 +36,7 @@ const elements = {
   state: ruleState,
   parallel: ruleParallel,
   transition: ruleTransition,
+  onevent: ruleOnevent,
   initial: ruleInitial,
   final: ruleFinal,
   onentry: ruleOnentry,

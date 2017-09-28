@@ -193,5 +193,21 @@ describe('interpreter-macrostep', function() {
         [{ name: 'c' }, [ 'parent', 'child' ]],
       ]
     ));
+
+    it('should take multiple transitions', testTransition(`
+      <scxml version="1.0" datamodel="ecmascript">
+        <state id="first">
+          <onevent event="evt">
+            <assign location="test" />
+          </onevent>
+          <transition event="evt" target="second" />
+        </state>
+        <state id="second" />
+      </scxml>
+    `,
+      [ 'first' ], [
+        [{ name: 'evt' }, [ 'second' ]],
+      ]
+    ));
   });
 });

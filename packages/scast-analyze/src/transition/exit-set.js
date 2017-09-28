@@ -23,9 +23,17 @@ export default function(_opts, file) {
   }, {
     types: [TRANSITION],
     enter: function(node, index, parent, conf) {
-      const targets = node.data.targets = (node.target && node.target.length) ? node.target.map(function(target) {
-        return conf.ids.get(target) || unknownTarget(file, node, target);
-      }) : [node.data.source];
+      if (node.target === false) {
+        node.data.targets = [];
+        node.data.exits = [];
+        return node;
+      }
+
+      const targets = node.data.targets = (node.target && node.target.length) ?
+        node.target.map(function(target) {
+          return conf.ids.get(target) || unknownTarget(file, node, target);
+        }) :
+        [node.data.source];
 
       node.data.exits = targets.length ?
         getExitSet(conf.states, node, targets) :

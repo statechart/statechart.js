@@ -12,6 +12,7 @@ export default function() {
     types: [TRANSITION],
     enter: function(node, index, parent, scxml) {
       const conflicts = node.data.conflicts = [];
+      if (node.target === false) return node;
       const states = scxml.states;
       scxml.transitions.forEach(function(t2) {
         if (node.idx === t2.idx) return;
