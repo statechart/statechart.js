@@ -165,5 +165,29 @@ describe('interpreter-macrostep', function() {
     `,
       [ ]
     ));
+
+    it('should select initial', testTransition(`
+      <scxml version="1.0" datamodel="ecmascript">
+        <state initial="second">
+          <state id="first" />
+          <state id="second" />
+        </state>
+      </scxml>
+    `,
+      [ 'second' ]
+    ));
+
+    it('should disable initial selection', testTransition(`
+      <scxml version="1.0" datamodel="ecmascript">
+        <state id="parent" initial="_self">
+          <transition event="c" target="child" />
+          <state id="child" />
+        </state>
+      </scxml>
+    `,
+      [ 'parent' ], [
+        [{ name: 'c' }, [ 'parent', 'child' ]],
+      ]
+    ));
   });
 });
