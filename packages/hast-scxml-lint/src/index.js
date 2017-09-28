@@ -69,9 +69,11 @@ export default function lint(opts) {
       var n = node.tagName;
       var fn = elements[n];
       if (fn) fn(node, function check(isValid, opt, description, node, rule) {
-        if (opts[n + '-' + opt] !== false && !isValid) {
+        var conf = opts[n + '-' + opt];
+        if (conf !== false && !isValid) {
           var msg = file.message(description, node, rule || n + '-' + opt);
           msg.source = '@statechart/hast-scxml-lint';
+          msg.fatal = conf !== 'warn';
         }
       });
     });

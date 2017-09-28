@@ -1,7 +1,7 @@
 var subject = require('../');
 
-describe('', function() {
-  it('', function() {
+describe('scast-analyze', function() {
+  it('should work', function() {
 
   });
 });

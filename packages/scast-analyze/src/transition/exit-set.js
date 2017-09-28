@@ -10,18 +10,21 @@ import {
 } from '../identifiers';
 import { getTransitionSource } from './util';
 
-function unknownTarget(target) {
-  throw new Error('Unknown target: ' + target)
+function unknownTarget(file, node, target) {
+  var msg = file.message('unknown target: ' + JSON.stringify(target), node, 'transition/exit-set');
+  msg.source = '@statechart/scast-analyze';
+  msg.fatal = true;
+  return -1;
 }
 
-export default function() {
+export default function(_opts, file) {
   return createStack(SCXML, function(scxml) {
     return scxml.data;
   }, {
     types: [TRANSITION],
     enter: function(node, index, parent, conf) {
       const targets = node.data.targets = (node.target && node.target.length) ? node.target.map(function(target) {
-        return conf.ids.get(target) || unknownTarget(target);
+        return conf.ids.get(target) || unknownTarget(file, node, target);
       }) : [node.data.source];
 
       node.data.exits = targets.length ?

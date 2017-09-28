@@ -1,10 +1,15 @@
+var vfile = require('vfile');
+var reporter = require('vfile-reporter');
 var createInterpreter = require('../');
 var engine = require('@statechart/compiler-engine');
 var Document = require('@statechart/interpreter-document');
 
 function compile(str) {
-  var node = engine.parse(str);
-  return engine.runSync(node);
+  var file = vfile(str);
+  var node = engine.parse(file);
+  var res = engine.runSync(node, file);
+  if (file.messages.length) throw new Error(reporter([file]));
+  return res;
 }
 
 var ecmascript = {
@@ -68,7 +73,7 @@ function loop(interpreter, events) {
 describe('interpreter-macrostep', function() {
   describe('handleEvent', function() {
     it('should pick the correct states', testTransition(`
-      <scxml datamodel="ecmascript">
+      <scxml version="1.0" datamodel="ecmascript">
         <state id="s1">
           <transition event="foo" target="s2" />
         </state>
@@ -82,7 +87,7 @@ describe('interpreter-macrostep', function() {
     ));
 
     it('should pick nested states', testTransition(`
-      <scxml datamodel="ecmascript">
+      <scxml version="1.0" datamodel="ecmascript">
         <state id="s1">
           <state id="s1-1">
             <transition event="bar" target="s2" />
@@ -100,7 +105,7 @@ describe('interpreter-macrostep', function() {
     ));
 
     it('should pass on unmatched events', testTransition(`
-      <scxml datamodel="ecmascript">
+      <scxml version="1.0" datamodel="ecmascript">
         <state id="s1">
           <transition event="bar" target="s2" />
         </state>
@@ -114,7 +119,7 @@ describe('interpreter-macrostep', function() {
     ));
 
     it('should work with parallel', testTransition(`
-      <scxml datamodel="ecmascript">
+      <scxml version="1.0" datamodel="ecmascript">
         <parallel id="s1">
           <state id="s1-1" />
           <state id="s1-2">
@@ -138,7 +143,7 @@ describe('interpreter-macrostep', function() {
     ));
 
     it('should transition without events', testTransition(`
-      <scxml datamodel="ecmascript">
+      <scxml version="1.0" datamodel="ecmascript">
         <state id="s1">
           <transition cond="true" target="s2" />
         </state>
@@ -150,7 +155,7 @@ describe('interpreter-macrostep', function() {
     ));
 
     it('should invoke', testTransition(`
-      <scxml datamodel="ecmascript">
+      <scxml version="1.0" datamodel="ecmascript">
         <state>
           <invoke type="http://www.w3.org/TR/scxml/" id="123">
             <param name="foo" expr="'bar'" />
