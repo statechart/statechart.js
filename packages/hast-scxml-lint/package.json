@@ -1,6 +1,6 @@
 {
   "name": "@statechart/hast-scxml-lint",
-  "version": "0.1.32",
+  "version": "0.1.36",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "license": "MIT",
