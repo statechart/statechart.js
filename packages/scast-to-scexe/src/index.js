@@ -13,7 +13,7 @@ const TRANSITION = 'transition';
 const ROOT = 'root';
 const DOCUMENT = 'document';
 
-function rootVisitor(file) {
+function rootVisitor(file, stateNodes) {
   return {
     types: [ROOT],
     exit: function(node) {
@@ -21,16 +21,60 @@ function rootVisitor(file) {
         return child.type === DOCUMENT;
       });
 
-      if (documents.length > 1) {
+      if (documents.length !== 1) {
         file.fail('Only one root document allowed', node);
       }
 
-      return documents[0] || {};
+      const document = documents[0];
+
+      const sources = new Map([[0, 0]]);
+
+      const addSource = source => id => {
+        const states = sources.get(id) || new Set();
+        states.add(source);
+        sources.set(id, states);
+      };
+
+      document.states.forEach((state) => {
+        state.completion.forEach(addSource(state.idx));
+      });
+      document.transitions.forEach((transition) => {
+        transition.targets.forEach(addSource(transition.source));
+      });
+
+      const reachableStates = new Map([[0, true]]);
+      const isReachable = idx => {
+        if (reachableStates.has(idx)) return reachableStates.get(idx);
+
+        const states = sources.get(idx);
+        if (!states) {
+          reachableStates.set(idx, false);
+          return false;
+        }
+
+        reachableStates.set(idx, false);
+
+        const res = Array.from(states).some(isReachable);
+
+        reachableStates.set(idx, res);
+
+        return res;
+      }
+
+      document.states.forEach((state) => {
+        const idx = state.idx;
+        if (isReachable(idx)) return;
+        const id = state.id ? ': ' + JSON.stringify(state.id) : '';
+        var msg = file.message('unreachable state' + id, stateNodes[idx], 'scexe/unreachable');
+        msg.source = '@statechart/scast-to-scexe';
+      });
+
+      return document;
     },
   };
 }
 
-function stateVisitor(file) {
+function stateVisitor(file, stateNodes) {
   const covExpr = convertExpression.bind(null, file);
   function covInvoke(invoke) {
     return convertInvoke(invoke, file);
@@ -65,6 +109,7 @@ function stateVisitor(file) {
         hasHistory: data.hasHistory,
         name: node.name,
       };
+      stateNodes[node.idx] = node;
       return node.type !== SCXML ? null : doc;
     },
   };
@@ -282,11 +327,12 @@ function invalidElement(node, file) {
 
 export default function(opts) {
   return function(root, file) {
+    const stateNodes = [];
     const stack = createStack(SCXML, init, createGroup([
-      stateVisitor(file),
+      stateVisitor(file, stateNodes),
       transitionVisitor(file),
       ignoreVisitor(file),
-      rootVisitor(file),
+      rootVisitor(file, stateNodes),
     ]));
 
     return transform(root, stack);

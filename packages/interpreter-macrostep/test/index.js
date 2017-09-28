@@ -8,7 +8,11 @@ function compile(str) {
   var file = vfile(str);
   var node = engine.parse(file);
   var res = engine.runSync(node, file);
-  if (file.messages.length) throw new Error(reporter([file]));
+  if (file.messages.length) {
+    const msg = reporter([file]);
+    if (file.messages.some(msg => msg.fatal)) throw new Error(msg);
+    console.warn(msg);
+  }
   return res;
 }
 
