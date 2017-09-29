@@ -29,7 +29,7 @@ function parsePropAlias(props, name, type, locations) {
 }
 
 function parseBool(value) {
-  return (value || '').toLowerCase() === 'true';
+  return (value || '').trim().toLowerCase() === 'true';
 }
 
 function code(props, name, type, locations) {
