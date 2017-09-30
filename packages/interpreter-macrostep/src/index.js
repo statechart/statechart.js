@@ -176,10 +176,15 @@ export default function createInterpreter(doc, ioprocessors, invokers) {
     },
 
     dump: function() {
+      const {
+        configuration = [],
+        history = []
+      } = state || {};
+
       return {
-        configuration: state.configuration,
-        history: state.history,
-        datamodel: datamodel.dump(),
+        configuration,
+        history,
+        datamodel: datamodel ? datamodel.dump() : null,
       };
     },
 
@@ -192,7 +197,8 @@ export default function createInterpreter(doc, ioprocessors, invokers) {
           history: conf.history,
         }
       );
-      datamodel = datamodel.load(conf.datamodel);
+      datamodel = datamodel.load(conf.datamodel) || datamodel;
+      return stabilize();
     },
 
     subscribe: function(fn) {
@@ -207,7 +213,7 @@ export default function createInterpreter(doc, ioprocessors, invokers) {
         return state.every(function(s) { return api.isActive(s); });
       }
 
-      var configuration = state.configuration;
+      const { configuration = [] } = state || {};
       for (var i = 0, idx; i < configuration.length; i++) {
         idx = configuration[i];
         if (s === idx || s === doc.states[idx].id) return true;
@@ -216,7 +222,8 @@ export default function createInterpreter(doc, ioprocessors, invokers) {
     },
 
     getConfiguration: function() {
-      return state.configuration.reduce(function(acc, idx) {
+      const { configuration = [] } = state || {};
+      return configuration.reduce(function(acc, idx) {
         var id = doc.states[idx].id;
         if (id) acc.push(id);
         return acc;
