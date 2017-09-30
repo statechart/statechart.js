@@ -1,6 +1,6 @@
 {
   "name": "@statechart/interpreter-microstep",
-  "version": "0.1.39",
+  "version": "0.1.40",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "license": "MIT",
