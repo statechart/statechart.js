@@ -72,20 +72,30 @@ describe('interpreter-microstep', function() {
 
     it('should work with parallel', function() {
       testTransition(`
-      <scxml datamodel="ecmascript">
-        <parallel id="s1">
-          <state />
-          <state>
-            <transition event="bar" target="s2" />
+      <scxml version="1.0" datamodel='ecmascript'>
+        <parallel id="p">
+          <state id="top">
+            <state id="top-1">
+              <transition event="top" target="top-2" />
+            </state>
+
+            <state id="top-2">
+              <transition event="top" target="top-1" />
+            </state>
+          </state>
+
+          <state id="bottom">
+            <state id="bottom-1">
+              <transition event="bottom" target="bottom-2" />
+            </state>
+
+            <state id="bottom-2">
+              <transition event="bottom" target="bottom-1" />
+            </state>
           </state>
         </parallel>
-
-        <parallel id="s2">
-          <state />
-          <state />
-        </parallel>
       </scxml>
-      `, { name: 'bar' }, [0, 4, 5, 6]);
+      `, { name: 'top' }, [0, 1, 2, 4, 5, 6]);
     });
 
     it('should skip false conditions', function() {

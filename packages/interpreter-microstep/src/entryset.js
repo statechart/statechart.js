@@ -1,4 +1,4 @@
-import { union, toArray, hasIntersection } from '@statechart/util-set';
+import { union, toArray, hasIntersection, intersection, difference } from '@statechart/util-set';
 
 export default function establishEntryset(backend, doc, interpreter, entrySet, transSet, exitSet) {
   var configuration = new Set(interpreter.configuration);
@@ -11,13 +11,13 @@ export default function establishEntryset(backend, doc, interpreter, entrySet, t
 }
 
 function addEntryAncestors(doc, entrySet) {
-  entrySet.forEach(function(idx) {
+  entrySet.forEach((idx) => {
     union(entrySet, doc.states[idx].ancestors);
   });
 }
 
 function addEntryDescendants(doc, configuration, entrySet, transSet, exitSet) {
-  entrySet.forEach(function(idx) {
+  entrySet.forEach((idx) => {
     var state = doc.states[idx];
     switch (state.type) {
     case 'parallel':
@@ -38,17 +38,17 @@ function addEntryDescendants(doc, configuration, entrySet, transSet, exitSet) {
 }
 
 function addEntryDescendantsHistory() {
-
+  // TODO
 }
 
 function addEntryDescendantsInitial(doc, entrySet, transSet, state) {
-  state.transitions.forEach(function(idx) {
+  state.transitions.forEach((idx) => {
     var transition = doc.transitions[idx];
     var targets = transition.targets;
     union(entrySet, targets);
     entrySet.delete(state.idx);
     transSet.add(idx);
-    targets.forEach(function(idx) {
+    targets.forEach((idx) => {
       union(entrySet, doc.states[idx].ancestors);
     })
   });
@@ -68,27 +68,32 @@ function addEntryDescendantsCompound(doc, configuration, entrySet, transSet, exi
 }
 
 function shouldAddCompoundState(configuration, entrySet, exitSet, state) {
-  var children = state.children;
-  return (
-    !hasIntersection(entrySet, children) && (
-      !hasIntersection(configuration, children) ||
-      hasIntersection(exitSet, children)
-    )
-  );
+  const { children } = state;
+
+  let shouldAdd = true;
+  children.forEach((id) => {
+    shouldAdd = shouldAdd && !entrySet.has(id);
+    if (configuration.has(id) && !exitSet.has(id)) {
+      entrySet.add(id);
+      shouldAdd = false;
+    }
+  });
+
+  return shouldAdd;
 }
 
 function exitStates(backend, doc, exitSet) {
-  exitSet.forEach(function(idx) {
+  exitSet.forEach((idx) => {
     var state = doc.states[idx];
-    state.onExit.forEach(function(execution) {
+    state.onExit.forEach((execution) => {
       backend.exec(execution);
     });
   });
 }
 
 function takeTransitions(backend, doc, transSet) {
-  transSet.forEach(function(idx) {
-    doc.transitions[idx].onTransition.forEach(function(execution) {
+  transSet.forEach((idx) => {
+    doc.transitions[idx].onTransition.forEach((execution) => {
       backend.exec(execution);
     });
   });
@@ -97,18 +102,18 @@ function takeTransitions(backend, doc, transSet) {
 function enterStates(backend, doc, interpreter, configuration, entrySet) {
   var initialized = new Set(interpreter.initialized);
 
-  entrySet.forEach(function(idx) {
+  entrySet.forEach((idx) => {
     var state = doc.states[idx];
     if (configuration.has(idx)) return;
 
     if (!initialized.has(idx)) {
-      state.data.forEach(function(data) {
+      state.data.forEach((data) => {
         backend.exec(data);
       });
       initialized.add(idx);
     }
 
-    state.onEnter.forEach(function(execution) {
+    state.onEnter.forEach((execution) => {
       backend.exec(execution);
     });
   });

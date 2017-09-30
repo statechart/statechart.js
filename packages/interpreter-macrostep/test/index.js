@@ -123,26 +123,36 @@ describe('interpreter-macrostep', function() {
     ));
 
     it('should work with parallel', testTransition(`
-      <scxml version="1.0" datamodel="ecmascript">
-        <parallel id="s1">
-          <state id="s1-1" />
-          <state id="s1-2">
-            <transition event="bar" target="s2" />
-          </state>
-        </parallel>
+      <scxml version="1.0" datamodel='ecmascript'>
+        <parallel id="p">
+          <state id="top">
+            <state id="top-1">
+              <transition event="top" target="top-2" />
+            </state>
 
-        <parallel id="s2">
-          <state id="s2-1" />
-          <state id="s2-2">
-            <transition event="foo" target="s1" />
+            <state id="top-2">
+              <transition event="top" target="top-1" />
+            </state>
+          </state>
+
+          <state id="bottom">
+            <state id="bottom-1">
+              <transition event="bottom" target="bottom-2" />
+            </state>
+
+            <state id="bottom-2">
+              <transition event="bottom" target="bottom-1" />
+            </state>
           </state>
         </parallel>
       </scxml>
     `,
-      [ 's1', 's1-1', 's1-2' ], [
-        [{ name: 'bar' }, [ 's2', 's2-1', 's2-2' ]],
-        [{ name: 'foo' }, [ 's1', 's1-1', 's1-2' ]],
-        [{ name: 'bar' }, [ 's2', 's2-1', 's2-2' ]],
+      [ 'p', 'top', 'top-1', 'bottom', 'bottom-1' ], [
+        [{ name: 'top' }, [ 'p', 'top', 'top-2', 'bottom', 'bottom-1' ]],
+        [{ name: 'bottom' }, [ 'p', 'top', 'top-2', 'bottom', 'bottom-2' ]],
+        [{ name: 'bottom' }, [ 'p', 'top', 'top-2', 'bottom', 'bottom-1' ]],
+        [{ name: 'bottom' }, [ 'p', 'top', 'top-2', 'bottom', 'bottom-2' ]],
+        [{ name: 'top' }, [ 'p', 'top', 'top-1', 'bottom', 'bottom-2' ]],
       ]
     ));
 
