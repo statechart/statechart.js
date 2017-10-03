@@ -32,8 +32,11 @@ export default function selectTransitions(backend, doc, interpreter, event) {
   return establishEntryset(backend, doc, interpreter, entrySet, transSet, exitSet);
 }
 
-function isTransitionActive(transition, configuration) {
-  return configuration.has(transition.source);
+function isTransitionActive({ source, type, targets }, configuration) {
+  return configuration.has(source) && (
+    type !== 'spontaneous' ||
+    targets.some(t => !configuration.has(t))
+  );
 }
 
 function isTransitionConflictFree(transition, conflicts) {
