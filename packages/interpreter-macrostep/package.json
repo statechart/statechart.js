@@ -1,18 +1,18 @@
 {
   "name": "@statechart/interpreter-macrostep",
-  "version": "0.1.42",
+  "version": "0.1.43",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "license": "MIT",
   "dependencies": {
-    "@statechart/interpreter-microstep": "^0.1.42",
+    "@statechart/interpreter-microstep": "^0.1.43",
     "babel-runtime": "^6.23.0",
     "cancelable-promise": "^2.2.0",
     "parse-duration": "^0.1.1"
   },
   "devDependencies": {
-    "@statechart/compiler-engine": "^0.1.39",
-    "@statechart/interpreter-document": "^0.1.35",
+    "@statechart/compiler-engine": "^0.1.43",
+    "@statechart/interpreter-document": "^0.1.43",
     "vfile": "*",
     "vfile-reporter": "*"
   }

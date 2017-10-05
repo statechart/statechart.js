@@ -1,6 +1,6 @@
 {
   "name": "@statechart/scast-datamodel-js",
-  "version": "0.1.13",
+  "version": "0.1.43",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "license": "MIT",

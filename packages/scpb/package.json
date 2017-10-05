@@ -1,6 +1,6 @@
 {
   "name": "@statechart/scpb",
-  "version": "0.1.32",
+  "version": "0.1.43",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "license": "MIT",
@@ -8,7 +8,7 @@
     "build": "pbjs statechart.proto -t static-module -w es6 --no-create --no-verify --no-convert --no-delimited -o src/_initial.js"
   },
   "dependencies": {
-    "@statechart/scpb-bitset": "^0.1.27",
+    "@statechart/scpb-bitset": "^0.1.43",
     "babel-runtime": "^6.23.0",
     "protobufjs": "^6.7.3"
   }
