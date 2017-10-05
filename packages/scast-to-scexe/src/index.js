@@ -230,16 +230,21 @@ const expressions = {
       },
     };
   },
-  script: function(expr) {
-    const src = expr.src;
-    return src ? {
+  script: function({ src, children }, file) {
+    if (src) return {
       type: 'script_ext',
       props: {
         src: createLiteral(src),
       },
-    } : {
+    };
+
+    if (children.length === 1 && children[0].type === 'eval') {
+      return convertExpression(file, children[0]);
+    }
+
+    return {
       type: 'script',
-      value: expr.children.map(child => child.value || '').join(''),
+      value: children.map(child => typeof child === 'string' ? child : (child.value || '')).join(''),
     };
   },
   send: function(expr, file) {
@@ -268,6 +273,12 @@ const expressions = {
   expr: function(expr) {
     return {
       type: 'expr',
+      value: expr.value,
+    };
+  },
+  eval: function(expr) {
+    return {
+      type: 'eval',
       value: expr.value,
     };
   },
@@ -322,7 +333,7 @@ function createLiteral(value) {
 }
 
 function invalidElement(node, file) {
-  file.message('Cannot encode element: ' + node.type, node);
+  file.message('Cannot encode element: ' + node.type, node).fatal = true;
   return undefined;
 }
 

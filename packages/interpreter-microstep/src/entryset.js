@@ -1,7 +1,7 @@
 import { union, toArray, hasIntersection, intersection, difference } from '@statechart/util-set';
 
 export default function establishEntryset(backend, doc, interpreter, entrySet, transSet, exitSet) {
-  var configuration = new Set(interpreter.configuration);
+  const configuration = new Set(interpreter.configuration);
   addEntryAncestors(doc, entrySet);
   addEntryDescendants(doc, configuration, entrySet, transSet, exitSet);
 
@@ -18,7 +18,7 @@ function addEntryAncestors(doc, entrySet) {
 
 function addEntryDescendants(doc, configuration, entrySet, transSet, exitSet) {
   entrySet.forEach((idx) => {
-    var state = doc.states[idx];
+    const state = doc.states[idx];
     switch (state.type) {
     case 'parallel':
       union(entrySet, state.completion);
@@ -42,26 +42,29 @@ function addEntryDescendantsHistory() {
 }
 
 function addEntryDescendantsInitial(doc, entrySet, transSet, state) {
-  state.transitions.forEach((idx) => {
-    var transition = doc.transitions[idx];
-    var targets = transition.targets;
+  const { transitions, idx } = state;
+  for (let i = 0; i < transitions.length; i++) {
+    const tidx = transitions[i];
+    const { targets } = doc.transitions[tidx];
     union(entrySet, targets);
-    entrySet.delete(state.idx);
-    transSet.add(idx);
-    targets.forEach((idx) => {
-      union(entrySet, doc.states[idx].ancestors);
-    })
-  });
+    entrySet.delete(idx);
+    transSet.add(tidx);
+
+    for (let j = 0; j < targets.length; j++) {
+      const targetIdx = targets[j];
+      union(entrySet, doc.states[targetIdx].ancestors);
+    }
+  }
 }
 
 function addEntryDescendantsCompound(doc, configuration, entrySet, transSet, exitSet, state) {
   if (!shouldAddCompoundState(configuration, entrySet, exitSet, state)) return;
-  var completion = state.completion;
+  const completion = state.completion;
   union(entrySet, completion);
 
   if (hasIntersection(new Set(completion), state.children)) return;
 
-  var first = completion[0];
+  const first = completion[0];
   if (typeof first === 'undefined') return;
 
   union(entrySet, doc.states[first].ancestors);
@@ -71,31 +74,33 @@ function shouldAddCompoundState(configuration, entrySet, exitSet, state) {
   const { children } = state;
 
   let shouldAdd = true;
-  children.forEach((id) => {
+  for (let i = 0; i < children.length; i++) {
+    const id = children[i];
     shouldAdd = shouldAdd && !entrySet.has(id);
     if (configuration.has(id) && !exitSet.has(id)) {
       entrySet.add(id);
       shouldAdd = false;
     }
-  });
+  }
 
   return shouldAdd;
 }
 
 function exitStates(backend, doc, exitSet) {
   exitSet.forEach((idx) => {
-    var state = doc.states[idx];
-    state.onExit.forEach((execution) => {
-      backend.exec(execution);
-    });
+    const { onExit } = doc.states[idx];
+    for (let i = 0; i < onExit.length; i++) {
+      backend.exec(onExit[i]);
+    }
   });
 }
 
 function takeTransitions(backend, doc, transSet) {
   transSet.forEach((idx) => {
-    doc.transitions[idx].onTransition.forEach((execution) => {
-      backend.exec(execution);
-    });
+    const { onTransition } = doc.transitions[idx];
+    for (let i = 0; i < onTransition.length; i++) {
+      backend.exec(onTransition[i]);
+    }
   });
 }
 
@@ -107,15 +112,17 @@ function enterStates(backend, doc, interpreter, configuration, entrySet) {
     if (configuration.has(idx)) return;
 
     if (!initialized.has(idx)) {
-      state.data.forEach((data) => {
-        backend.exec(data);
-      });
+      const { data } = state;
+      for (let i = 0; i < data.length; i++) {
+        backend.exec(data[i]);
+      }
       initialized.add(idx);
     }
 
-    state.onEnter.forEach((execution) => {
-      backend.exec(execution);
-    });
+    const { onEnter } = state;
+    for (let i = 0; i < onEnter.length; i++) {
+      backend.exec(onEnter[i]);
+    }
   });
 
   return Object.assign(

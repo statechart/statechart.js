@@ -73,6 +73,7 @@ message Expression {
     literal = 11;
     location = 12;
     script_ext = 13;
+    eval = 14;
   }
 
   Type type = 1;

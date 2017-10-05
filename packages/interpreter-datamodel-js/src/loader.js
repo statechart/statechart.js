@@ -7,10 +7,14 @@ const loaders = {
     return JSON.stringify(node.value);
   },
   location: function(node) {
-    return `_window[${JSON.stringify(node.value)}]`;
+    const path = node.value.split('.').map((part) => JSON.stringify([part])).join('');
+    return `_window${path}`;
   },
   expr: function(node) {
     return `(function() { return ${node.value} }).call(_window)`;
+  },
+  eval: function(node) {
+    return `(${node.value}).call(_window, _window, _window)`;
   },
   script: function(node) {
     return `(function() { ${node.value} }).call(_window)`;

@@ -1,0 +1,25 @@
+{
+  "name": "@statechart/babel-plugin-transform-jsx",
+  "version": "0.1.39",
+  "description": "write inline statecharts with jsx",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "author": "Cameron Bytheway <bytheway.cameron@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@statechart/hast-scxml-lint": "*",
+    "@statechart/hast-to-scast": "*",
+    "@statechart/scast-analyze": "*",
+    "@statechart/scast-to-scexe": "*",
+    "babel-plugin-syntax-jsx": "^6.18.0",
+    "babel-runtime": "^6.26.0",
+    "rehype-minify-whitespace": "^2.0.3",
+    "unified": "^6.1.5",
+    "vfile": "^2.2.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "should": "^13.1.0",
+    "snap-shot": "^2.17.0"
+  }
+}

@@ -35,6 +35,7 @@ function parseBool(value) {
 function code(props, name, type, locations) {
   locations = locations || {};
   var value = props[name];
+  if (value && value.type) return value;
   return typeof value !== 'undefined' ? {
     type: type || 'expr',
     value: value,
@@ -89,6 +90,7 @@ var tags = {
     });
   },
   initial: function(node) {
+    var props = node[properties];
     return h('initial', node, {
       name: props.name,
     });

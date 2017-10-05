@@ -2,7 +2,7 @@
   "name": "@statechart/scast-to-scexe",
   "version": "0.1.38",
   "main": "dist/index.js",
-  "module": "dist/index.es.js",
+  "module": "dist/index.mjs",
   "license": "MIT",
   "dependencies": {
     "@statechart/scpb": "^0.1.32",

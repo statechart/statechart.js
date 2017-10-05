@@ -2,7 +2,7 @@ import escape from 'escape-string-regexp';
 
 export default class Document {
   constructor(doc, datamodels) {
-    var dm = datamodels[doc.datamodel];
+    var dm = datamodels[doc.datamodel || 'ecmascript'];
     this.datamodel = {
       load: node => node && dm.load(node),
       init: function(node) {

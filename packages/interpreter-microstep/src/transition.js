@@ -2,16 +2,18 @@ import { union, intersection, difference, toArray } from '@statechart/util-set';
 import establishEntryset from './entryset';
 
 export default function selectTransitions(backend, doc, interpreter, event) {
-  var configuration = new Set(interpreter.configuration);
-  var entrySet = new Set();
-  var transSet = new Set();
-  var exitSet = new Set();
-  var conflicts = new Set();
+  const configuration = new Set(interpreter.configuration);
+  const entrySet = new Set();
+  const transSet = new Set();
+  const exitSet = new Set();
+  const conflicts = new Set();
+  const transitions = doc.transitions;
 
-  doc.transitions.forEach(function(transition) {
-    var type = transition.type;
+  for (let i = 0; i < transitions.length; i++) {
+    const transition = transitions[i];
+    const type = transition.type;
     // never select history or initial transitions automatically
-    if (type === 'history' || type === 'initial') return;
+    if (type === 'history' || type === 'initial') continue;
 
     if (
       isTransitionActive(transition, configuration) &&
@@ -24,7 +26,7 @@ export default function selectTransitions(backend, doc, interpreter, event) {
       union(exitSet, transition.exits);
       union(conflicts, transition.conflicts);
     }
-  });
+  }
 
   if (!transSet.size) return Object.assign({}, interpreter, { isStable: true });
 
@@ -44,35 +46,37 @@ function isTransitionConflictFree(transition, conflicts) {
 }
 
 function isTransitionApplicable(transition, event) {
-  var matcher = transition.events;
+  const matcher = transition.events;
   if (!matcher && !event) return true;
   if (matcher && event) return matcher(event);
   return false;
 }
 
 function isTransitionEnabled(transition, backend) {
-  var cond = transition.condition;
+  const cond = transition.condition;
   return typeof cond === 'undefined' ?
     true :
     backend.query(cond);
 }
 
 function rememberHistory(doc, interpreter, exitSet) {
-  var configuration = interpreter.configuration;
-  var history = new Set(interpreter.history);
+  const configuration = interpreter.configuration;
+  const history = new Set(interpreter.history);
+  const states = doc.states;
 
-  doc.states.forEach(function(state) {
-    var type = state.type;
-    if (type !== 'history_deep' && type !== 'history_shallow') return;
+  for (let i = 0; i < states.length; i++) {
+    const state = states[i];
+    const type = state.type;
+    if (type !== 'history_deep' && type !== 'history_shallow') continue;
 
     if (exitSet.has(state.parent)) {
-      var completion = state.completion;
-      var tmpCompletion = new Set(state.completion);
+      const completion = state.completion;
+      const tmpCompletion = new Set(completion);
       intersection(tmpCompletion, configuration);
       difference(history, completion);
       union(history, tmpCompletion);
     }
-  });
+  }
 
   return Object.assign(
     {},

@@ -32,4 +32,5 @@ export const expression = [
   'literal',
   'location',
   'script_ext',
+  'eval',
 ];

@@ -2,7 +2,7 @@
   "name": "@statechart/interpreter-macrostep",
   "version": "0.1.42",
   "main": "dist/index.js",
-  "module": "dist/index.es.js",
+  "module": "dist/index.mjs",
   "license": "MIT",
   "dependencies": {
     "@statechart/interpreter-microstep": "^0.1.42",

@@ -2,7 +2,7 @@
   "name": "@statechart/scpb",
   "version": "0.1.32",
   "main": "dist/index.js",
-  "module": "dist/index.es.js",
+  "module": "dist/index.mjs",
   "license": "MIT",
   "scripts": {
     "build": "pbjs statechart.proto -t static-module -w es6 --no-create --no-verify --no-convert --no-delimited -o src/_initial.js"

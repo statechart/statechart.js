@@ -6,7 +6,7 @@ export default function(external) {
     entry: 'src/index.js',
     targets: [
       { dest: 'dist/index.js', format: 'cjs' },
-      { dest: 'dist/index.es.js', format: 'es' },
+      { dest: 'dist/index.mjs', format: 'es' },
     ],
     external: external.concat(/^babel-runtime/),
     plugins: [

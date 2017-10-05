@@ -2,7 +2,7 @@
   "name": "@statechart/hast-scxml-lint",
   "version": "0.1.38",
   "main": "dist/index.js",
-  "module": "dist/index.es.js",
+  "module": "dist/index.mjs",
   "license": "MIT",
   "dependencies": {
     "babel-runtime": "^6.23.0",
