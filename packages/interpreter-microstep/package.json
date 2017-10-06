@@ -1,6 +1,6 @@
 {
   "name": "@statechart/interpreter-microstep",
-  "version": "0.1.44",
+  "version": "0.1.45",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "license": "MIT",
@@ -9,7 +9,7 @@
     "babel-runtime": "^6.23.0"
   },
   "devDependencies": {
-    "@statechart/compiler-engine": "^0.1.44",
+    "@statechart/compiler-engine": "^0.1.45",
     "@statechart/interpreter-document": "^0.1.44"
   }
 }

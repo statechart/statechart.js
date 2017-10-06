@@ -1,6 +1,6 @@
 {
   "name": "@statechart/hast-to-scast",
-  "version": "0.1.44",
+  "version": "0.1.45",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "license": "MIT",
