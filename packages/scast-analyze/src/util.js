@@ -49,3 +49,7 @@ export function createTranslator(passes) {
     };
   }
 };
+
+export function getPropLoc(node, name) {
+  return (((node.data || {}).position || {}).properties || {})[name];
+}

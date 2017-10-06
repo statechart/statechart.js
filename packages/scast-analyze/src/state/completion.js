@@ -4,7 +4,7 @@ import {
   INITIAL,
   FINAL,
 } from '../identifiers';
-import { isState } from '../util';
+import { isState, getPropLoc } from '../util';
 
 export default function(_opts, file) {
   return {
@@ -15,7 +15,7 @@ export default function(_opts, file) {
       FINAL,
     ],
     exit: function(node, index, parent) {
-      var initial = node.initial;
+      const initial = node.initial;
       node.data.completion = initial && initial.length ?
         findInitialChildren(node, initial, file) :
         findInitial(node);
@@ -30,9 +30,9 @@ function findInitialChildren(node, initials, file) {
   // allow states to disable initial child selection
   if (initials.size === 1 && initials.has('_self')) return [];
 
-  var selected = [];
+  const selected = [];
   function traverse(n) {
-    for (var i = 0, children = n.children, child; i < children.length; i++) {
+    for (let i = 0, children = n.children, child; i < children.length; i++) {
       child = children[i];
       if (initials.has(child.id)) {
         selected.push(child.idx);
@@ -44,8 +44,9 @@ function findInitialChildren(node, initials, file) {
   traverse(node);
 
   if (initials.size) {
+    const loc = getPropLoc(node, 'initial');
     initials.forEach((initial) => {
-      var msg = file.message('unknown initial state: ' + JSON.stringify(initial), node, 'state/completion');
+      const msg = file.message('unknown initial state: ' + JSON.stringify(initial), loc, 'state/completion');
       msg.source = '@statechart/scast-analyze';
       msg.fatal = true;
     });
@@ -55,11 +56,11 @@ function findInitialChildren(node, initials, file) {
 }
 
 function findInitial(node) {
-  var childrenStates = node.data.children || [];
-  var l = childrenStates.length;
+  const childrenStates = node.data.children || [];
+  const l = childrenStates.length;
   if (!l) return [];
 
-  for (var i = 0, children = node.children, child; i < children.length; i++) {
+  for (let i = 0, children = node.children, child; i < children.length; i++) {
     child = children[i];
     if (child.type === INITIAL) return [child.idx];
   }

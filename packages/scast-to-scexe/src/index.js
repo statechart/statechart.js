@@ -58,13 +58,20 @@ function rootVisitor(file, sources, stateNodes) {
         const idx = state.idx;
         if (isReachable(idx)) return;
         const id = state.id ? ': ' + JSON.stringify(state.id) : '';
-        var msg = file.message('unreachable state' + id, stateNodes[idx], 'scexe/unreachable');
+        const loc = stateLoc(stateNodes, idx);
+        const msg = file.message('unreachable state' + id, loc, 'scexe/unreachable');
         msg.source = '@statechart/scast-to-scexe';
       });
 
       return document;
     },
   };
+}
+
+function stateLoc(stateNodes, idx) {
+  const node = stateNodes[idx] || {};
+  const position = (node.data || {}).position || {};
+  return position.opening || node;
 }
 
 function stateVisitor(file, sources, stateNodes) {
@@ -85,8 +92,11 @@ function stateVisitor(file, sources, stateNodes) {
       HISTORY,
     ],
     enter: function(node, index, parent, doc) {
-      node.data.completion.forEach(recordSource(sources, node.idx));
-      stateNodes[node.idx] = node;
+      const { idx, data: { ancestors, completion } } = node;
+      const fn = recordSource(sources, idx);
+      ancestors.forEach(fn);
+      completion.forEach(fn);
+      stateNodes[idx] = node;
       return node;
     },
     exit: function(node, index, parent, doc) {

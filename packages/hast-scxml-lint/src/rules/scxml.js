@@ -10,7 +10,7 @@ const validChildren = {
 
 export default function scxml(node, check) {
   props(node, check, {
-    'version': '1.0',
+    'version': false,
     'binding': ['early', 'late'],
     'initial': false,
     'name': false,

@@ -2,7 +2,7 @@ import createStack from 'unist-util-transform-stack';
 import {
   SCXML,
 } from '../identifiers';
-import { stateTypes } from '../util';
+import { stateTypes, getPropLoc } from '../util';
 
 export default function(_opts, file) {
   var usedIds = new Set();
@@ -17,7 +17,8 @@ export default function(_opts, file) {
     enter: function(node, index, parent, conf) {
       const id = node.id;
       if (id && usedIds.has(id)) {
-        var msg = file.message('duplicate id: ' + JSON.stringify(id), node, 'state/identify');
+        const loc = getPropLoc(node, 'id');
+        var msg = file.message('duplicate id: ' + JSON.stringify(id), loc, 'state/identify');
         msg.source = '@statechart/scast-analyze';
         msg.fatal = true;
       }

@@ -9,9 +9,10 @@ import {
   FINAL,
 } from '../identifiers';
 import { getTransitionSource } from './util';
+import { getPropLoc } from '../util';
 
 function unknownTarget(file, node, target) {
-  var msg = file.message('unknown target: ' + JSON.stringify(target), node, 'transition/exit-set');
+  var msg = file.message('unknown target: ' + JSON.stringify(target), getPropLoc(node, 'target'), 'transition/exit-set');
   msg.source = '@statechart/scast-analyze';
   msg.fatal = true;
   return -1;
