@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+
+    // strict options
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny" : true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    "target": "ESNext",
+    "moduleResolution": "node",
+    "module": "ESNext",
+    "declaration": true,
+    "importHelpers": true,
+    "inlineSourceMap": true,
+    "listFiles": false,
+    "traceResolution": false,
+    "pretty": true,
+    "lib" : [
+      "ESNext"
+    ],
+    "types" : [
+      "node"
+    ]
+  },
+  "compileOnSave": false
+}

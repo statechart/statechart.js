@@ -3,28 +3,33 @@ import establishEntryset from './entryset';
 
 export default function selectTransitions(backend, doc, interpreter, event) {
   const configuration = new Set(interpreter.configuration);
+  const { transitions } = doc;
   const entrySet = new Set();
   const transSet = new Set();
   const exitSet = new Set();
-  const conflicts = new Set();
-  const transitions = doc.transitions;
+  const conflictSet = new Set();
 
   for (let i = 0; i < transitions.length; i++) {
     const transition = transitions[i];
-    const type = transition.type;
-    // never select history or initial transitions automatically
-    if (type === 'history' || type === 'initial') continue;
+    const {
+      type,
+      targets,
+      exits,
+      conflicts,
+    } = transition;
 
     if (
+      type !== 'history' &&
+      type !== 'initial' &&
       isTransitionActive(transition, configuration) &&
-      isTransitionConflictFree(transition, conflicts) &&
+      isTransitionConflictFree(transition, conflictSet) &&
       isTransitionApplicable(transition, event) &&
       isTransitionEnabled(transition, backend)
     ) {
-      union(entrySet, transition.targets);
-      transSet.add(transition.idx);
-      union(exitSet, transition.exits);
-      union(conflicts, transition.conflicts);
+      union(entrySet, targets);
+      transSet.add(i);
+      union(exitSet, exits);
+      union(conflictSet, conflicts);
     }
   }
 

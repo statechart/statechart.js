@@ -1,9 +1,9 @@
 import babel from 'rollup-plugin-babel';
 import json from 'rollup-plugin-json';
 
-export default function(external) {
+export default function(external, entry = 'src/index.js') {
   return {
-    entry: 'src/index.js',
+    entry,
     targets: [
       { dest: 'dist/index.js', format: 'cjs' },
       { dest: 'dist/index.mjs', format: 'es' },
