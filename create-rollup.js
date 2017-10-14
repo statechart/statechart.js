@@ -22,6 +22,7 @@ export default function(external, entry = 'src/index.js') {
         ],
         plugins: [
           'transform-runtime',
+          'transform-object-rest-spread',
         ],
         runtimeHelpers: true,
       }),

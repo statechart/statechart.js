@@ -187,13 +187,10 @@ function enterStates<Data, Executable>(
     }
   });
 
-  return Object.assign(
-    {},
-    interpreter,
-    {
-      initialized,
-      configuration: entrySet,
-      isStable: false,
-    },
-  );
+  return {
+    ...interpreter,
+    initialized,
+    configuration: entrySet,
+    isStable: false,
+  };
 }

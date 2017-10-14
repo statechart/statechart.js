@@ -50,7 +50,7 @@ export function selectTransitions<Data, Executable>(
     }
   }
 
-  if (transSet.size === 0) return Object.assign({}, interpreter, { isStable: true });
+  if (transSet.size === 0) return { ...interpreter, isStable: true };
 
   const newInterpreter = rememberHistory(doc, interpreter, exitSet);
   return establishEntryset(backend, doc, newInterpreter, entrySet, transSet, exitSet);
@@ -117,9 +117,8 @@ function rememberHistory<Executable>(
     }
   }
 
-  return Object.assign(
-    {},
-    interpreter,
-    { history },
-  );
+  return {
+    ...interpreter,
+    history,
+  };
 }
