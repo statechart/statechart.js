@@ -1,8 +1,9 @@
 import { test, TestContext } from 'ava';
 import { Sink as ISink } from '@most/types';
 import { newDefaultScheduler } from '@most/scheduler';
+import { Configuration, IEvent, StateType, TransitionType } from '@statechart/types';
 import Interpreter from './';
-import { IDatamodel, Configuration, IEvent } from './types';
+import { IDatamodel } from './types';
 
 class Sink {
   private t: TestContext;
@@ -103,6 +104,7 @@ test.cb('interpreter', (t) => {
   const document = {
     states: [
       {
+        type: StateType.COMPOUND,
         idx: 0,
         completion: [1],
         invocations: [],
@@ -112,8 +114,11 @@ test.cb('interpreter', (t) => {
         onEnter: [],
         onExit: [],
         data: [],
+        transitions: [],
+        children: [1, 2]
       },
       {
+        type: StateType.ATOMIC,
         idx: 1,
         completion: [],
         invocations: [],
@@ -123,8 +128,11 @@ test.cb('interpreter', (t) => {
         onEnter: [],
         onExit: [],
         data: [],
+        transitions: [0, 2],
+        children: []
       },
       {
+        type: StateType.ATOMIC,
         idx: 2,
         completion: [],
         invocations: [],
@@ -134,11 +142,13 @@ test.cb('interpreter', (t) => {
         onEnter: [],
         onExit: [],
         data: [],
+        transitions: [],
+        children: [1, 3]
       },
     ],
     transitions: [
       {
-        type: 'event',
+        type: TransitionType.EXTERNAL,
         idx: 0,
         onTransition: [
           (_data: any, { raise }: any) => raise('internal_first'),
@@ -152,7 +162,7 @@ test.cb('interpreter', (t) => {
         condition: (_: any, { In }: any) => In(1),
       },
       {
-        type: 'event',
+        type: TransitionType.EXTERNAL,
         idx: 1,
         source: 2,
         targets: [1],
@@ -162,7 +172,7 @@ test.cb('interpreter', (t) => {
         events: ({ name }: any) => name === 'internal_first',
       },
       {
-        type: 'event',
+        type: TransitionType.EXTERNAL,
         idx: 2,
         source: 1,
         targets: [2],
@@ -172,7 +182,7 @@ test.cb('interpreter', (t) => {
         events: ({ name }: any) => name === 'second',
       },
       {
-        type: 'event',
+        type: TransitionType.EXTERNAL,
         idx: 3,
         source: 2,
         targets: [1],
@@ -194,13 +204,13 @@ test.cb('interpreter', (t) => {
   configurationSink.event = (_time: number, configuration: Configuration) => {
     switch (i++) {
       case 0:
-        t.deepEqual(configuration, [0, 1]);
+        t.deepEqual(configuration, new Set([0, 1]));
         break;
       case 1:
-        t.deepEqual(configuration, [0, 2]);
+        t.deepEqual(configuration, new Set([0, 2]));
         break;
       case 2:
-        t.deepEqual(configuration, [0, 1]);
+        t.deepEqual(configuration, new Set([0, 1]));
         t.end();
         break;
       default:

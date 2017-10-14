@@ -90,7 +90,7 @@ test('configuration', (t) => {
 
   const s = new DatamodelSink(sink, datamodel, scheduler);
 
-  const configuration = [0,1];
+  const configuration = new Set([0,1]);
   s.configuration(0, configuration);
   t.true(datamodel.$configuration === configuration);
 });

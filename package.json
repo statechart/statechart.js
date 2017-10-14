@@ -3,7 +3,7 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.5.2",
     "expect": "^1.20.2",
-    "lerna": "^2.0.0-rc.5",
+    "lerna": "^2.4.0",
     "mocha": "^3.4.1",
     "rollup": "^0.41.6",
     "rollup-plugin-babel": "^2.7.1",

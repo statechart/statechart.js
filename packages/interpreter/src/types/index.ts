@@ -1,15 +1,8 @@
 import { Time, Sink } from '@most/types';
-
-export type Configuration = number[];
-
-export interface IEvent<Data> {
-  name: string;
-  type?: '_internal' | 'external' | 'platform';
-  origin?: string;
-  sendid?: string;
-  origintype?: string;
-  data?: Data;
-}
+import {
+  Configuration,
+  IEvent,
+} from '@statechart/types';
 
 export interface IDatamodel<Data, Executable> {
   internalEvents: Sink<IEvent<Data>>;
@@ -48,42 +41,4 @@ export const enum InvocationCommandType {
 export interface InvocationCommand<Param, Content> {
   type: InvocationCommandType;
   invocation: Invocation<Param, Content>;
-}
-
-export interface InvocationExecutable<Executable> {
-  type: Executable;
-  src: Executable;
-  id: Executable;
-  params: Executable;
-  autoforward: boolean;
-  content: Executable;
-}
-
-export interface State<Executable> {
-  idx: number;
-  invocations: InvocationExecutable<Executable>[];
-  parent: number;
-  ancestors: number[];
-  completion: number[];
-  descendants: number[];
-  onEnter: Executable[];
-  onExit: Executable[];
-  data: Executable[];
-}
-
-export interface Transition<Executable> {
-  idx: number;
-  onTransition: Executable[];
-}
-
-export interface Document<Executable> {
-  states: State<Executable>[];
-  transitions: Transition<Executable>[];
-}
-
-export interface InterpreterState {
-  configuration: number[];
-  history: number[];
-  initialized: number[];
-  isStable: boolean;
 }

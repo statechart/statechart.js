@@ -1,13 +1,15 @@
 import { Sink, Time } from '@most/types';
-import { Pipe } from '../pipe/index';
 import {
   Configuration,
+  Invocation as InvocationExecutable,
+  Document,
+} from '@statechart/types';
+import { Pipe } from '../pipe/index';
+import {
   Invocation,
   InvocationCommand,
   InvocationCommandType,
-  InvocationExecutable,
   IDatamodel,
-  Document,
 } from '../../types/index';
 
 export class InvocationSink<Data, Executable, Param, Content> extends Pipe<Configuration, InvocationCommand<Param, Content>> {
@@ -35,12 +37,11 @@ export class InvocationSink<Data, Executable, Param, Content> extends Pipe<Confi
       sink,
     } = this;
 
-    for (let i = 0; i < configuration.length; i++) {
+    configuration.forEach((idx) => {
       const {
-        idx,
         invocations,
         ancestors
-      } = states[configuration[i]];
+      } = states[idx];
 
       for (let j = 0; j < invocations.length; j++) {
         const invocation = invocations[j];
@@ -73,7 +74,7 @@ export class InvocationSink<Data, Executable, Param, Content> extends Pipe<Confi
           sink.event(t, { type: InvocationCommandType.OPEN, invocation: inv });
         }
       }
-    }
+    });
 
     activeInvocations.forEach(function(inv, invocation) {
       if (acc.has(invocation)) return;

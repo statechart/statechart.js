@@ -1,4 +1,5 @@
 import { test, TestContext } from 'ava';
+import { StateType } from '@statechart/types';
 import { InvocationSink } from './';
 import { InvocationCommand, InvocationCommandType } from '../../types';
 
@@ -95,6 +96,7 @@ test('invocations', (t) => {
   const document = {
     states: [
       {
+        type: StateType.COMPOUND,
         idx: 0,
         parent: 0,
         ancestors: [],
@@ -113,8 +115,11 @@ test('invocations', (t) => {
         onEnter: [],
         onExit: [],
         data: [],
+        transitions: [],
+        children: [1, 2],
       },
       {
+        type: StateType.ATOMIC,
         idx: 1,
         parent: 0,
         ancestors: [0],
@@ -133,8 +138,11 @@ test('invocations', (t) => {
         onEnter: [],
         onExit: [],
         data: [],
+        transitions: [],
+        children: [],
       },
       {
+        type: StateType.ATOMIC,
         idx: 2,
         parent: 1,
         ancestors: [0],
@@ -153,6 +161,8 @@ test('invocations', (t) => {
         onEnter: [],
         onExit: [],
         data: [],
+        transitions: [],
+        children: [],
       }
     ],
     transitions: []
@@ -160,12 +170,12 @@ test('invocations', (t) => {
 
   const i = new InvocationSink(sink, document, datamodel);
 
-  i.event(0, []);
-  i.event(1, [0]);
-  i.event(2, [0]);
-  i.event(3, [0, 1]);
-  i.event(4, [1]);
-  i.event(5, [1]);
-  i.event(6, [1, 2]);
-  i.event(7, []);
+  i.event(0, new Set([]));
+  i.event(1, new Set([0]));
+  i.event(2, new Set([0]));
+  i.event(3, new Set([0, 1]));
+  i.event(4, new Set([1]));
+  i.event(5, new Set([1]));
+  i.event(6, new Set([1, 2]));
+  i.event(7, new Set([]));
 });

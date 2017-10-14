@@ -1,6 +1,7 @@
 import { test, TestContext } from 'ava';
+import { Configuration, StateType, TransitionType } from '@statechart/types';
 import { MicrostepSink } from './';
-import { IDatamodelSink, Configuration } from '../../types';
+import { IDatamodelSink } from '../../types';
 
 class Sink {
   private t: TestContext;
@@ -51,7 +52,7 @@ test.cb('microstep', (t) => {
 
   sink.event = (time: number, configuration: Configuration) => {
     if (time === 0.5) {
-      t.deepEqual(configuration, [0, 2]);
+      t.deepEqual(configuration, new Set([0, 2]));
       microstep.event(1, {
         name: 'first',
       });
@@ -59,7 +60,7 @@ test.cb('microstep', (t) => {
     }
 
     if (time === 1) {
-      t.deepEqual(configuration, [0, 2]);
+      t.deepEqual(configuration, new Set([0, 2]));
       return;
     }
 
@@ -77,6 +78,7 @@ test.cb('microstep', (t) => {
   const document = {
     states: [
       {
+        type: StateType.COMPOUND,
         idx: 0,
         completion: [1],
         invocations: [],
@@ -86,8 +88,11 @@ test.cb('microstep', (t) => {
         onEnter: [],
         onExit: [],
         data: [],
+        transitions: [],
+        children: [1, 2],
       },
       {
+        type: StateType.ATOMIC,
         idx: 1,
         completion: [],
         invocations: [],
@@ -97,8 +102,11 @@ test.cb('microstep', (t) => {
         onEnter: [],
         onExit: [],
         data: [],
+        transitions: [0],
+        children: [],
       },
       {
+        type: StateType.ATOMIC,
         idx: 2,
         completion: [],
         invocations: [],
@@ -108,11 +116,13 @@ test.cb('microstep', (t) => {
         onEnter: [],
         onExit: [],
         data: [],
+        transitions: [1],
+        children: [],
       },
     ],
     transitions: [
       {
-        type: 'eventless',
+        type: TransitionType.SPONTANEOUS,
         idx: 0,
         source: 1,
         targets: [2],
@@ -124,10 +134,10 @@ test.cb('microstep', (t) => {
             microstep.event(time + 0.5);
           },
         ],
-        events: null,
+        events: undefined,
       },
       {
-        type: 'event',
+        type: TransitionType.EXTERNAL,
         idx: 1,
         source: 2,
         targets: [1],

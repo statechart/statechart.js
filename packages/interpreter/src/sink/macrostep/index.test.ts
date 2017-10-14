@@ -1,6 +1,6 @@
 import { test, TestContext } from 'ava';
+import { Configuration } from '@statechart/types';
 import { MacrostepSink } from './';
-import { Configuration } from '../../types';
 
 class Sink {
   private t: TestContext;
@@ -30,8 +30,8 @@ test('macrostep', (t) => {
   const invocationSink = new Sink(t);
 
   configurationSink.event = (time: number, configuration: Configuration) => {
-    t.deepEqual(configuration, []);
-    if (time === 6) sink.event(6.5, []);
+    t.deepEqual(configuration, new Set());
+    if (time === 6) sink.event(6.5, new Set());
   };
 
   configurationSink.end = (time: number) => {
@@ -42,13 +42,13 @@ test('macrostep', (t) => {
     if (time === 0) return t.true(event.name === 'internal1');
     if (time === 1) {
       t.true(event.name === 'internal2');
-      sink.event(2, []);
+      sink.event(2, new Set());
       return;
     }
     if (time === 2) return t.true(event.name === 'external1');
     if (time === 3) {
       t.true(event.name === 'external2');
-      sink.event(4, []);
+      sink.event(4, new Set());
       return;
     }
     if (time === 5) return t.true(event.name === 'internal3');
@@ -87,17 +87,17 @@ test('macrostep', (t) => {
     name: 'internal2',
   });
 
-  sink.event(0, []);
-  sink.event(1, []);
+  sink.event(0, new Set());
+  sink.event(1, new Set());
   // 2 is triggered inside the event sink
-  sink.event(3, []);
+  sink.event(3, new Set());
   // 4 is triggered inside the event sink
 
   sink.raise(5, {
     name: 'internal3',
   });
 
-  sink.event(6, []);
+  sink.event(6, new Set());
   // 6.5 is triggered inside the configuration sink
 
   sink.error(7, new Error('foo'));
@@ -114,6 +114,6 @@ test('macrostep', (t) => {
     name: 'shouldnt happen',
   });
 
-  sink.event(10, []);
-  sink.event(9, []);
+  sink.event(10, new Set());
+  sink.event(9, new Set());
 });

@@ -1,5 +1,5 @@
 import { Time, Sink } from '@most/types';
-import { IEvent } from '../../types/index';
+import { IEvent, EventType } from '@statechart/types';
 
 export class ExternalEventRouter<Data> implements Sink<IEvent<Data>> {
   private internal: Sink<IEvent<Data>>;
@@ -11,7 +11,7 @@ export class ExternalEventRouter<Data> implements Sink<IEvent<Data>> {
   }
 
   event(t: Time, x: IEvent<Data>) {
-    return x.type === '_internal' ?
+    return x.type === EventType.INTERNAL ?
       this.internal.event(t, x) :
       this.external.event(t, x);
   }

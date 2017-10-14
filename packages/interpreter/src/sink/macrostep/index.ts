@@ -1,5 +1,5 @@
 import { Sink, Time } from '@most/types';
-import { Configuration } from '../../types/index';
+import { Configuration } from '@statechart/types';
 
 export class MacrostepSink<Event> implements Sink<Configuration> {
   private sink: Sink<Event>;

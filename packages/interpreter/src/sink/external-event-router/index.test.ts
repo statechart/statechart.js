@@ -1,4 +1,5 @@
 import { test, TestContext } from 'ava';
+import { EventType } from '@statechart/types';
 import { ExternalEventRouter } from './';
 
 class Sink {
@@ -37,7 +38,7 @@ test.cb('_internal', (t) => {
 
   r.event(0, {
     name: 'event',
-    type: '_internal',
+    type: EventType.INTERNAL,
   });
 });
 
@@ -57,7 +58,7 @@ test.cb('external', (t) => {
 
   r.event(0, {
     name: 'event',
-    type: 'external',
+    type: EventType.EXTERNAL,
   });
 });
 

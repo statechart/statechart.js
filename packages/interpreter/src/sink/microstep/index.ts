@@ -1,6 +1,7 @@
-import { init, handleEvent, synchronize } from '@statechart/interpreter-microstep';
 import { Sink, Time } from '@most/types';
-import { Configuration, Document, IEvent, InterpreterState, IDatamodelSink } from '../../types/index';
+import { init, handleEvent, synchronize } from '@statechart/interpreter-microstep';
+import { Configuration, Document, IEvent, InterpreterState } from '@statechart/types';
+import { IDatamodelSink } from '../../types/index';
 
 type INIT = 0;
 const INIT = 0;
@@ -38,9 +39,9 @@ export class MicrostepSink<Data, Executable> implements Sink<IEvent<Data> | unde
     this.s = INIT;
     this.loop = false;
     this.state = {
-      configuration: [],
-      history: [],
-      initialized: [],
+      configuration: new Set(),
+      history: new Set(),
+      initialized: new Set(),
       isStable: false,
     };
   }
@@ -74,6 +75,9 @@ export class MicrostepSink<Data, Executable> implements Sink<IEvent<Data> | unde
       exec: (x: Executable) => {
         this.loop = false;
         datamodel.exec(t, x);
+      },
+      match: (matcher: ((event: IEvent<Data>) => boolean), event: IEvent<Data>) => {
+        return matcher(event);
       },
     };
 

@@ -1,125 +1,38 @@
-var { init, handleEvent } = require('../');
-var engine = require('@statechart/compiler-engine');
-var Document = require('@statechart/interpreter-document');
-
-function compile(str) {
-  var node = engine.parse(str);
-  return engine.runSync(node);
-}
-
-class Backend {}
-
-function testTransition(str, event, expected) {
-  var backend = {
-    query: function(value) {
-      return value;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const index_1 = require("./sink/external-event-router/index");
+const index_2 = require("./sink/external-event/index");
+const index_3 = require("./sink/internal-event/index");
+const index_4 = require("./sink/invocation/index");
+const index_5 = require("./sink/datamodel/index");
+const index_6 = require("./sink/macrostep/index");
+const index_7 = require("./sink/microstep/index");
+const index_8 = require("./sink/proxy/index");
+class Interpreter {
+    constructor(events, datamodel, document) {
+        this.datamodel = datamodel;
+        this.document = document;
+        this.events = events;
     }
-  };
-  var doc = new Document(compile(str), {
-    ecmascript: {
-      load: function(node) {
-        if (node.type === 'literal') return node.value;
-        return JSON.parse(node.value);
-      },
+    run(eventsSink, invocations, configuration, scheduler) {
+        const { datamodel, document } = this;
+        const invocationSink = new index_4.InvocationSink(invocations, document, datamodel);
+        const datamodelEvent = new index_8.Proxy();
+        const datamodelSink = new index_5.DatamodelSink(datamodelEvent, datamodel, scheduler);
+        const microstepConfiguration = new index_8.Proxy();
+        const microstep = new index_7.MicrostepSink(microstepConfiguration, datamodelSink, document);
+        datamodelEvent.sink = microstep;
+        const macrostep = new index_6.MacrostepSink(microstep, configuration, invocationSink);
+        microstepConfiguration.sink = macrostep;
+        const internalEventSink = new index_3.InternalEventSink(macrostep);
+        const externalEventSink = new index_2.ExternalEventSink(macrostep);
+        datamodel.internalEvents = internalEventSink;
+        datamodel.externalEvents = new index_1.ExternalEventRouter(externalEventSink, eventsSink);
+        const disposable = this.events.run(externalEventSink, scheduler);
+        // initialize the configuration
+        microstep.event(scheduler.currentTime());
+        return disposable;
     }
-  });
-  var interpreter = init(backend, doc);
-  var { configuration } = handleEvent(backend, doc, interpreter, event);
-  expect(configuration).toEqual(expected);
 }
-
-describe('interpreter-microstep', function() {
-  describe('handleEvent', function() {
-    it('should pick the correct states', function() {
-      testTransition(`
-      <scxml datamodel="ecmascript">
-        <state id="s1">
-          <transition event="foo" target="s2" />
-        </state>
-
-        <state id="s2" />
-      </scxml>
-      `, { name: 'foo' }, [0, 2]);
-    });
-
-    it('should pick nested states', function() {
-      testTransition(`
-      <scxml datamodel="ecmascript">
-        <state id="s1">
-          <state id="s1-1">
-            <transition event="bar" target="s2" />
-          </state>
-        </state>
-
-        <state id="s2">
-          <state id="s2-1" />
-        </state>
-      </scxml>
-      `, { name: 'bar' }, [0, 3, 4]);
-    });
-
-    it('should pass on unmatched events', function() {
-      testTransition(`
-      <scxml datamodel="ecmascript">
-        <state id="s1">
-          <transition event="bar" target="s2" />
-        </state>
-
-        <state id="s2" />
-      </scxml>
-      `, { name: 'foo' }, [0, 1]);
-    });
-
-    it('should work with parallel', function() {
-      testTransition(`
-      <scxml version="1.0" datamodel='ecmascript'>
-        <parallel id="p">
-          <state id="top">
-            <state id="top-1">
-              <transition event="top" target="top-2" />
-            </state>
-
-            <state id="top-2">
-              <transition event="top" target="top-1" />
-            </state>
-          </state>
-
-          <state id="bottom">
-            <state id="bottom-1">
-              <transition event="bottom" target="bottom-2" />
-            </state>
-
-            <state id="bottom-2">
-              <transition event="bottom" target="bottom-1" />
-            </state>
-          </state>
-        </parallel>
-      </scxml>
-      `, { name: 'top' }, [0, 1, 2, 4, 5, 6]);
-    });
-
-    it('should skip false conditions', function() {
-      testTransition(`
-      <scxml datamodel="ecmascript">
-        <state id="s1">
-          <transition event="bar" cond="false" target="s2" />
-          <transition event="bar" target="s3" />
-        </state>
-
-        <state id="s2" />
-        <state id="s3" />
-      </scxml>
-      `, { name: 'bar' }, [0, 3]);
-    });
-
-    it('should work with targetless transitions', function() {
-      testTransition(`
-      <scxml datamodel="ecmascript">
-        <state id="s1">
-          <transition event="bar" />
-        </state>
-      </scxml>
-      `, { name: 'bar' }, [0, 1]);
-    });
-  });
-});
+exports.default = Interpreter;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7QUFFQSw4REFBeUU7QUFDekUsdURBQWdFO0FBQ2hFLHVEQUFnRTtBQUNoRSxtREFBeUQ7QUFDekQsa0RBQXVEO0FBQ3ZELGtEQUF1RDtBQUN2RCxrREFBdUQ7QUFDdkQsOENBQTJDO0FBRTNDO0lBS0UsWUFDRSxNQUE0QixFQUM1QixTQUF1QyxFQUN2QyxRQUE4QjtRQUU5QixJQUFJLENBQUMsU0FBUyxHQUFHLFNBQVMsQ0FBQztRQUMzQixJQUFJLENBQUMsUUFBUSxHQUFHLFFBQVEsQ0FBQztRQUN6QixJQUFJLENBQUMsTUFBTSxHQUFHLE1BQU0sQ0FBQztJQUN2QixDQUFDO0lBRUQsR0FBRyxDQUNELFVBQThCLEVBQzlCLFdBQXVELEVBQ3ZELGFBQWtDLEVBQ2xDLFNBQW9CO1FBRXBCLE1BQU0sRUFBRSxTQUFTLEVBQUUsUUFBUSxFQUFFLEdBQUcsSUFBSSxDQUFDO1FBQ3JDLE1BQU0sY0FBYyxHQUFHLElBQUksc0JBQWMsQ0FBQyxXQUFXLEVBQUUsUUFBUSxFQUFFLFNBQVMsQ0FBQyxDQUFDO1FBRTVFLE1BQU0sY0FBYyxHQUFHLElBQUksYUFBSyxFQUFnQixDQUFDO1FBQ2pELE1BQU0sYUFBYSxHQUFHLElBQUkscUJBQWEsQ0FBQyxjQUFjLEVBQUUsU0FBUyxFQUFFLFNBQVMsQ0FBQyxDQUFDO1FBRTlFLE1BQU0sc0JBQXNCLEdBQUcsSUFBSSxhQUFLLEVBQUUsQ0FBQztRQUMzQyxNQUFNLFNBQVMsR0FBRyxJQUFJLHFCQUFhLENBQUMsc0JBQXNCLEVBQUUsYUFBYSxFQUFFLFFBQVEsQ0FBQyxDQUFDO1FBQ3JGLGNBQWMsQ0FBQyxJQUFJLEdBQUcsU0FBUyxDQUFDO1FBRWhDLE1BQU0sU0FBUyxHQUFHLElBQUkscUJBQWEsQ0FBQyxTQUFTLEVBQUUsYUFBYSxFQUFFLGNBQWMsQ0FBQyxDQUFDO1FBQzlFLHNCQUFzQixDQUFDLElBQUksR0FBRyxTQUFTLENBQUM7UUFFeEMsTUFBTSxpQkFBaUIsR0FBRyxJQUFJLHlCQUFpQixDQUFDLFNBQVMsQ0FBQyxDQUFDO1FBQzNELE1BQU0saUJBQWlCLEdBQUcsSUFBSSx5QkFBaUIsQ0FBQyxTQUFTLENBQUMsQ0FBQztRQUUzRCxTQUFTLENBQUMsY0FBYyxHQUFHLGlCQUFpQixDQUFDO1FBQzdDLFNBQVMsQ0FBQyxjQUFjLEdBQUcsSUFBSSwyQkFBbUIsQ0FBQyxpQkFBaUIsRUFBRSxVQUFVLENBQUMsQ0FBQztRQUVsRixNQUFNLFVBQVUsR0FBRyxJQUFJLENBQUMsTUFBTSxDQUFDLEdBQUcsQ0FBQyxpQkFBaUIsRUFBRSxTQUFTLENBQUMsQ0FBQztRQUVqRSwrQkFBK0I7UUFDL0IsU0FBUyxDQUFDLEtBQUssQ0FBQyxTQUFTLENBQUMsV0FBVyxFQUFFLENBQUMsQ0FBQztRQUV6QyxNQUFNLENBQUMsVUFBVSxDQUFDO0lBQ3BCLENBQUM7Q0FDRjtBQS9DRCw4QkErQ0MifQ==
