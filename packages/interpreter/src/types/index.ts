@@ -4,17 +4,6 @@ import {
   IEvent,
 } from '@statechart/types';
 
-export interface IDatamodel<Data, Executable> {
-  internalEvents: Sink<IEvent<Data>>;
-  externalEvents: Sink<IEvent<Data>>;
-  exec(executable: Executable): Promise<any>;
-  error(error: Error): void;
-  query(executable: Executable): any;
-  end(): void;
-  setEvent(event: any): void;
-  setConfiguration(configuration: Configuration): void;
-}
-
 export interface IDatamodelSink<Data, Executable> extends Sink<IEvent<Data> | undefined> {
   configuration(t: Time, x: Configuration): any;
   exec(t: Time, x: Executable): any;

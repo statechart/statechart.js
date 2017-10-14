@@ -1,15 +1,15 @@
 import { Sink, Time } from '@most/types';
 import {
   Configuration,
-  Invocation as InvocationExecutable,
   Document,
+  IDatamodel,
+  Invocation as InvocationExecutable,
 } from '@statechart/types';
 import { Pipe } from '../pipe/index';
 import {
   Invocation,
   InvocationCommand,
   InvocationCommandType,
-  IDatamodel,
 } from '../../types/index';
 
 export class InvocationSink<Data, Executable, Param, Content> extends Pipe<Configuration, InvocationCommand<Param, Content>> {

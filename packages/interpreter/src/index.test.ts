@@ -1,10 +1,9 @@
 import { test, TestContext } from 'ava';
 import { Sink as ISink } from '@most/types';
 import { newDefaultScheduler } from '@most/scheduler';
-import { Configuration, IEvent, StateType, TransitionType } from '@statechart/types';
+import { Configuration, IDatamodel, IEvent, StateType, TransitionType } from '@statechart/types';
 import { toArray } from '@statechart/util-set';
 import Interpreter from './';
-import { IDatamodel } from './types';
 
 class Sink {
   private t: TestContext;

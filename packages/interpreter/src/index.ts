@@ -1,6 +1,6 @@
 import { Disposable, Scheduler, Sink, Stream } from '@most/types';
-import { Configuration, Document, IEvent } from '@statechart/types';
-import { IDatamodel, InvocationCommand } from './types/index';
+import { Configuration, Document, IDatamodel, IEvent } from '@statechart/types';
+import { InvocationCommand } from './types/index';
 import { ExternalEventRouter } from './sink/external-event-router/index';
 import { ExternalEventSink } from './sink/external-event/index';
 import { InternalEventSink } from './sink/internal-event/index';

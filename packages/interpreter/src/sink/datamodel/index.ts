@@ -1,7 +1,7 @@
 import { Sink, Scheduler, Time } from '@most/types';
-import { Configuration, IEvent } from '@statechart/types';
+import { Configuration, IDatamodel, IEvent } from '@statechart/types';
 import { PromiseQueue } from '../../promise-queue/index';
-import { IDatamodel, IDatamodelSink } from '../../types/index';
+import { IDatamodelSink } from '../../types/index';
 
 export class DatamodelSink<Data, Executable> implements IDatamodelSink<Data, Executable> {
   public datamodel: IDatamodel<Data, Executable>;

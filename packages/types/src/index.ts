@@ -1,3 +1,5 @@
+import { Sink } from '@most/types';
+
 export const enum EventType {
   INTERNAL = '_internal',
   EXTERNAL = 'external',
@@ -88,4 +90,15 @@ export interface Transition<Executable> {
 export interface Document<Executable> {
   states: State<Executable>[];
   transitions: Transition<Executable>[];
+}
+
+export interface IDatamodel<Data, Executable> {
+  internalEvents: Sink<IEvent<Data>>;
+  externalEvents: Sink<IEvent<Data>>;
+  exec(executable: Executable): Promise<any>;
+  error(error: Error): void;
+  query(executable: Executable): any;
+  end(): void;
+  setEvent(event: any): void;
+  setConfiguration(configuration: Configuration): void;
 }
