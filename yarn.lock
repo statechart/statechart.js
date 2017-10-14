@@ -106,19 +106,6 @@
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@sindresorhus/df/-/df-1.0.1.tgz#c69b66f52f6fcdd287c807df210305dbaf78500d"
 
-"@statechart/interpreter-microstep@^0.1.45":
-  version "0.1.45"
-  resolved "https://registry.yarnpkg.com/@statechart/interpreter-microstep/-/interpreter-microstep-0.1.45.tgz#f856169643b27b041c9c6352182908c003ac218f"
-  dependencies:
-    "@statechart/util-set" "^0.1.44"
-    babel-runtime "^6.23.0"
-
-"@statechart/util-set@^0.1.44":
-  version "0.1.44"
-  resolved "https://registry.yarnpkg.com/@statechart/util-set/-/util-set-0.1.44.tgz#afae2020bedaaf7d43689d65bb91ea2df1700ee4"
-  dependencies:
-    babel-runtime "^6.23.0"
-
 "@types/fs-extra@^4.0.0":
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-4.0.2.tgz#7b9b1bbf85962cbe029b5a83c9b530d7c75af3ba"

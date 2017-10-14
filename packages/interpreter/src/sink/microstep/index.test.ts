@@ -1,5 +1,6 @@
 import { test, TestContext } from 'ava';
 import { Configuration, StateType, TransitionType } from '@statechart/types';
+import { toArray } from '@statechart/util-set';
 import { MicrostepSink } from './';
 import { IDatamodelSink } from '../../types';
 
@@ -52,7 +53,7 @@ test.cb('microstep', (t) => {
 
   sink.event = (time: number, configuration: Configuration) => {
     if (time === 0.5) {
-      t.deepEqual(configuration, new Set([0, 2]));
+      t.deepEqual(toArray(configuration), [0, 2]);
       microstep.event(1, {
         name: 'first',
       });
@@ -60,7 +61,7 @@ test.cb('microstep', (t) => {
     }
 
     if (time === 1) {
-      t.deepEqual(configuration, new Set([0, 2]));
+      t.deepEqual(toArray(configuration), [0, 2]);
       return;
     }
 

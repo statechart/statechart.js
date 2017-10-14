@@ -2,6 +2,7 @@ import { test, TestContext } from 'ava';
 import { Sink as ISink } from '@most/types';
 import { newDefaultScheduler } from '@most/scheduler';
 import { Configuration, IEvent, StateType, TransitionType } from '@statechart/types';
+import { toArray } from '@statechart/util-set';
 import Interpreter from './';
 import { IDatamodel } from './types';
 
@@ -32,7 +33,7 @@ class Datamodel<Data> implements IDatamodel<Data, Executable> {
 
   private d: any;
   private context: any;
-  private configuration: Set<number>;
+  private configuration: Configuration;
   private scheduler: any;
 
   constructor(scheduler: any) {
@@ -73,7 +74,7 @@ class Datamodel<Data> implements IDatamodel<Data, Executable> {
   }
 
   setConfiguration(configuration: Configuration) {
-    this.configuration = new Set(configuration);
+    this.configuration = configuration;
   }
 }
 
@@ -204,13 +205,13 @@ test.cb('interpreter', (t) => {
   configurationSink.event = (_time: number, configuration: Configuration) => {
     switch (i++) {
       case 0:
-        t.deepEqual(configuration, new Set([0, 1]));
+        t.deepEqual(toArray(configuration), [0, 1]);
         break;
       case 1:
-        t.deepEqual(configuration, new Set([0, 2]));
+        t.deepEqual(toArray(configuration), [0, 2]);
         break;
       case 2:
-        t.deepEqual(configuration, new Set([0, 1]));
+        t.deepEqual(toArray(configuration), [0, 1]);
         t.end();
         break;
       default:

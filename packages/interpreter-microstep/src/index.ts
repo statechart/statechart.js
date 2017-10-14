@@ -28,7 +28,7 @@ export const synchronize = selectTransitions;
 function initialState() {
   return {
     configuration: new Set(),
-    history: [],
+    history: new Set(),
     initialized: new Set(),
     isStable: false,
   };
