@@ -74,14 +74,14 @@ function isTransitionConflictFree<Executable>(
 }
 
 function isTransitionApplicable<Data, Executable>(
-  { events }: Transition<Executable>,
+  { event: matcher }: Transition<Executable>,
   event: IEvent<Data> | undefined,
   backend: Backend<Data, Executable>,
 ) {
-  const hasEvents = typeof events !== 'undefined';
+  const hasEvents = typeof matcher !== 'undefined';
   const hasEvent = typeof event !== 'undefined';
   if (!hasEvents && !hasEvent) return true;
-  if (hasEvents && hasEvent) return backend.match(events, event as IEvent<Data>);
+  if (hasEvents && hasEvent) return backend.match(matcher, event as IEvent<Data>);
   return false;
 }
 

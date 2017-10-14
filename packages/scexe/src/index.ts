@@ -18,7 +18,7 @@ export const enum StateType {
 
 export interface State<Executable> {
   type: StateType;
-  idx?: number;
+  idx: number;
   id?: string;
   onInit: Executable[];
   onEnter: Executable[];
