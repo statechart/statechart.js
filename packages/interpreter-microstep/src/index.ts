@@ -1,7 +1,7 @@
 import { establishEntryset } from './entryset';
 import { selectTransitions } from './transition';
 import { Document } from '@statechart/scexe';
-import { Backend, Configuration, InterpreterState } from './types';
+import { Backend, Configuration, InterpreterState, IdxSet } from './types';
 
 export { Backend, Configuration, InterpreterState };
 
@@ -22,11 +22,11 @@ export function init<Event, Executable>(
 export const handleEvent = selectTransitions;
 export const synchronize = selectTransitions;
 
-function initialState() {
+function initialState(): InterpreterState {
   return {
-    configuration: new Set(),
-    history: new Set(),
-    initialized: new Set(),
+    configuration: new Set() as Configuration,
+    history: new Set() as IdxSet,
+    initialized: new Set() as IdxSet,
     isStable: false,
   };
 }

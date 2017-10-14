@@ -1,17 +1,17 @@
 import { test } from 'ava';
-import { Proxy } from './';
+import { ProxySink } from './';
 
 test('internal events', (t) => {
   t.plan(4);
 
-  const p = new Proxy();
+  const p = new ProxySink();
 
   p.sink = {
     event(time: number, b: boolean) {
       t.true(time === 0);
       t.true(b);
     },
-    error(time: number, _e: Error) {
+    error(time: number, _E: Error) {
       t.true(time === 1);
     },
     end(time: number) {

@@ -1,11 +1,10 @@
 import { test, TestContext } from 'ava';
 import { Sink as ISink } from '@most/types';
 import { newDefaultScheduler } from '@most/scheduler';
-import { Configuration } from '@statechart/interpreter-microstep';
 import { IDatamodel } from '@statechart/types';
 import { StateType, TransitionType } from '@statechart/scexe';
 import { toArray } from '@statechart/util-set';
-import { Interpreter, Event } from './';
+import { Interpreter, Configuration } from './';
 
 class Sink {
   private t: TestContext;
@@ -14,19 +13,20 @@ class Sink {
     this.t = t;
   }
 
-  event(_t: number, _b: any) {
+  event(_T: number, _B: any) {
     this.t.fail();
   }
 
-  end(_t: number) {
+  end(_T: number) {
     this.t.fail();
   }
 
-  error(_t: number, _e: Error) {
+  error(_T: number, _E: Error) {
     this.t.fail();
   }
 }
 
+type Event = { name: string };
 type Executable = (d: any, context: any) => any;
 class Datamodel implements IDatamodel<Configuration, Event, Executable> {
   public internalEvents: ISink<Event>;
@@ -58,7 +58,7 @@ class Datamodel implements IDatamodel<Configuration, Event, Executable> {
     return executable(this.d, this.context);
   }
 
-  error(_error: Error) {
+  error(_E: Error) {
 
   }
 
@@ -83,7 +83,7 @@ class Stream<V> {
   sink: any;
   isRunning: boolean;
 
-  run(sink: any, _scheduler: any) {
+  run(sink: any, _S: any) {
     this.isRunning = true;
     this.sink = sink;
     return {
@@ -156,7 +156,7 @@ test.cb('interpreter', (t) => {
         type: TransitionType.EXTERNAL,
         idx: 0,
         onTransition: [
-          (_data: any, { raise }: any) => raise('internal_first'),
+          (_D: any, { raise }: any) => raise('internal_first'),
           () => Promise.resolve(true),
         ],
         source: 1,
@@ -195,7 +195,7 @@ test.cb('interpreter', (t) => {
         exits: [2],
         onTransition: [],
         events: ({ name }: any) => name === 'third',
-      }
+      },
     ],
   };
 
@@ -206,8 +206,8 @@ test.cb('interpreter', (t) => {
   const configurationSink = new Sink(t);
 
   let i = 0;
-  configurationSink.event = (_time: number, configuration: Configuration) => {
-    switch (i++) {
+  configurationSink.event = (_T: number, configuration: Configuration) => {
+    switch (i++) { // tslint:disable-line
       case 0:
         t.deepEqual(toArray(configuration), [0, 1]);
         break;
@@ -233,9 +233,12 @@ test.cb('interpreter', (t) => {
     name: 'second',
   });
 
-  setTimeout(() => {
-    inputEvents.push(scheduler.currentTime(), {
-      name: 'third',
-    });
-  }, 1);
+  setTimeout(
+    () => {
+      inputEvents.push(scheduler.currentTime(), {
+        name: 'third',
+      });
+    },
+    1,
+  );
 });

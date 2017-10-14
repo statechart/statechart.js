@@ -10,13 +10,30 @@ import {
   Invocation as InvocationExecutable,
 } from '@statechart/scexe';
 import { Pipe } from '../pipe/index';
-import {
-  Invocation,
-  InvocationCommand,
-  InvocationCommandType,
-} from '../../types/index';
 
-export class InvocationSink<Event, Executable, Content> extends Pipe<Configuration, InvocationCommand<Content>> {
+export interface Invocation<Content> {
+  idx: number;
+  type: string;
+  src: string;
+  id: string;
+  autoforward: boolean;
+  content: Content;
+  source: number;
+  depth: number;
+}
+
+export const enum InvocationCommandType {
+  OPEN = 0,
+  CLOSE = 1,
+}
+
+export interface InvocationCommand<Content> {
+  type: InvocationCommandType;
+  invocation: Invocation<Content>;
+}
+
+export class InvocationSink<Event, Executable, Content>
+    extends Pipe<Configuration, InvocationCommand<Content>> {
   private document: Document<Executable>;
   private active: Map<InvocationExecutable<Executable>, Invocation<Content>>;
   private datamodel: IDatamodel<Configuration, Event, Executable>;
@@ -24,7 +41,7 @@ export class InvocationSink<Event, Executable, Content> extends Pipe<Configurati
   constructor(
     sink: Sink<InvocationCommand<Content>>,
     document: Document<Executable>,
-    datamodel: IDatamodel<Configuration, Event, Executable>
+    datamodel: IDatamodel<Configuration, Event, Executable>,
   ) {
     super(sink);
     this.document = document;
@@ -44,10 +61,10 @@ export class InvocationSink<Event, Executable, Content> extends Pipe<Configurati
     configuration.forEach((idx) => {
       const {
         invocations,
-        ancestors
+        ancestors,
       } = states[idx];
 
-      for (let j = 0; j < invocations.length; j++) {
+      for (let j = 0; j < invocations.length; j++) { // tslint:disable-line
         const invocation = invocations[j];
 
         const prev = activeInvocations.get(invocation);
@@ -79,7 +96,7 @@ export class InvocationSink<Event, Executable, Content> extends Pipe<Configurati
       }
     });
 
-    activeInvocations.forEach(function(inv, invocation) {
+    activeInvocations.forEach((inv, invocation) => {
       if (acc.has(invocation)) return;
       sink.event(t, { type: InvocationCommandType.CLOSE, invocation: inv });
     });

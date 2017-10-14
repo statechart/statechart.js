@@ -14,7 +14,7 @@ export type Invocation = Invocation<Uint8Array>;
 export {
   StateType,
   TransitionType,
-}
+};
 
 export const state = [
   StateType.COMPOUND,

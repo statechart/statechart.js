@@ -1,7 +1,6 @@
 import { test, TestContext } from 'ava';
 import { StateType } from '@statechart/scexe';
-import { InvocationSink } from './';
-import { InvocationCommand, InvocationCommandType } from '../../types';
+import { InvocationSink, InvocationCommand, InvocationCommandType } from './';
 
 class Datamodel {
   public internalEvents: any;
@@ -49,15 +48,15 @@ class Sink {
     this.t = t;
   }
 
-  event(_t: number, _b: any) {
+  event(_T: number, _B: any) {
     this.t.fail();
   }
 
-  end(_t: number) {
+  end(_T: number) {
     this.t.fail();
   }
 
-  error(_t: number, _e: Error) {
+  error(_T: number, _E: Error) {
     this.t.fail();
   }
 }
@@ -86,11 +85,11 @@ test('invocations', (t) => {
     }
   };
 
-  sink.error = (time: number, _error: Error) => {
+  sink.error = (time: number, _E: Error) => {
     t.true(time === 6);
   };
 
-  const throwError = () => { throw new Error() };
+  const throwError = () => { throw new Error(); };
 
   const datamodel = new Datamodel();
   const document = {
@@ -109,7 +108,7 @@ test('invocations', (t) => {
             autoforward: false,
             content: () => 'content0',
             onExit: [],
-          }
+          },
         ],
         completion: [1],
         descendants: [1, 2],
@@ -134,7 +133,7 @@ test('invocations', (t) => {
             autoforward: false,
             content: () => 'content1',
             onExit: [],
-          }
+          },
         ],
         completion: [],
         descendants: [],
@@ -159,7 +158,7 @@ test('invocations', (t) => {
             autoforward: false,
             content: throwError,
             onExit: [],
-          }
+          },
         ],
         completion: [],
         descendants: [],
@@ -169,9 +168,9 @@ test('invocations', (t) => {
         hasHistory: false,
         transitions: [],
         children: [],
-      }
+      },
     ],
-    transitions: []
+    transitions: [],
   };
 
   const i = new InvocationSink(sink, document, datamodel);

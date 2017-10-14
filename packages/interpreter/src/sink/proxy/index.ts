@@ -1,6 +1,6 @@
 import { Sink, Time } from '@most/types';
 
-export class Proxy<Event> implements Sink<Event> {
+export class ProxySink<Event> implements Sink<Event> {
   public sink: Sink<Event>;
 
   event(t: Time, x: Event) {

@@ -1,5 +1,11 @@
 import { Sink, Time } from '@most/types';
-import { init, handleEvent, synchronize, Configuration, InterpreterState } from '@statechart/interpreter-microstep';
+import {
+  init,
+  handleEvent,
+  synchronize,
+  Configuration,
+  InterpreterState,
+} from '@statechart/interpreter-microstep';
 import { Document } from '@statechart/scexe';
 
 type INIT = 0;
@@ -24,7 +30,7 @@ export interface IDatamodelSink<Event, Executable> extends Sink<Event | undefine
 }
 
 export class MicrostepSink<Event, Executable> implements Sink<Event | undefined> {
-  private document: Document<Executable>
+  private document: Document<Executable>;
   private sink: Sink<Configuration>;
   private datamodel: IDatamodelSink<Event, Executable>;
   private s: State;
@@ -86,14 +92,14 @@ export class MicrostepSink<Event, Executable> implements Sink<Event | undefined>
       },
     };
 
-    while(this.loop) {
+    while (this.loop) {
       const { microstepTime: t, microstepEvent, state } = this;
       const { configuration } = state;
 
       datamodel.event(t as number, microstepEvent);
       datamodel.configuration(t as number, configuration);
 
-      switch(this.s) {
+      switch (this.s) {
         case INIT:
           this.s = STABILIZE;
           this.state = init(backend, document);
