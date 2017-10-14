@@ -13,6 +13,7 @@
     "build:mjs": "tsc -p tsconfig.json",
     "build:lib": "tsc -p tsconfig.lib.json",
     "build:dist": "rollup -c",
+    "generate": "pbjs --target static-module -o statechart.proto.js -w es6 --es6 --no-create --no-verify --no-convert --no-delimited statechart.proto",
     "lint": "tslint --project . --type-check src/**/*.ts",
     "unit": "yarn build && nyc ava",
     "check-coverage": "nyc check-coverage --lines 100 --functions 100 --branches 100",
@@ -66,9 +67,9 @@
     ]
   },
   "dependencies": {
+    "@statechart/scexe": "^0.1.45",
     "@statechart/scpb-bitset": "^0.1.45",
-    "@statechart/types": "^0.1.45",
-    "protobufjs": "^6.7.3",
+    "protobufjs": "^6.8.0",
     "tslib": "^1.6.0"
   }
 }

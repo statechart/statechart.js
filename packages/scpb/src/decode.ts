@@ -1,124 +1,136 @@
 import { Reader as $Reader } from 'protobufjs/minimal';
 import { decode as decodeBitset } from '@statechart/scpb-bitset';
 import {
-  state as stateTypes,
-  transition as transitionTypes,
-  expression as expressionTypes,
   Document,
   State,
   Transition,
   Invocation,
-  Expression,
-  Data,
+  StateType,
+  TransitionType,
+  state as stateTypes,
+  transition as transitionTypes,
 } from './types';
 
 export function decode(reader: $Reader, length?: number): Document {
   if (!(reader instanceof $Reader))
     reader = $Reader.create(reader);
 
-  let end = length === undefined ? reader.len : reader.pos + length;
-  let message = {
+  const end = length === undefined ? reader.len : reader.pos + length;
+  const document = {
     states: [],
     transitions: [],
     meta: {},
   } as Document;
 
   while (reader.pos < end) {
-    let tag = reader.uint32();
+    const tag = reader.uint32();
     switch (tag >>> 3) {
     case 1:
-      message.name = reader.string();
+      document.name = reader.string();
       break;
     case 2:
-      message.states.push(decodeState(reader, reader.uint32()));
+      document.states.push(decodeState(reader, reader.uint32()));
       break;
     case 3:
-      message.transitions.push(decodeTransition(reader, reader.uint32()));
+      document.transitions.push(decodeTransition(reader, reader.uint32()));
       break;
     case 4:
-      message.datamodel = reader.string();
+      document.datamodel = reader.string();
       break;
     case 5:
       reader.skip().pos++;
-      let key = reader.string();
+      const key = reader.string();
       reader.pos++;
-      (message.meta as any)[key] = reader.string();
+      (document.meta as any)[key] = reader.string();
       break;
     default:
       reader.skipType(tag & 7);
       break;
     }
   }
-  return message;
+  return document;
 }
 
 function decodeState(reader: $Reader, length?: number): State {
-  let end = length === undefined ? reader.len : reader.pos + length;
-  let message = {
+  const end = length === undefined ? reader.len : reader.pos + length;
+  const state = {
+    type: StateType.ATOMIC,
+    idx: -1,
+    onInit: [],
     onEnter: [],
     onExit: [],
     invocations: [],
-    data: [],
+    parent: -1,
+    children: [],
+    ancestors: [],
+    completion: [],
+    transitions: [],
+    hasHistory: false,
   } as State;
 
   while (reader.pos < end) {
     let tag = reader.uint32();
     switch (tag >>> 3) {
     case 1:
-      message.type = stateTypes[reader.uint32()];
+      state.type = stateTypes[reader.uint32()];
       break;
     case 2:
-      message.idx = reader.uint32();
+      state.idx = reader.uint32();
       break;
     case 3:
-      message.id = reader.string();
+      state.id = reader.string();
       break;
     case 4:
-      message.onEnter.push(decodeExpression(reader, reader.uint32()));
+      state.onInit.push(reader.bytes());
       break;
     case 5:
-      message.onExit.push(decodeExpression(reader, reader.uint32()));
+      state.onEnter.push(reader.bytes());
       break;
     case 6:
-      message.invocations.push(decodeInvocation(reader, reader.uint32()));
+      state.onExit.push(reader.bytes());
       break;
     case 7:
-      message.data.push(decodeData(reader, reader.uint32()));
+      state.invocations.push(decodeInvocation(reader, reader.uint32()));
       break;
     case 8:
-      message.parent = reader.uint32();
+      state.parent = reader.uint32();
       break;
     case 9:
-      message.children = decodeBitset(reader.bytes());
+      state.children = decodeBitset(reader.bytes());
       break;
     case 10:
-      message.ancestors = decodeBitset(reader.bytes());
+      state.ancestors = decodeBitset(reader.bytes());
       break;
     case 11:
-      message.completion = decodeBitset(reader.bytes());
+      state.completion = decodeBitset(reader.bytes());
       break;
     case 12:
-      message.transitions = decodeBitset(reader.bytes());
+      state.transitions = decodeBitset(reader.bytes());
       break;
     case 13:
-      message.hasHistory = reader.bool();
+      state.hasHistory = reader.bool();
       break;
     case 14:
-      message.name = reader.string();
+      state.name = reader.string();
       break;
     default:
       reader.skipType(tag & 7);
       break;
     }
   }
-  return message;
+  return state;
 }
 
 function decodeTransition(reader: $Reader, length?: number): Transition {
   let end = length === undefined ? reader.len : reader.pos + length;
   let message = {
-    events: [],
+    type: TransitionType.EXTERNAL,
+    idx: -1,
+    source: -1,
     onTransition: [],
+    targets: [],
+    conflicts: [],
+    exits: [],
   } as Transition;
 
   while (reader.pos < end) {
@@ -134,13 +146,13 @@ function decodeTransition(reader: $Reader, length?: number): Transition {
       message.source = reader.uint32();
       break;
     case 4:
-      (message.events as any).push(reader.string());
+      message.event = reader.bytes();
       break;
     case 5:
-      message.condition = decodeExpression(reader, reader.uint32());
+      message.condition = reader.bytes();
       break;
     case 6:
-      message.onTransition.push(decodeExpression(reader, reader.uint32()));
+      message.onTransition.push(reader.bytes());
       break;
     case 7:
       message.targets = decodeBitset(reader.bytes());
@@ -162,94 +174,38 @@ function decodeTransition(reader: $Reader, length?: number): Transition {
   return message;
 }
 
-function decodeExpression(reader: $Reader, length?: number) {
-  let end = length === undefined ? reader.len : reader.pos + length;
-  let message = {
-    children: [],
-  } as Expression;
-
-  while (reader.pos < end) {
-    let tag = reader.uint32();
-    switch (tag >>> 3) {
-    case 1:
-      message.type = expressionTypes[reader.uint32()];
-      break;
-    case 2:
-      message.value = reader.string();
-      break;
-    case 3:
-      reader.skip().pos++;
-      if (!message.props)
-        message.props = {};
-      let key = reader.string();
-      reader.pos++;
-      message.props[key] = decodeExpression(reader, reader.uint32());
-      break;
-    case 4:
-      message.children.push(decodeExpression(reader, reader.uint32()));
-      break;
-    default:
-      reader.skipType(tag & 7);
-      break;
-    }
-  }
-  return message;
-}
-
+const emptyBytes = new Uint8Array(0);
 function decodeInvocation(reader: $Reader, length?: number) {
   let end = length === undefined ? reader.len : reader.pos + length;
   let message = {
-    params: [],
+    type: emptyBytes,
+    src: emptyBytes,
+    id: emptyBytes,
+    content: emptyBytes,
     onExit: [],
+    autoforward: false,
   } as Invocation;
 
   while (reader.pos < end) {
     let tag = reader.uint32();
     switch (tag >>> 3) {
     case 1:
-      message.type = decodeExpression(reader, reader.uint32());
+      message.type = reader.bytes();
       break;
     case 2:
-      message.src = decodeExpression(reader, reader.uint32());
+      message.src = reader.bytes();
       break;
     case 3:
-      message.id = decodeExpression(reader, reader.uint32());
+      message.id = reader.bytes();
       break;
     case 4:
-      message.params.push(decodeExpression(reader, reader.uint32()));
+      message.content = reader.bytes();
       break;
     case 5:
-      message.content = decodeExpression(reader, reader.uint32());
+      message.onExit.push(reader.bytes());
       break;
     case 6:
-      message.onExit.push(decodeExpression(reader, reader.uint32()));
-      break;
-    case 7:
       message.autoforward = reader.bool();
-      break;
-    default:
-      reader.skipType(tag & 7);
-      break;
-    }
-  }
-  return message;
-}
-
-function decodeData(reader: $Reader, length?: number) {
-  let end = length === undefined ? reader.len : reader.pos + length;
-  let message = {} as Data;
-
-  while (reader.pos < end) {
-    let tag = reader.uint32();
-    switch (tag >>> 3) {
-    case 1:
-      message.id = reader.string();
-      break;
-    case 2:
-      message.value = decodeExpression(reader, reader.uint32());
-      break;
-    case 3:
-      message.src = reader.string();
       break;
     default:
       reader.skipType(tag & 7);

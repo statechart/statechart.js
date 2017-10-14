@@ -48,14 +48,14 @@ function loadTransition<From, To>(
 ): Transition<To> {
   const {
     onTransition = [],
-    events,
+    event,
     condition,
   } = transition;
 
   return {
     ...transition,
     onTransition: onTransition.map(transformer),
-    events: safeLoad(events, transformer),
+    event: safeLoad(event, transformer),
     condition: safeLoad(condition, transformer),
   };
 }

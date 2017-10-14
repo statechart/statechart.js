@@ -4,6 +4,7 @@
 /mjs
 /test
 /src/**.js
+/statechart.proto.js
 
 /doc
 /coverage

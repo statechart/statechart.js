@@ -1,10 +1,9 @@
-export interface Invocation<Executable> {
-  type: Executable;
-  src: Executable;
-  id: Executable;
-  autoforward: boolean;
-  content: Executable;
-  onExit: Executable[];
+export interface Document<Executable> {
+  name?: string;
+  states: State<Executable>[];
+  transitions: Transition<Executable>[];
+  datamodel?: string;
+  meta?: { [s: string]: string };
 }
 
 export const enum StateType {
@@ -18,19 +17,18 @@ export const enum StateType {
 }
 
 export interface State<Executable> {
-  id?: string;
-  idx: number;
   type: StateType;
-  invocations: Invocation<Executable>[];
-  parent: number;
-  ancestors: number[];
-  completion: number[];
-  descendants: number[];
+  idx?: number;
+  id?: string;
   onInit: Executable[];
   onEnter: Executable[];
   onExit: Executable[];
-  transitions: number[];
+  invocations: Invocation<Executable>[];
+  parent: number;
   children: number[];
+  ancestors: number[];
+  completion: number[];
+  transitions: number[];
   hasHistory: boolean;
   name?: string;
 }
@@ -45,22 +43,23 @@ export const enum TransitionType {
 }
 
 export interface Transition<Executable> {
-  idx: number;
   type: TransitionType;
-  onTransition: Executable[];
+  idx: number;
   source: number;
-  events?: Executable;
+  event?: Executable;
   condition?: Executable;
+  onTransition: Executable[];
   targets: number[];
   conflicts: number[];
   exits: number[];
   name?: string;
 }
 
-export interface Document<Executable> {
-  name?: string;
-  states: State<Executable>[];
-  transitions: Transition<Executable>[];
-  datamodel?: string;
-  meta?: { [s: string]: string };
+export interface Invocation<Executable> {
+  type: Executable;
+  src: Executable;
+  id: Executable;
+  autoforward: boolean;
+  content: Executable;
+  onExit: Executable[];
 }

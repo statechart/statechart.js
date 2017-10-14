@@ -23,10 +23,10 @@ message State {
   Type type = 1;
   uint32 idx = 2;
   string id = 3;
-  repeated Expression on_enter = 4;
-  repeated Expression on_exit = 5;
-  repeated Invocation invocations = 6;
-  repeated Data data = 7;
+  repeated bytes on_init = 4;
+  repeated bytes on_enter = 5;
+  repeated bytes on_exit = 6;
+  repeated Invocation invocations = 7;
   uint32 parent = 8;
   bytes children = 9;
   bytes ancestors = 10;
@@ -48,52 +48,20 @@ message Transition {
   Type type = 1;
   uint32 idx = 2;
   uint32 source = 3;
-  repeated string events = 4;
-  Expression condition = 5;
-  repeated Expression on_transition = 6;
+  bytes event = 4;
+  bytes condition = 5;
+  repeated bytes on_transition = 6;
   bytes targets = 7;
   bytes conflicts = 8;
   bytes exits = 9;
   string name = 10;
 }
 
-message Expression {
-  enum Type {
-    raise = 0;
-    cond = 1;
-    clause = 2;
-    foreach = 3;
-    log = 4;
-    assign = 5;
-    param = 6;
-    script = 7;
-    send = 8;
-    cancel = 9;
-    expr = 10;
-    literal = 11;
-    location = 12;
-    script_ext = 13;
-    eval = 14;
-  }
-
-  Type type = 1;
-  string value = 2;
-  map<string, Expression> props = 3;
-  repeated Expression children = 4;
-}
-
 message Invocation {
-  Expression type = 1;
-  Expression src = 2;
-  Expression id = 3;
-  repeated Expression params = 4;
-  Expression content = 5;
-  repeated Expression on_exit = 6;
-  bool autoforward = 7;
-}
-
-message Data {
-  string id = 1;
-  Expression value = 2;
-  string src = 3;
+  bytes type = 1;
+  bytes src = 2;
+  bytes id = 3;
+  bytes content = 4;
+  repeated bytes on_exit = 5;
+  bool autoforward = 6;
 }
