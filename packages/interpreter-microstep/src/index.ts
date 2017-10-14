@@ -2,9 +2,11 @@ import { establishEntryset } from './entryset';
 import { selectTransitions } from './transition';
 import {
   Backend,
-  Document,
   InterpreterState,
 } from '@statechart/types';
+import {
+  Document,
+} from '@statechart/scexe';
 
 export { InterpreterState };
 

@@ -1,14 +1,16 @@
 import { union, intersection, difference } from '@statechart/util-set';
 import {
   Backend,
-  Document,
   InterpreterState,
   IdxSet,
   IEvent,
+} from '@statechart/types';
+import {
+  Document,
   Transition,
   TransitionType,
   StateType,
-} from '@statechart/types';
+} from '@statechart/scexe';
 import { establishEntryset } from './entryset';
 
 export function selectTransitions<Data, Executable>(

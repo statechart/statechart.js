@@ -1,10 +1,12 @@
 import { Sink, Time } from '@most/types';
 import {
   Configuration,
-  Document,
   IDatamodel,
-  Invocation as InvocationExecutable,
 } from '@statechart/types';
+import {
+  Document,
+  Invocation as InvocationExecutable,
+} from '@statechart/scexe';
 import { Pipe } from '../pipe/index';
 import {
   Invocation,
@@ -12,13 +14,13 @@ import {
   InvocationCommandType,
 } from '../../types/index';
 
-export class InvocationSink<Data, Executable, Param, Content> extends Pipe<Configuration, InvocationCommand<Param, Content>> {
+export class InvocationSink<Data, Executable, Content> extends Pipe<Configuration, InvocationCommand<Content>> {
   private document: Document<Executable>;
-  private active: Map<InvocationExecutable<Executable>, Invocation<Param, Content>>;
+  private active: Map<InvocationExecutable<Executable>, Invocation<Content>>;
   private datamodel: IDatamodel<Data, Executable>;
 
   constructor(
-    sink: Sink<InvocationCommand<Param, Content>>,
+    sink: Sink<InvocationCommand<Content>>,
     document: Document<Executable>,
     datamodel: IDatamodel<Data, Executable>
   ) {
@@ -61,10 +63,9 @@ export class InvocationSink<Data, Executable, Param, Content> extends Pipe<Confi
             src: datamodel.query(invocation.src),
             id: datamodel.query(invocation.id),
             content: datamodel.query(invocation.content),
-            params: datamodel.query(invocation.params),
             source: idx,
             depth: ancestors.length,
-          } as Invocation<Param, Content>;
+          } as Invocation<Content>;
         } catch (err) {
           sink.error(t, err);
         }

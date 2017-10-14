@@ -1,12 +1,14 @@
 import { union, hasIntersection } from '@statechart/util-set';
 import {
   Backend,
-  Document,
   InterpreterState,
   IdxSet,
+} from '@statechart/types';
+import {
+  Document,
   State,
   StateType,
-} from '@statechart/types';
+} from '@statechart/scexe';
 
 export function establishEntryset<Data, Executable>(
   backend: Backend<Data, Executable>,
@@ -172,9 +174,9 @@ function enterStates<Data, Executable>(
     if (configuration.has(idx)) return;
 
     if (!initialized.has(idx)) {
-      const { data } = state;
-      for (let i = 0; i < data.length; i++) { // tslint:disable-line
-        backend.exec(data[i]);
+      const { onInit } = state;
+      for (let i = 0; i < onInit.length; i++) { // tslint:disable-line
+        backend.exec(onInit[i]);
       }
       initialized.add(idx);
     }

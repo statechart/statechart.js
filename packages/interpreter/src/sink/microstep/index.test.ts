@@ -1,5 +1,6 @@
 import { test, TestContext } from 'ava';
-import { Configuration, StateType, TransitionType } from '@statechart/types';
+import { Configuration } from '@statechart/types';
+import { StateType, TransitionType } from '@statechart/scexe';
 import { toArray } from '@statechart/util-set';
 import { MicrostepSink } from './';
 import { IDatamodelSink } from '../../types';
@@ -86,9 +87,10 @@ test.cb('microstep', (t) => {
         parent: 0,
         ancestors: [],
         descendants: [1, 2],
+        onInit: [],
         onEnter: [],
         onExit: [],
-        data: [],
+        hasHistory: false,
         transitions: [],
         children: [1, 2],
       },
@@ -100,9 +102,10 @@ test.cb('microstep', (t) => {
         parent: 0,
         ancestors: [0],
         descendants: [],
+        onInit: [],
         onEnter: [],
         onExit: [],
-        data: [],
+        hasHistory: false,
         transitions: [0],
         children: [],
       },
@@ -114,9 +117,10 @@ test.cb('microstep', (t) => {
         parent: 0,
         ancestors: [0],
         descendants: [],
+        onInit: [],
         onEnter: [],
         onExit: [],
-        data: [],
+        hasHistory: false,
         transitions: [1],
         children: [],
       },

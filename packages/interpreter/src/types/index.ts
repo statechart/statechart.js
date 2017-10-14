@@ -10,12 +10,11 @@ export interface IDatamodelSink<Data, Executable> extends Sink<IEvent<Data> | un
   query(x: Executable): any;
 }
 
-export interface Invocation<Param, Content> {
+export interface Invocation<Content> {
   idx: number;
   type: string;
   src: string;
   id: string;
-  params: Map<string, Param>;
   autoforward: boolean;
   content: Content;
   source: number;
@@ -27,7 +26,7 @@ export const enum InvocationCommandType {
   CLOSE = 1,
 }
 
-export interface InvocationCommand<Param, Content> {
+export interface InvocationCommand<Content> {
   type: InvocationCommandType;
-  invocation: Invocation<Param, Content>;
+  invocation: Invocation<Content>;
 }

@@ -1,6 +1,7 @@
 import { Sink, Time } from '@most/types';
 import { init, handleEvent, synchronize } from '@statechart/interpreter-microstep';
-import { Configuration, Document, IEvent, InterpreterState } from '@statechart/types';
+import { Configuration, IEvent, InterpreterState } from '@statechart/types';
+import { Document } from '@statechart/scexe';
 import { IDatamodelSink } from '../../types/index';
 
 type INIT = 0;

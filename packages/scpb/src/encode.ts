@@ -5,6 +5,8 @@ import {
   Invocation,
   State,
   Transition,
+  Expression,
+  Data,
   expression as expressionTypes,
   state as stateTypes,
   transition as transitionTypes
@@ -166,7 +168,7 @@ function encodeInvocation(message: Invocation, writer: $Writer) {
   return writer;
 }
 
-function encodeExpression (message, writer: $Writer) {
+function encodeExpression (message: Expression, writer: $Writer) {
   if (message.type != null && message.hasOwnProperty("type")) {
     writer.uint32(/* Id 1, wireType 0 =*/8).uint32(expressionTypes.indexOf(message.type));
   }
@@ -193,7 +195,7 @@ function encodeExpression (message, writer: $Writer) {
   return writer;
 }
 
-function encodeData(message, writer: $Writer) {
+function encodeData(message: Data, writer: $Writer) {
   if (message.id != null && message.hasOwnProperty("id")) {
     writer.uint32(/* Id 1, wireType 2 =*/10).string(message.id);
   }

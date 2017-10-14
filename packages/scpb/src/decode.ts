@@ -8,6 +8,8 @@ import {
   State,
   Transition,
   Invocation,
+  Expression,
+  Data,
 } from './types';
 
 export function decode(reader: $Reader, length?: number): Document {
@@ -40,7 +42,7 @@ export function decode(reader: $Reader, length?: number): Document {
       reader.skip().pos++;
       let key = reader.string();
       reader.pos++;
-      message.meta[key] = reader.string();
+      (message.meta as any)[key] = reader.string();
       break;
     default:
       reader.skipType(tag & 7);
@@ -164,7 +166,7 @@ function decodeExpression(reader: $Reader, length?: number) {
   let end = length === undefined ? reader.len : reader.pos + length;
   let message = {
     children: [],
-  };
+  } as Expression;
 
   while (reader.pos < end) {
     let tag = reader.uint32();
@@ -235,7 +237,7 @@ function decodeInvocation(reader: $Reader, length?: number) {
 
 function decodeData(reader: $Reader, length?: number) {
   let end = length === undefined ? reader.len : reader.pos + length;
-  let message = {};
+  let message = {} as Data;
 
   while (reader.pos < end) {
     let tag = reader.uint32();

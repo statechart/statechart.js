@@ -1,5 +1,6 @@
 import { Disposable, Scheduler, Sink, Stream } from '@most/types';
-import { Configuration, Document, IDatamodel, IEvent } from '@statechart/types';
+import { Configuration, IDatamodel, IEvent } from '@statechart/types';
+import { Document } from '@statechart/scexe';
 import { InvocationCommand } from './types/index';
 import { ExternalEventRouter } from './sink/external-event-router/index';
 import { ExternalEventSink } from './sink/external-event/index';
@@ -10,7 +11,7 @@ import { MacrostepSink } from './sink/macrostep/index';
 import { MicrostepSink } from './sink/microstep/index';
 import { Proxy } from './sink/proxy/index';
 
-export default class Interpreter<Data, Executable, Param> {
+export default class Interpreter<Data, Executable> {
   private datamodel: IDatamodel<Data, Executable>;
   private document: Document<Executable>;
   private events: Stream<IEvent<Data>>;
@@ -27,7 +28,7 @@ export default class Interpreter<Data, Executable, Param> {
 
   run(
     eventsSink: Sink<IEvent<Data>>,
-    invocations: Sink<InvocationCommand<Executable, Param>>,
+    invocations: Sink<InvocationCommand<Executable>>,
     configuration: Sink<Configuration>,
     scheduler: Scheduler,
   ): Disposable {

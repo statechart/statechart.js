@@ -1,5 +1,5 @@
 {
-  "name": "@statechart/scpb",
+  "name": "@statechart/scexe",
   "version": "0.1.45",
   "description": "",
   "main": "dist/index.js",
@@ -66,9 +66,7 @@
     ]
   },
   "dependencies": {
-    "@statechart/scpb-bitset": "^0.1.45",
-    "@statechart/types": "^0.1.45",
-    "protobufjs": "^6.7.3",
+    "@most/types": "^0.11.1",
     "tslib": "^1.6.0"
   }
 }

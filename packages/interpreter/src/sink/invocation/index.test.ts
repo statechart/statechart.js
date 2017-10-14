@@ -1,5 +1,5 @@
 import { test, TestContext } from 'ava';
-import { StateType } from '@statechart/types';
+import { StateType } from '@statechart/scexe';
 import { InvocationSink } from './';
 import { InvocationCommand, InvocationCommandType } from '../../types';
 
@@ -67,7 +67,7 @@ test('invocations', (t) => {
 
   const sink = new Sink(t);
 
-  sink.event = (time: number, command: InvocationCommand<any, any>) => {
+  sink.event = (time: number, command: InvocationCommand<any>) => {
     if (time === 1) {
       t.true(command.type === InvocationCommandType.OPEN);
       t.true(command.invocation.id === 'id0');
@@ -108,13 +108,15 @@ test('invocations', (t) => {
             params: () => 'params0',
             autoforward: false,
             content: () => 'content0',
+            onExit: [],
           }
         ],
         completion: [1],
         descendants: [1, 2],
+        onInit: [],
         onEnter: [],
         onExit: [],
-        data: [],
+        hasHistory: false,
         transitions: [],
         children: [1, 2],
       },
@@ -131,13 +133,15 @@ test('invocations', (t) => {
             params: () => 'params1',
             autoforward: false,
             content: () => 'content1',
+            onExit: [],
           }
         ],
         completion: [],
         descendants: [],
+        onInit: [],
         onEnter: [],
         onExit: [],
-        data: [],
+        hasHistory: false,
         transitions: [],
         children: [],
       },
@@ -154,13 +158,15 @@ test('invocations', (t) => {
             params: throwError,
             autoforward: false,
             content: throwError,
+            onExit: [],
           }
         ],
         completion: [],
         descendants: [],
+        onInit: [],
         onEnter: [],
         onExit: [],
-        data: [],
+        hasHistory: false,
         transitions: [],
         children: [],
       }

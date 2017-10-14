@@ -1,7 +1,8 @@
 import { test, TestContext } from 'ava';
 import { Sink as ISink } from '@most/types';
 import { newDefaultScheduler } from '@most/scheduler';
-import { Configuration, IDatamodel, IEvent, StateType, TransitionType } from '@statechart/types';
+import { Configuration, IDatamodel, IEvent } from '@statechart/types';
+import { StateType, TransitionType } from '@statechart/scexe';
 import { toArray } from '@statechart/util-set';
 import Interpreter from './';
 
@@ -111,11 +112,12 @@ test.cb('interpreter', (t) => {
         parent: 0,
         ancestors: [],
         descendants: [1, 2],
+        onInit: [],
         onEnter: [],
         onExit: [],
-        data: [],
         transitions: [],
-        children: [1, 2]
+        children: [1, 2],
+        hasHistory: false,
       },
       {
         type: StateType.ATOMIC,
@@ -125,11 +127,12 @@ test.cb('interpreter', (t) => {
         parent: 0,
         ancestors: [0],
         descendants: [],
+        onInit: [],
         onEnter: [],
         onExit: [],
-        data: [],
         transitions: [0, 2],
-        children: []
+        children: [],
+        hasHistory: false,
       },
       {
         type: StateType.ATOMIC,
@@ -139,11 +142,12 @@ test.cb('interpreter', (t) => {
         parent: 0,
         ancestors: [0],
         descendants: [],
+        onInit: [],
         onEnter: [],
         onExit: [],
-        data: [],
         transitions: [],
-        children: [1, 3]
+        children: [1, 3],
+        hasHistory: false,
       },
     ],
     transitions: [
