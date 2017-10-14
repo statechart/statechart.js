@@ -38,6 +38,7 @@ export interface Invocation<Executable> {
   params: Executable;
   autoforward: boolean;
   content: Executable;
+  onExit: Executable[];
 }
 
 export const enum StateType {
@@ -51,6 +52,7 @@ export const enum StateType {
 }
 
 export interface State<Executable> {
+  id?: string;
   idx: number;
   type: StateType;
   invocations: Invocation<Executable>[];
@@ -63,6 +65,8 @@ export interface State<Executable> {
   data: Executable[];
   transitions: number[];
   children: number[];
+  hasHistory: boolean;
+  name?: string;
 }
 
 export const enum TransitionType {

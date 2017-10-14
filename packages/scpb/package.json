@@ -1,15 +1,73 @@
 {
   "name": "@statechart/scpb",
-  "version": "0.1.44",
+  "version": "0.1.45",
+  "description": "",
   "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "module": "dist/index.mjs",
+  "repository": "https://github.com/statechart/statechart.js",
+  "author": "Cameron Bytheway <bytheway.cameron@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "pbjs statechart.proto -t static-module -w es6 --no-create --no-verify --no-convert --no-delimited -o src/_initial.js"
+    "build": "trash lib && yarn build:mjs && yarn build:lib && yarn build:dist",
+    "build:mjs": "tsc -p tsconfig.json",
+    "build:lib": "tsc -p tsconfig.lib.json",
+    "build:dist": "rollup -c",
+    "lint": "tslint --project . --type-check src/**/*.ts",
+    "unit": "yarn build && nyc ava",
+    "check-coverage": "nyc check-coverage --lines 100 --functions 100 --branches 100",
+    "test": "yarn lint && yarn unit && yarn check-coverage",
+    "watch": "yarn build:lib && concurrently -r --kill-others 'npm run --silent build:lib -- -w' 'sleepms 2000 && ava --watch'",
+    "cov": "yarn unit && yarn html-coverage && opn coverage/index.html",
+    "html-coverage": "nyc report --reporter=html",
+    "send-coverage": "nyc report --reporter=lcov > coverage.lcov && codecov",
+    "docs": "yarn docs:html && opn docs/index.html",
+    "docs:html": "typedoc src/index.ts --excludePrivate --mode file --theme minimal --out docs",
+    "docs:json": "typedoc --mode file --json docs/typedoc.json src/index.ts",
+    "docs:publish": "yarn docs:html && gh-pages -d docs",
+    "changelog": "standard-version",
+    "release": "yarn reset && yarn test && yarn docs:publish && yarn changelog",
+    "reset": "git clean -dfx && git reset --hard && yarn"
+  },
+  "engines": {
+    "node": ">=4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.4",
+    "ava": "^0.22.0",
+    "codecov": "^2.2.0",
+    "concurrently": "^3.4.0",
+    "cpx": "^1.5.0",
+    "gh-pages": "^1.0.0",
+    "mkdirp": "^0.5.1",
+    "nyc": "^11.0.3",
+    "opn-cli": "^3.1.0",
+    "sleep-ms": "^2.0.1",
+    "trash-cli": "^1.4.0",
+    "tslint": "^5.4.3",
+    "tslint-config-airbnb": "^5.3.0",
+    "typedoc": "^0.8.0",
+    "typescript": "^2.4.1"
+  },
+  "nyc": {
+    "exclude": [
+      "**/*.test.js",
+      "dist/**",
+      "mjs/**"
+    ]
+  },
+  "ava": {
+    "files": [
+      "lib/**/*.test.js"
+    ],
+    "source": [
+      "lib/**/*.js",
+      "lib/**/*.test.js"
+    ]
   },
   "dependencies": {
-    "@statechart/scpb-bitset": "^0.1.44",
-    "babel-runtime": "^6.23.0",
-    "protobufjs": "^6.7.3"
+    "@statechart/scpb-bitset": "^0.1.45",
+    "@statechart/types": "^0.1.45",
+    "tslib": "^1.6.0"
   }
 }
