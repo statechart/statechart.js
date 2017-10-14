@@ -1,6 +1,8 @@
 import { Sink, Time } from '@most/types';
 import {
   Configuration,
+} from '@statechart/interpreter-microstep';
+import {
   IDatamodel,
 } from '@statechart/types';
 import {
@@ -14,15 +16,15 @@ import {
   InvocationCommandType,
 } from '../../types/index';
 
-export class InvocationSink<Data, Executable, Content> extends Pipe<Configuration, InvocationCommand<Content>> {
+export class InvocationSink<Event, Executable, Content> extends Pipe<Configuration, InvocationCommand<Content>> {
   private document: Document<Executable>;
   private active: Map<InvocationExecutable<Executable>, Invocation<Content>>;
-  private datamodel: IDatamodel<Data, Executable>;
+  private datamodel: IDatamodel<Configuration, Event, Executable>;
 
   constructor(
     sink: Sink<InvocationCommand<Content>>,
     document: Document<Executable>,
-    datamodel: IDatamodel<Data, Executable>
+    datamodel: IDatamodel<Configuration, Event, Executable>
   ) {
     super(sink);
     this.document = document;

@@ -1,8 +1,6 @@
 import { Sink, Time } from '@most/types';
-import { init, handleEvent, synchronize } from '@statechart/interpreter-microstep';
-import { Configuration, IEvent, InterpreterState } from '@statechart/types';
+import { init, handleEvent, synchronize, Configuration, InterpreterState } from '@statechart/interpreter-microstep';
 import { Document } from '@statechart/scexe';
-import { IDatamodelSink } from '../../types/index';
 
 type INIT = 0;
 const INIT = 0;
@@ -19,19 +17,25 @@ const STABILIZE = 5;
 
 type State = INIT | STABLE | AWAIT_EVENT | HANDLE_EVENT | SYNCHRONIZE | STABILIZE;
 
-export class MicrostepSink<Data, Executable> implements Sink<IEvent<Data> | undefined> {
+export interface IDatamodelSink<Event, Executable> extends Sink<Event | undefined> {
+  configuration(t: Time, x: Configuration): any;
+  exec(t: Time, x: Executable): any;
+  query(x: Executable): any;
+}
+
+export class MicrostepSink<Event, Executable> implements Sink<Event | undefined> {
   private document: Document<Executable>
   private sink: Sink<Configuration>;
-  private datamodel: IDatamodelSink<Data, Executable>;
+  private datamodel: IDatamodelSink<Event, Executable>;
   private s: State;
   public state: InterpreterState;
   private loop: boolean;
   private microstepTime?: number;
-  private microstepEvent?: IEvent<Data>;
+  private microstepEvent?: Event;
 
   constructor(
     sink: Sink<Configuration>,
-    datamodel: IDatamodelSink<Data, Executable>,
+    datamodel: IDatamodelSink<Event, Executable>,
     document: Document<Executable>,
   ) {
     this.document = document;
@@ -60,7 +64,7 @@ export class MicrostepSink<Data, Executable> implements Sink<IEvent<Data> | unde
     this.sink.end(t);
   }
 
-  event(t: Time, event?: IEvent<Data>): any {
+  event(t: Time, event?: Event): any {
     this.loop = true;
 
     // if we already are in a macrostep then wait for a loop
@@ -77,7 +81,7 @@ export class MicrostepSink<Data, Executable> implements Sink<IEvent<Data> | unde
         this.loop = false;
         datamodel.exec(t, x);
       },
-      match: (matcher: ((event: IEvent<Data>) => boolean), event: IEvent<Data>) => {
+      match: (matcher: ((event: Event) => boolean), event: Event) => {
         return matcher(event);
       },
     };

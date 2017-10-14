@@ -1,15 +1,14 @@
 import { Sink, Scheduler, Time } from '@most/types';
-import { Configuration, IDatamodel, IEvent } from '@statechart/types';
+import { IDatamodel } from '@statechart/types';
 import { PromiseQueue } from '../../promise-queue/index';
-import { IDatamodelSink } from '../../types/index';
 
-export class DatamodelSink<Data, Executable> implements IDatamodelSink<Data, Executable> {
-  public datamodel: IDatamodel<Data, Executable>;
+export class DatamodelSink<Configuration, Event, Executable> implements Sink<Event | undefined> {
+  public datamodel: IDatamodel<Configuration, Event, Executable>;
   private sink: Sink<any>;
   private queue: PromiseQueue;
   private scheduler: Scheduler;
 
-  constructor(sink: Sink<any>, datamodel: IDatamodel<Data, Executable>, scheduler: Scheduler) {
+  constructor(sink: Sink<any>, datamodel: IDatamodel<Configuration, Event, Executable>, scheduler: Scheduler) {
     this.sink = sink;
     this.datamodel = datamodel;
     this.scheduler = scheduler;
@@ -27,7 +26,7 @@ export class DatamodelSink<Data, Executable> implements IDatamodelSink<Data, Exe
     );
   }
 
-  event(_T: Time, x?: IEvent<Data>) {
+  event(_T: Time, x?: Event) {
     this.datamodel.setEvent(x);
   }
 

@@ -3,8 +3,7 @@ import {
   Backend,
   InterpreterState,
   IdxSet,
-  IEvent,
-} from '@statechart/types';
+} from './types';
 import {
   Document,
   Transition,
@@ -13,11 +12,11 @@ import {
 } from '@statechart/scexe';
 import { establishEntryset } from './entryset';
 
-export function selectTransitions<Data, Executable>(
-  backend: Backend<Data, Executable>,
+export function selectTransitions<Event, Executable>(
+  backend: Backend<Event, Executable>,
   doc: Document<Executable>,
   interpreter: InterpreterState,
-  event?: IEvent<Data>,
+  event?: Event,
 ) {
   const configuration = new Set(interpreter.configuration);
   const { transitions } = doc;
@@ -73,21 +72,21 @@ function isTransitionConflictFree<Executable>(
   return !conflicts.has(idx);
 }
 
-function isTransitionApplicable<Data, Executable>(
+function isTransitionApplicable<Event, Executable>(
   { event: matcher }: Transition<Executable>,
-  event: IEvent<Data> | undefined,
-  backend: Backend<Data, Executable>,
+  event: Event | undefined,
+  backend: Backend<Event, Executable>,
 ) {
   const hasEvents = typeof matcher !== 'undefined';
   const hasEvent = typeof event !== 'undefined';
   if (!hasEvents && !hasEvent) return true;
-  if (hasEvents && hasEvent) return backend.match(matcher, event as IEvent<Data>);
+  if (hasEvents && hasEvent) return backend.match(matcher, event as Event);
   return false;
 }
 
-function isTransitionEnabled<Data, Executable>(
+function isTransitionEnabled<Event, Executable>(
   { condition }: Transition<Executable>,
-  backend: Backend<Data, Executable>,
+  backend: Backend<Event, Executable>,
 ) {
   return typeof condition === 'undefined' ?
     true :

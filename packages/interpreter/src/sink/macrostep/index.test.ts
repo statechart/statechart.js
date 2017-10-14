@@ -1,5 +1,5 @@
 import { test, TestContext } from 'ava';
-import { Configuration } from '@statechart/types';
+import { Configuration } from '@statechart/interpreter-microstep';
 import { MacrostepSink } from './';
 
 class Sink {

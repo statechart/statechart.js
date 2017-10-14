@@ -3,15 +3,15 @@ import {
   Backend,
   InterpreterState,
   IdxSet,
-} from '@statechart/types';
+} from './types';
 import {
   Document,
   State,
   StateType,
 } from '@statechart/scexe';
 
-export function establishEntryset<Data, Executable>(
-  backend: Backend<Data, Executable>,
+export function establishEntryset<Event, Executable>(
+  backend: Backend<Event, Executable>,
   doc: Document<Executable>,
   interpreter: InterpreterState,
   entrySet: IdxSet,
@@ -134,8 +134,8 @@ function shouldAddCompoundState<Executable>(
   return shouldAdd;
 }
 
-function exitStates<Data, Executable>(
-  backend: Backend<Data, Executable>,
+function exitStates<Event, Executable>(
+  backend: Backend<Event, Executable>,
   doc: Document<Executable>,
   exitSet: IdxSet,
 ) {
@@ -147,8 +147,8 @@ function exitStates<Data, Executable>(
   });
 }
 
-function takeTransitions<Data, Executable>(
-  backend: Backend<Data, Executable>,
+function takeTransitions<Event, Executable>(
+  backend: Backend<Event, Executable>,
   doc: Document<Executable>,
   transSet: IdxSet,
 ) {
@@ -160,8 +160,8 @@ function takeTransitions<Data, Executable>(
   });
 }
 
-function enterStates<Data, Executable>(
-  backend: Backend<Data, Executable>,
+function enterStates<Event, Executable>(
+  backend: Backend<Event, Executable>,
   doc: Document<Executable>,
   interpreter: InterpreterState,
   configuration: IdxSet,

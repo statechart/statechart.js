@@ -1,7 +1,6 @@
 import { Sink, Time } from '@most/types';
-import { Configuration } from '@statechart/types';
 
-export class MacrostepSink<Event> implements Sink<Configuration> {
+export class MacrostepSink<Configuration, Event> implements Sink<Configuration> {
   private sink: Sink<Event>;
   private invocations: Sink<Configuration>;
   private loop: boolean;

@@ -8,36 +8,23 @@ export const enum EventType {
 
 export interface IEvent<Data> {
   name: string;
-  type?: EventType;
-  origin?: string;
-  sendid?: string;
-  origintype?: string;
+  type?: string; // type of target: URL
+  target?: string; // target URL (instance location)
   data?: Data;
+  origin?: string; // type of origin: URL
+  origintype?: string; // origin URL (instance location)
+  sendid?: string; // the internal event id
+  delay?: number;
+  invokeid?: string; // id set if sent by an child invocation
 }
 
-export interface Backend<Data, Executable> {
-  query(executable: Executable): any;
-  exec(executable: Executable): void;
-  match(events: any, event: IEvent<Data>): boolean;
-}
-
-export type IdxSet = Set<number>;
-export type Configuration = IdxSet;
-
-export interface InterpreterState {
-  configuration: IdxSet;
-  history: IdxSet;
-  initialized: IdxSet;
-  isStable: boolean;
-}
-
-export interface IDatamodel<Data, Executable> {
-  internalEvents: Sink<IEvent<Data>>;
-  externalEvents: Sink<IEvent<Data>>;
+export interface IDatamodel<Configuration, Event, Executable> {
+  internalEvents: Sink<Event>;
+  externalEvents: Sink<Event>;
   exec(executable: Executable): Promise<any>;
   error(error: Error): void;
   query(executable: Executable): any;
   end(): void;
-  setEvent(event: any): void;
+  setEvent(event?: Event): void;
   setConfiguration(configuration: Configuration): void;
 }

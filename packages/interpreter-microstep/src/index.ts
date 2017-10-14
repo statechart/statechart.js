@@ -1,17 +1,12 @@
 import { establishEntryset } from './entryset';
 import { selectTransitions } from './transition';
-import {
-  Backend,
-  InterpreterState,
-} from '@statechart/types';
-import {
-  Document,
-} from '@statechart/scexe';
+import { Document } from '@statechart/scexe';
+import { Backend, Configuration, InterpreterState } from './types';
 
-export { InterpreterState };
+export { Backend, Configuration, InterpreterState };
 
-export function init<Data, Executable>(
-  backend: Backend<Data, Executable>,
+export function init<Event, Executable>(
+  backend: Backend<Event, Executable>,
   doc: Document<Executable>,
 ): InterpreterState {
   return establishEntryset(

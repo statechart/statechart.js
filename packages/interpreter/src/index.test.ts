@@ -1,10 +1,11 @@
 import { test, TestContext } from 'ava';
 import { Sink as ISink } from '@most/types';
 import { newDefaultScheduler } from '@most/scheduler';
-import { Configuration, IDatamodel, IEvent } from '@statechart/types';
+import { Configuration } from '@statechart/interpreter-microstep';
+import { IDatamodel } from '@statechart/types';
 import { StateType, TransitionType } from '@statechart/scexe';
 import { toArray } from '@statechart/util-set';
-import Interpreter from './';
+import { Interpreter, Event } from './';
 
 class Sink {
   private t: TestContext;
@@ -27,9 +28,9 @@ class Sink {
 }
 
 type Executable = (d: any, context: any) => any;
-class Datamodel<Data> implements IDatamodel<Data, Executable> {
-  public internalEvents: ISink<IEvent<Data>>;
-  public externalEvents: ISink<IEvent<Data>>;
+class Datamodel implements IDatamodel<Configuration, Event, Executable> {
+  public internalEvents: ISink<Event>;
+  public externalEvents: ISink<Event>;
 
   private d: any;
   private context: any;

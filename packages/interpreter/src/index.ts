@@ -1,8 +1,9 @@
 import { Disposable, Scheduler, Sink, Stream } from '@most/types';
-import { Configuration, IDatamodel, IEvent } from '@statechart/types';
+import { Configuration } from '@statechart/interpreter-microstep';
+import { IDatamodel } from '@statechart/types';
 import { Document } from '@statechart/scexe';
 import { InvocationCommand } from './types/index';
-import { ExternalEventRouter } from './sink/external-event-router/index';
+import { ExternalEventRouter, RoutableEvent } from './sink/external-event-router/index';
 import { ExternalEventSink } from './sink/external-event/index';
 import { InternalEventSink } from './sink/internal-event/index';
 import { InvocationSink } from './sink/invocation/index';
@@ -11,14 +12,18 @@ import { MacrostepSink } from './sink/macrostep/index';
 import { MicrostepSink } from './sink/microstep/index';
 import { Proxy } from './sink/proxy/index';
 
-export default class Interpreter<Data, Executable> {
-  private datamodel: IDatamodel<Data, Executable>;
+export type Event = { name: string } & RoutableEvent;
+
+export { Configuration };
+
+export class Interpreter<Executable> {
+  private datamodel: IDatamodel<Configuration, Event, Executable>;
   private document: Document<Executable>;
-  private events: Stream<IEvent<Data>>;
+  private events: Stream<Event>;
 
   constructor(
-    events: Stream<IEvent<Data>>,
-    datamodel: IDatamodel<Data, Executable>,
+    events: Stream<Event>,
+    datamodel: IDatamodel<Configuration, Event, Executable>,
     document: Document<Executable>,
   ) {
     this.datamodel = datamodel;
@@ -27,7 +32,7 @@ export default class Interpreter<Data, Executable> {
   }
 
   run(
-    eventsSink: Sink<IEvent<Data>>,
+    eventsSink: Sink<Event>,
     invocations: Sink<InvocationCommand<Executable>>,
     configuration: Sink<Configuration>,
     scheduler: Scheduler,
@@ -35,7 +40,7 @@ export default class Interpreter<Data, Executable> {
     const { datamodel, document } = this;
     const invocationSink = new InvocationSink(invocations, document, datamodel);
 
-    const datamodelEvent = new Proxy<IEvent<Data>>();
+    const datamodelEvent = new Proxy<Event>();
     const datamodelSink = new DatamodelSink(datamodelEvent, datamodel, scheduler);
 
     const microstepConfiguration = new Proxy();

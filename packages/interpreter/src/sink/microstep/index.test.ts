@@ -1,9 +1,8 @@
 import { test, TestContext } from 'ava';
-import { Configuration } from '@statechart/types';
+import { Configuration } from '@statechart/interpreter-microstep';
 import { StateType, TransitionType } from '@statechart/scexe';
 import { toArray } from '@statechart/util-set';
-import { MicrostepSink } from './';
-import { IDatamodelSink } from '../../types';
+import { MicrostepSink, IDatamodelSink } from './';
 
 class Sink {
   private t: TestContext;

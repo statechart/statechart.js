@@ -1,16 +1,20 @@
 import { Time, Sink } from '@most/types';
-import { IEvent, EventType } from '@statechart/types';
+import { EventType } from '@statechart/types';
 
-export class ExternalEventRouter<Data> implements Sink<IEvent<Data>> {
-  private internal: Sink<IEvent<Data>>;
-  private external: Sink<IEvent<Data>>;
+export interface RoutableEvent {
+  type?: EventType;
+};
 
-  constructor(internalEventSink: Sink<IEvent<Data>>, externalEventSink: Sink<IEvent<Data>>) {
+export class ExternalEventRouter<Event extends RoutableEvent> implements Sink<Event> {
+  private internal: Sink<Event>;
+  private external: Sink<Event>;
+
+  constructor(internalEventSink: Sink<Event>, externalEventSink: Sink<Event>) {
     this.internal = internalEventSink;
     this.external = externalEventSink;
   }
 
-  event(t: Time, x: IEvent<Data>) {
+  event(t: Time, x: Event) {
     return x.type === EventType.INTERNAL ?
       this.internal.event(t, x) :
       this.external.event(t, x);
