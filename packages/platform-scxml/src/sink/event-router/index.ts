@@ -19,14 +19,14 @@ export class InvalidTargetError<Event extends RoutableEvent> extends Error {
   }
 }
 
-export class EventRouterSink<Event extends RoutableEvent> implements Sink<Event> {
+export class EventRouterSink<Event> implements Sink<Event> {
   private sinks: Map<string, Sink<Event>>;
 
   constructor(sinks: Map<string, Sink<Event>>) {
     this.sinks = sinks;
   }
 
-  event(t: Time, x: Event) {
+  event(t: Time, x: Event & RoutableEvent) {
     const { sinks } = this;
     const { target } = x;
     const sink = sinks.get(target);

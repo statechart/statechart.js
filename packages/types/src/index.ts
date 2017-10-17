@@ -1,11 +1,5 @@
 import { Sink } from '@most/types';
 
-export const enum EventType {
-  INTERNAL = '_internal',
-  EXTERNAL = 'external',
-  PLATFORM = 'platform',
-}
-
 export interface IEvent<Data> {
   name: string;
   type?: string; // type of target: URL

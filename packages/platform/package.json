@@ -66,6 +66,7 @@
     ]
   },
   "dependencies": {
+    "@most/disposable": "^0.13.1",
     "@most/scheduler": "^0.13.1",
     "@most/types": "^0.11.1",
     "@statechart/types": "^0.1.45",

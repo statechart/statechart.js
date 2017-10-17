@@ -1,5 +1,5 @@
 {
-  "name": "@statechart/platform",
+  "name": "@statechart/platform-scxml",
   "version": "0.1.45",
   "description": "",
   "main": "dist/index.js",

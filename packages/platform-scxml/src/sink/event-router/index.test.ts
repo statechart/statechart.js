@@ -1,17 +1,20 @@
 import { test } from 'ava';
-import { Time } from '@most/types';
+import { Time, Sink } from '@most/types';
 import { EventRouterSink, RoutableEvent, InvalidTargetError } from './';
 
 test('it should work', (t) => {
   t.plan(9);
 
-  const sinks = new Map();
+  const sinks = new Map<string, Sink<RoutableEvent>>();
 
   sinks.set('a', {
-    event(time: Time, x: RoutableEvent) {
+    event(time: Time, { target, origin }: RoutableEvent) {
       t.true(time === 0);
-      t.true(x.target === 'a');
-      t.true(x.origin === 'b');
+      t.true(target === 'a');
+      t.true(origin === 'b');
+    },
+    error(_T: Time, _E: Error) {
+      t.fail();
     },
     end(time: Time) {
       t.true(time === 4);
@@ -19,10 +22,13 @@ test('it should work', (t) => {
   });
 
   sinks.set('b', {
-    error(time: Time, e: InvalidTargetError<RoutableEvent>) {
+    event(_T: Time, _X: RoutableEvent) {
+
+    },
+    error(time: Time, { target, origin }: InvalidTargetError<RoutableEvent>) {
       t.true(time === 1);
-      t.true(e.target === 'invalid');
-      t.true(e.origin === 'b');
+      t.true(target === 'invalid');
+      t.true(origin === 'b');
     },
     end(time: Time) {
       t.true(time === 4);

@@ -1,6 +1,5 @@
 import { test, TestContext } from 'ava';
-import { EventType } from '@statechart/types';
-import { ExternalEventRouter } from './';
+import { ExternalEventRouter, INTERNAL } from './';
 
 class Sink {
   private t: TestContext;
@@ -9,15 +8,15 @@ class Sink {
     this.t = t;
   }
 
-  event(_t: number, _b: any) {
+  event(_T: number, _B: any) {
     this.t.fail();
   }
 
-  end(_t: number) {
+  end(_T: number) {
     this.t.fail();
   }
 
-  error(_t: number, _e: Error) {
+  error(_T: number, _E: Error) {
     this.t.fail();
   }
 }
@@ -38,7 +37,7 @@ test.cb('_internal', (t) => {
 
   r.event(0, {
     name: 'event',
-    type: EventType.INTERNAL,
+    type: INTERNAL,
   });
 });
 
@@ -58,7 +57,7 @@ test.cb('external', (t) => {
 
   r.event(0, {
     name: 'event',
-    type: EventType.EXTERNAL,
+    type: '#_external',
   });
 });
 
@@ -68,7 +67,7 @@ test('clean up', (t) => {
   const internal = new Sink(t);
   const external = new Sink(t);
 
-  internal.error = external.error = (time: number, _error: Error) => {
+  internal.error = external.error = (time: number, _E: Error) => {
     t.true(time === 0);
   };
 
