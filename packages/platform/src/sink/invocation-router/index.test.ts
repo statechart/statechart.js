@@ -1,21 +1,22 @@
 import { test } from 'ava';
 import { Time, Scheduler, Sink } from '@most/types';
 import { newDefaultScheduler } from '@most/scheduler';
+import { RoutableEvent } from '../router/index';
 import {
   Invoker,
   InvokerMap,
   InvocationInstance,
   InvocationRouter,
-  PlatformInvocation,
 } from './';
 
 type Event = {};
-type Invocation = {} & PlatformInvocation;
+type Invocation = {} & RoutableEvent;
 
-test('it should work', async (t) => {
-  t.plan(21);
+test('invocation router', async (t) => {
+  t.plan(14);
 
-  const invokers: InvokerMap<Event, Invocation> = new Map();
+  const invokers: InvokerMap<Event, Invocation>
+    = new Map();
 
   const eventSink = {
     event(time: Time, _X: Event) {
@@ -41,8 +42,9 @@ test('it should work', async (t) => {
     run(eventSink: Sink<Event>, invocationSink: Sink<Invocation>, _S: Scheduler) {
       const { time, invocationTarget } = this;
       eventSink.event(time, {});
+      eventSink.end(time); // shouldn't do anything - just for coverage
 
-      if (invocationTarget) invocationSink.event(time, {
+      if (typeof invocationTarget === 'string') invocationSink.event(time, {
         type: invocationTarget,
       });
 
@@ -55,34 +57,16 @@ test('it should work', async (t) => {
     }
   }
 
-  const first: Invoker<Event, Invocation> = {
-    event(time: Time, _X: Invocation) {
-      t.true(time === 0);
-      return new Instance(time, 'third');
-    },
-    end(time: Time) {
-      t.true(time === 2);
-    },
+  const first: Invoker<Event, Invocation> = (t: Time, _I: Invocation) => {
+    return new Instance(t, 'third');
   };
 
-  const second: Invoker<Event, Invocation> = {
-    event(time: Time, _X: Invocation) {
-      t.true(time === 1);
-      return new Instance(time, 'third');
-    },
-    end(time: Time) {
-      t.true(time === 2);
-    },
+  const second: Invoker<Event, Invocation> = (t: Time, _I: Invocation) => {
+    return new Instance(t, 'third');
   };
 
-  const third: Invoker<Event, Invocation> = {
-    event(time: Time, _X: Invocation) {
-      t.true(time === 0 || time === 1);
-      return new Instance(time);
-    },
-    end(time: Time) {
-      t.true(time === 2);
-    },
+  const third: Invoker<Event, Invocation> = (t: Time, _I: Invocation) => {
+    return new Instance(t);
   };
 
   invokers.set('first', first);

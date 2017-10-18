@@ -1,55 +1,49 @@
-import { Time, Sink } from '@most/types';
+import { Disposable, Time, Scheduler, Sink, Stream } from '@most/types';
+import { StreamSink } from '@statechart/util-most';
+import { Router } from '../router/index';
 
-export interface IOProcessor<Event> {
-  event(t: Time, x: Event): any;
-  end(t: Time): any;
-}
+export type IOProcessor<Event> = (events: Stream<Event>) => Stream<Event>;
+
 export type IOProcessorMap<Event> = Map<string, IOProcessor<Event>>;
 
-export interface PlatformEvent {
-  type: string;
-}
-
-export class RoutingError<Event> extends Error {
-  event: Event & PlatformEvent;
-  type: string;
-
-  constructor(event: Event & PlatformEvent) {
-    const { type } = event;
-    super(`Unknown ioprocessor ${JSON.stringify(type)}`);
-    this.event = event;
-    this.type = type;
-  }
-}
-
-export class IOProcessorRouter<Event> implements Sink<Event & PlatformEvent> {
-  private ioprocessors: IOProcessorMap<Event>;
+export class IOProcessorRouter<Event> extends Router<Event, Event, IOProcessor<Event>> {
+  private instances: Map<IOProcessor<Event>, Sink<Event>>;
 
   constructor(
-    ioprocessors: IOProcessorMap<Event>,
+    sink: Sink<Event>,
+    scheduler: Scheduler,
+    processors: IOProcessorMap<Event>,
   ) {
-    this.ioprocessors = ioprocessors;
+    super(sink, scheduler, processors);
+    this.instances = new Map();
   }
 
-  event(t: Time, x: Event & PlatformEvent) {
-    const { ioprocessors } = this;
-    const { type } = x;
-    const processor = ioprocessors.get(type);
-    if (typeof processor !== 'undefined') {
-      processor.event(t, x);
-    } else {
-      throw new RoutingError(x);
+  init(
+    t: Time,
+    x: Event,
+    sink: Sink<Event>,
+    scheduler: Scheduler,
+    processor: IOProcessor<Event>,
+  ): Disposable | void {
+    const { instances } = this;
+    const instance = instances.get(processor);
+    if (typeof instance !== 'undefined') {
+      instance.event(t, x);
+      return;
     }
-  }
 
-  error(_T: Time, _E: Error) {
-    // noop
-  }
+    const streamSink = new StreamSink();
 
-  end(t: Time) {
-    const { ioprocessors } = this;
-    ioprocessors.forEach((ioprocessor) => {
-      ioprocessor.end(t);
-    });
+    const stream = processor(streamSink);
+    const disposable = stream.run(
+      sink,
+      scheduler,
+    );
+
+    instances.set(processor, streamSink);
+
+    streamSink.event(t, x);
+
+    return disposable;
   }
 }

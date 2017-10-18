@@ -1,5 +1,5 @@
 {
-  "name": "@statechart/platform",
+  "name": "@statechart/util-most",
   "version": "0.1.45",
   "description": "",
   "main": "dist/index.js",
@@ -67,11 +67,7 @@
   },
   "dependencies": {
     "@most/disposable": "^0.13.1",
-    "@most/scheduler": "^0.13.1",
     "@most/types": "^0.11.1",
-    "@statechart/types": "^0.1.45",
-    "@statechart/scexe": "^0.1.45",
-    "@statechart/util-most": "^0.1.45",
     "tslib": "^1.6.0"
   }
 }

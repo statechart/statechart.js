@@ -1,34 +1,58 @@
 import { Stream, Scheduler, Sink, Disposable } from '@most/types';
-import { disposeBoth } from '@most/disposable';
-import { InvocationRouter, InvokerMap, PlatformInvocation } from './sink/invocation-router/index';
-import { IOProcessorRouter, IOProcessorMap, PlatformEvent } from './sink/ioprocessor-router/index';
+import { RoutableEvent } from './sink/router/index';
+import { InvocationRouter, InvokerMap } from './sink/invocation-router/index';
+import { IOProcessorRouter, IOProcessorMap } from './sink/ioprocessor-router/index';
 
-export { InvokerMap, IOProcessorMap, PlatformEvent, PlatformInvocation };
+export { InvokerMap, IOProcessorMap, RoutableEvent };
 
-export class Platform<Event extends PlatformEvent, Invocation> implements Stream<Event> {
-  private events: Stream<Event>;
+export class PlatformInvocations<Event, Invocation extends RoutableEvent> implements Stream<Event> {
   private invocations: Stream<Invocation>;
-  private ioprocessors: IOProcessorMap<Event>;
   private invokers: InvokerMap<Event, Invocation>;
 
   constructor(
-    events: Stream<Event>,
     invocations: Stream<Invocation>,
-    ioprocessors: IOProcessorMap<Event>,
     invokers: InvokerMap<Event, Invocation>,
   ) {
-    this.events = events;
     this.invocations = invocations;
-    this.ioprocessors = ioprocessors;
     this.invokers = invokers;
   }
 
-  run(_S: Sink<Event>, scheduler: Scheduler): Disposable {
-    const { ioprocessors, invokers, events, invocations } = this;
-    const ioprocessorRouter = new IOProcessorRouter<Event>(ioprocessors);
-    const invocationRouter = new InvocationRouter(ioprocessorRouter, scheduler, invokers);
-    const eventDisposable = events.run(ioprocessorRouter, scheduler);
-    const invocationDisposable = invocations.run(invocationRouter, scheduler);
-    return disposeBoth(eventDisposable, invocationDisposable);
+  run(events: Sink<Event>, scheduler: Scheduler): Disposable {
+    const { invokers, invocations } = this;
+    const invocationRouter = new InvocationRouter(events, scheduler, invokers);
+    return invocations.run(invocationRouter, scheduler);
   }
+}
+
+export class PlatformEvents<Event extends RoutableEvent> implements Stream<Event> {
+  private events: Stream<Event>;
+  private ioprocessors: IOProcessorMap<Event>;
+
+  constructor(
+    events: Stream<Event>,
+    ioprocessors: IOProcessorMap<Event>,
+  ) {
+    this.events = events;
+    this.ioprocessors = ioprocessors;
+  }
+
+  run(outgoingEvents: Sink<Event>, scheduler: Scheduler): Disposable {
+    const { events, ioprocessors } = this;
+    const eventRouter = new IOProcessorRouter(outgoingEvents, scheduler, ioprocessors);
+    return events.run(eventRouter, scheduler);
+  }
+}
+
+export function withInvocations<Event, Invocation extends RoutableEvent>(
+  invokers: InvokerMap<Event, Invocation>,
+  invocations: Stream<Invocation>,
+) {
+  return new PlatformInvocations(invocations, invokers);
+}
+
+export function withIOProcessors<Event extends RoutableEvent>(
+  ioprocessors: IOProcessorMap<Event>,
+  events: Stream<Event>,
+) {
+  return new PlatformEvents(events, ioprocessors);
 }
