@@ -68,10 +68,12 @@
   "dependencies": {
     "@most/scheduler": "^0.13.1",
     "@most/types": "^0.11.1",
+    "@types/uuid": "^3.4.3",
     "@statechart/interpreter-microstep": "^0.1.45",
     "@statechart/types": "^0.1.45",
     "@statechart/scexe": "^0.1.45",
     "@statechart/util-set": "^0.1.45",
-    "tslib": "^1.6.0"
+    "tslib": "^1.6.0",
+    "uuid": "^3.1.0"
   }
 }

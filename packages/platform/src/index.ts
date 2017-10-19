@@ -1,16 +1,36 @@
 import { Stream, Scheduler, Sink, Disposable } from '@most/types';
-import { RoutableEvent } from './sink/router/index';
-import { InvocationRouter, InvokerMap } from './sink/invocation-router/index';
-import { IOProcessorRouter, IOProcessorMap } from './sink/ioprocessor-router/index';
+import { IInvocationCommand } from '@statechart/types';
+import {
+  Invoker,
+  InvokerMap,
+  InvocationEvent,
+  InvocationRouter,
+  InvocationInstance,
+} from './sink/invocation-router/index';
+import {
+  IOProcessor,
+  IOProcessorMap,
+  IOProcessorEvent,
+  IOProcessorRouter,
+} from './sink/ioprocessor-router/index';
 
-export { InvokerMap, IOProcessorMap, RoutableEvent };
+export {
+  Invoker,
+  InvokerMap,
+  IOProcessor,
+  IOProcessorMap,
+  IOProcessorEvent,
+  InvocationEvent,
+  InvocationInstance,
+};
 
-export class PlatformInvocations<Event, Invocation extends RoutableEvent> implements Stream<Event> {
-  private invocations: Stream<Invocation>;
+export class PlatformInvocations<Event, Invocation extends InvocationEvent>
+    implements Stream<Event> {
+  private invocations: Stream<IInvocationCommand<Invocation>>;
   private invokers: InvokerMap<Event, Invocation>;
 
   constructor(
-    invocations: Stream<Invocation>,
+    invocations: Stream<IInvocationCommand<Invocation>>,
     invokers: InvokerMap<Event, Invocation>,
   ) {
     this.invocations = invocations;
@@ -24,7 +44,7 @@ export class PlatformInvocations<Event, Invocation extends RoutableEvent> implem
   }
 }
 
-export class PlatformEvents<Event extends RoutableEvent> implements Stream<Event> {
+export class PlatformEvents<Event extends IOProcessorEvent> implements Stream<Event> {
   private events: Stream<Event>;
   private ioprocessors: IOProcessorMap<Event>;
 
@@ -43,14 +63,14 @@ export class PlatformEvents<Event extends RoutableEvent> implements Stream<Event
   }
 }
 
-export function withInvocations<Event, Invocation extends RoutableEvent>(
+export function withInvocations<Event, Invocation extends InvocationEvent>(
   invokers: InvokerMap<Event, Invocation>,
-  invocations: Stream<Invocation>,
+  invocations: Stream<IInvocationCommand<Invocation>>,
 ) {
   return new PlatformInvocations(invocations, invokers);
 }
 
-export function withIOProcessors<Event extends RoutableEvent>(
+export function withIOProcessors<Event extends IOProcessorEvent>(
   ioprocessors: IOProcessorMap<Event>,
   events: Stream<Event>,
 ) {

@@ -1,6 +1,11 @@
 import { Disposable, Time, Scheduler, Sink, Stream } from '@most/types';
 import { StreamSink } from '@statechart/util-most';
+// import * as uuid from 'uuid/v4';
 import { Router } from '../router/index';
+
+export interface IOProcessorEvent {
+  type: string;
+}
 
 export type IOProcessor<Event> = (events: Stream<Event>) => Stream<Event>;
 
@@ -16,6 +21,14 @@ export class IOProcessorRouter<Event> extends Router<Event, Event, IOProcessor<E
   ) {
     super(sink, scheduler, processors);
     this.instances = new Map();
+  }
+
+  getType({ type }: Event & IOProcessorEvent) {
+    return type;
+  }
+
+  getId({ type }: Event & IOProcessorEvent) {
+    return type;
   }
 
   init(

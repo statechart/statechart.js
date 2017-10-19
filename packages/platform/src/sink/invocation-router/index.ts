@@ -1,11 +1,16 @@
 import { Disposable, Time, Scheduler, Sink } from '@most/types';
+import { IInvocationCommand, EInvocationCommandType } from '@statechart/types';
 import { ThroughSink } from '@statechart/util-most';
 import { Router } from '../router/index';
+
+export interface InvocationEvent {
+  type: string;
+}
 
 export interface InvocationInstance<Event, Invocation> {
   run(
     events: Sink<Event>,
-    invocation: Sink<Invocation>,
+    invocation: Sink<IInvocationCommand<Invocation>>,
     scheduler: Scheduler,
   ): Disposable;
 }
@@ -16,20 +21,40 @@ export type Invoker<Event, Invocation> =
 export type InvokerMap<Event, Invocation> =
   Map<string, Invoker<Event, Invocation>>;
 
-export class InvocationRouter<Event, Invocation>
-    extends Router<Invocation, Event, Invoker<Event, Invocation>> {
+export class InvocationRouter<Event, Invocation extends InvocationEvent>
+    extends Router<IInvocationCommand<Invocation>, Event, Invoker<Event, Invocation>> {
+
+  getType({ invocation: { type } }: IInvocationCommand<Invocation & InvocationEvent>) {
+    return type;
+  }
+
+  getId({ id }: IInvocationCommand<Invocation>) {
+    return id;
+  }
+
   init(
     t: Time,
-    x: Invocation,
+    x: IInvocationCommand<Invocation>,
     sink: Sink<Event>,
     scheduler: Scheduler,
     processor: Invoker<Event, Invocation>,
   ): Disposable | void {
-    const invocation = processor(t, x);
+    const { disposables } = this;
+    const { id, type, invocation } = x;
 
-    return invocation.run(
-      new UnendableSink(sink),
-      new UnendableSink(this),
+    if (type === EInvocationCommandType.CLOSE) {
+      const disposable = disposables.get(id);
+      if (typeof disposable !== 'undefined') disposable.dispose();
+      return;
+    }
+
+    const instance = processor(t, invocation);
+
+    const invocationSink = new UnendableSink(this);
+
+    return instance.run(
+      sink,
+      invocationSink,
       scheduler,
     );
   }

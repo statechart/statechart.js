@@ -1,14 +1,14 @@
 import { test } from 'ava';
 import { Time, Scheduler, Sink, Stream } from '@most/types';
 import { newDefaultScheduler } from '@most/scheduler';
-import { RoutableEvent } from '../router/index';
 import {
   IOProcessor,
   IOProcessorMap,
+  IOProcessorEvent,
   IOProcessorRouter,
 } from './';
 
-type Event = {} & RoutableEvent;
+type Event = {} & IOProcessorEvent;
 
 test('ioprocessor router', async (t) => {
   t.plan(5);

@@ -1,6 +1,7 @@
 import { test, TestContext } from 'ava';
 import { StateType } from '@statechart/scexe';
-import { InvocationSink, InvocationCommand, InvocationCommandType } from './';
+import { IInvocationCommand, EInvocationCommandType } from '@statechart/types';
+import { InvocationSink } from './';
 
 class Datamodel {
   public internalEvents: any;
@@ -66,21 +67,21 @@ test('invocations', (t) => {
 
   const sink = new Sink(t);
 
-  sink.event = (time: number, command: InvocationCommand<any>) => {
+  sink.event = (time: number, command: IInvocationCommand<any>) => {
     if (time === 1) {
-      t.true(command.type === InvocationCommandType.OPEN);
+      t.true(command.type === EInvocationCommandType.OPEN);
       t.true(command.invocation.id === 'id0');
     }
     if (time === 3) {
-      t.true(command.type === InvocationCommandType.OPEN);
+      t.true(command.type === EInvocationCommandType.OPEN);
       t.true(command.invocation.id === 'id1');
     }
     if (time === 4) {
-      t.true(command.type === InvocationCommandType.CLOSE);
+      t.true(command.type === EInvocationCommandType.CLOSE);
       t.true(command.invocation.id === 'id0');
     }
     if (time === 7) {
-      t.true(command.type === InvocationCommandType.CLOSE);
+      t.true(command.type === EInvocationCommandType.CLOSE);
       t.true(command.invocation.id === 'id1');
     }
   };

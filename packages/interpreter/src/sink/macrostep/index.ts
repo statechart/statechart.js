@@ -11,7 +11,11 @@ export class MacrostepSink<Configuration, Event> implements Sink<Configuration> 
   private configuration: Configuration;
   private configurationSink: Sink<Configuration>;
 
-  constructor(sink: Sink<Event>, configuration: Sink<Configuration>, invocations: Sink<Configuration>) {
+  constructor(
+    sink: Sink<Event>,
+    configuration: Sink<Configuration>,
+    invocations: Sink<Configuration>,
+  ) {
     this.sink = sink;
     this.invocations = invocations;
     this.configurationSink = configuration;
@@ -57,7 +61,7 @@ export class MacrostepSink<Configuration, Event> implements Sink<Configuration> 
     // if we already are in a macrostep then wait for a loop
     const { macrostepTime } = this;
     if (t >= (macrostepTime || 0)) this.macrostepTime = t;
-    if (typeof macrostepTime !== 'undefined') return;
+    if (macrostepTime === undefined) return;
 
     const {
       invocations,
@@ -68,7 +72,7 @@ export class MacrostepSink<Configuration, Event> implements Sink<Configuration> 
 
     let event;
 
-    while(this.loop) {
+    while (this.loop) {
       const {
         configuration,
         macrostepTime: t,
@@ -76,7 +80,7 @@ export class MacrostepSink<Configuration, Event> implements Sink<Configuration> 
 
       // handle internal events
       if (event = internal.shift()) { // tslint:disable-line
-        this.e(t as number, event);
+        this.evt(t as number, event);
         continue;
       }
 
@@ -85,7 +89,7 @@ export class MacrostepSink<Configuration, Event> implements Sink<Configuration> 
 
       // handle external events
       if (event = external.shift()) { // tslint:disable-line
-        this.e(t as number, event);
+        this.evt(t as number, event);
         continue;
       }
 
@@ -96,7 +100,7 @@ export class MacrostepSink<Configuration, Event> implements Sink<Configuration> 
     this.macrostepTime = undefined;
   }
 
-  private e(t: Time, event: Event) {
+  private evt(t: Time, event: Event) {
     this.loop = false;
     this.next = false;
     this.sink.event(t, event);

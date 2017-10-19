@@ -1,19 +1,21 @@
 import { test } from 'ava';
 import { Time, Scheduler, Sink } from '@most/types';
 import { newDefaultScheduler } from '@most/scheduler';
-import { RoutableEvent } from '../router/index';
+import { IInvocationCommand, EInvocationCommandType } from '@statechart/types';
 import {
   Invoker,
   InvokerMap,
+  InvocationEvent,
   InvocationInstance,
   InvocationRouter,
 } from './';
 
 type Event = {};
-type Invocation = {} & RoutableEvent;
+type Invocation = {} & InvocationEvent;
+type Command = IInvocationCommand<Invocation>;
 
 test('invocation router', async (t) => {
-  t.plan(14);
+  t.plan(13);
 
   const invokers: InvokerMap<Event, Invocation>
     = new Map();
@@ -39,13 +41,16 @@ test('invocation router', async (t) => {
       this.invocationTarget = invocationTarget;
     }
 
-    run(eventSink: Sink<Event>, invocationSink: Sink<Invocation>, _S: Scheduler) {
+    run(eventSink: Sink<Event>, invocationSink: Sink<Command>, _S: Scheduler) {
       const { time, invocationTarget } = this;
       eventSink.event(time, {});
-      eventSink.end(time); // shouldn't do anything - just for coverage
 
       if (typeof invocationTarget === 'string') invocationSink.event(time, {
-        type: invocationTarget,
+        id: invocationTarget,
+        type: EInvocationCommandType.OPEN,
+        invocation: {
+          type: invocationTarget,
+        },
       });
 
       t.pass();
@@ -78,16 +83,44 @@ test('invocation router', async (t) => {
   const router = new InvocationRouter(eventSink, scheduler, invokers);
 
   router.event(0, {
-    type: 'first',
+    id: 'first',
+    type: EInvocationCommandType.OPEN,
+    invocation: {
+      type: 'first',
+    },
   });
 
   router.event(1, {
-    type: 'second',
+    id: 'second',
+    type: EInvocationCommandType.OPEN,
+    invocation: {
+      type: 'second',
+    },
+  });
+
+  router.event(1.5, {
+    id: 'first',
+    type: EInvocationCommandType.CLOSE,
+    invocation: {
+      type: 'first',
+    },
+  });
+
+  router.event(1.5, {
+    id: 'fooboar',
+    type: EInvocationCommandType.CLOSE,
+    invocation: {
+      type: 'second',
+    },
   });
 
   await t.throws(new Promise(() => {
     router.event(2, {
-      type: 'unknown',
+      id: 'unknown',
+      type: EInvocationCommandType.OPEN,
+      invocation: {
+        type: 'unknown',
+      },
     });
   }));
 

@@ -1,15 +1,10 @@
 import { Disposable, Time, Scheduler, Sink } from '@most/types';
 
-export interface RoutableEvent {
-  type: string;
-}
-
 export class RoutingError<Event> extends Error {
-  event: Event & RoutableEvent;
+  event: Event;
   type: string;
 
-  constructor(event: Event & RoutableEvent) {
-    const { type } = event;
+  constructor(event: Event, type: string) {
     super(`Unknown ioprocessor ${JSON.stringify(type)}`);
     this.event = event;
     this.type = type;
@@ -19,17 +14,17 @@ export class RoutingError<Event> extends Error {
 export type ProcessorMap<Processor> = Map<string, Processor>;
 
 export abstract class Router<InEvent, OutEvent, Processor>
-    implements Sink<InEvent & RoutableEvent> {
+    implements Sink<InEvent> {
   protected sink: Sink<OutEvent>;
   protected scheduler: Scheduler;
   protected processors: ProcessorMap<Processor>;
-  protected disposables: Set<Disposable>;
+  protected disposables: Map<string, Disposable>;
 
   constructor(sink: Sink<OutEvent>, scheduler: Scheduler, processors: ProcessorMap<Processor>) {
     this.sink = sink;
     this.scheduler = scheduler;
     this.processors = processors;
-    this.disposables = new Set();
+    this.disposables = new Map();
   }
 
   abstract init(
@@ -40,21 +35,26 @@ export abstract class Router<InEvent, OutEvent, Processor>
     processor: Processor,
   ): Disposable | void;
 
-  event(t: Time, x: InEvent & RoutableEvent) {
-    const { type } = x;
+  abstract getType(x: InEvent): string;
+
+  abstract getId(x: InEvent): string;
+
+  event(t: Time, x: InEvent) {
+    const type = this.getType(x);
     const { sink, scheduler, processors, disposables } = this;
     const processor = processors.get(type);
-    if (typeof processor === 'undefined') throw new RoutingError(x);
+    if (typeof processor === 'undefined') throw new RoutingError(x, type);
 
     const disposable = this.init(t, x, sink, scheduler, processor);
 
     if (typeof disposable !== 'undefined') {
+      const id = this.getId(x);
       const { dispose } = disposable;
       disposable.dispose = () => {
-        disposables.delete(disposable);
+        disposables.delete(id);
         dispose.apply(disposable);
       };
-      disposables.add(disposable);
+      disposables.set(id, disposable);
     }
   }
 

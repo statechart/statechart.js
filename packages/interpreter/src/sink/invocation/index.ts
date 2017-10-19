@@ -1,9 +1,12 @@
 import { Sink, Time } from '@most/types';
+import uuid from 'uuid/v4';
 import {
   Configuration,
 } from '@statechart/interpreter-microstep';
 import {
   IDatamodel,
+  IInvocationCommand,
+  EInvocationCommandType,
 } from '@statechart/types';
 import {
   Document,
@@ -22,39 +25,33 @@ export interface Invocation<Content> {
   depth: number;
 }
 
-export const enum InvocationCommandType {
-  OPEN = 0,
-  CLOSE = 1,
-}
-
-export interface InvocationCommand<Content> {
-  type: InvocationCommandType;
-  invocation: Invocation<Content>;
-}
-
 export class InvocationSink<Event, Executable, Content>
-    extends Pipe<Configuration, InvocationCommand<Content>> {
+    extends Pipe<Configuration, IInvocationCommand<Invocation<Content>>> {
   private document: Document<Executable>;
   private active: Map<InvocationExecutable<Executable>, Invocation<Content>>;
+  private activeIds: Map<InvocationExecutable<Executable>, string>;
   private datamodel: IDatamodel<Configuration, Event, Executable>;
 
   constructor(
-    sink: Sink<InvocationCommand<Content>>,
+    sink: Sink<IInvocationCommand<Invocation<Content>>>,
     document: Document<Executable>,
     datamodel: IDatamodel<Configuration, Event, Executable>,
   ) {
     super(sink);
     this.document = document;
     this.active = new Map();
+    this.activeIds = new Map();
     this.datamodel = datamodel;
   }
 
   event(t: Time, configuration: Configuration) {
     const acc = new Map();
+    const accIds = new Map();
     const {
       datamodel,
       document: { states },
       active: activeInvocations,
+      activeIds,
       sink,
     } = this;
 
@@ -70,10 +67,11 @@ export class InvocationSink<Event, Executable, Content>
         const prev = activeInvocations.get(invocation);
         if (prev) {
           acc.set(invocation, prev);
+          accIds.set(invocation, activeIds.get(invocation));
           continue;
         }
 
-        let inv;
+        let inv: Invocation<Content> | undefined;
 
         try {
           inv = {
@@ -84,23 +82,28 @@ export class InvocationSink<Event, Executable, Content>
             content: datamodel.query(invocation.content),
             source: idx,
             depth: ancestors.length,
-          } as Invocation<Content>;
+            autoforward: invocation.autoforward,
+          };
         } catch (err) {
           sink.error(t, err);
         }
 
         if (inv) {
+          const id = uuid();
           acc.set(invocation, inv);
-          sink.event(t, { type: InvocationCommandType.OPEN, invocation: inv });
+          accIds.set(invocation, id);
+          sink.event(t, { id, type: EInvocationCommandType.OPEN, invocation: inv });
         }
       }
     });
 
     activeInvocations.forEach((inv, invocation) => {
       if (acc.has(invocation)) return;
-      sink.event(t, { type: InvocationCommandType.CLOSE, invocation: inv });
+      const id = activeIds.get(invocation) as string;
+      sink.event(t, { id, type: EInvocationCommandType.CLOSE, invocation: inv });
     });
 
     this.active = acc;
+    this.activeIds = accIds;
   }
 }

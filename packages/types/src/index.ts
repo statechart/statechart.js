@@ -22,3 +22,14 @@ export interface IDatamodel<Configuration, Event, Executable> {
   setEvent(event?: Event): void;
   setConfiguration(configuration: Configuration): void;
 }
+
+export const enum EInvocationCommandType {
+  OPEN = 0,
+  CLOSE = 1,
+}
+
+export interface IInvocationCommand<Invocation> {
+  type: EInvocationCommandType;
+  invocation: Invocation;
+  id: string;
+}

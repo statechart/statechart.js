@@ -8,20 +8,14 @@ import {
 } from '@statechart/interpreter-microstep';
 import { Document } from '@statechart/scexe';
 
-type INIT = 0;
-const INIT = 0;
-type STABLE = 1;
-const STABLE = 1;
-type AWAIT_EVENT = 2;
-const AWAIT_EVENT = 2;
-type HANDLE_EVENT = 3;
-const HANDLE_EVENT = 3;
-type SYNCHRONIZE = 4;
-const SYNCHRONIZE = 4;
-type STABILIZE = 5;
-const STABILIZE = 5;
-
-type State = INIT | STABLE | AWAIT_EVENT | HANDLE_EVENT | SYNCHRONIZE | STABILIZE;
+const enum State {
+  INIT = 0,
+  STABLE = 1,
+  AWAIT_EVENT = 2,
+  HANDLE_EVENT = 3,
+  SYNCHRONIZE = 4,
+  STABILIZE = 5,
+}
 
 export interface IDatamodelSink<Event, Executable> extends Sink<Event | undefined> {
   configuration(t: Time, x: Configuration): any;
@@ -47,7 +41,7 @@ export class MicrostepSink<Event, Executable> implements Sink<Event | undefined>
     this.document = document;
     this.sink = sink;
     this.datamodel = datamodel;
-    this.s = INIT;
+    this.s = State.INIT;
     this.loop = false;
     this.state = {
       configuration: new Set(),
@@ -77,7 +71,7 @@ export class MicrostepSink<Event, Executable> implements Sink<Event | undefined>
     const { microstepTime } = this;
     if (t >= (microstepTime || 0)) this.microstepTime = t;
     this.microstepEvent = event;
-    if (typeof microstepTime !== 'undefined') return;
+    if (microstepTime === undefined) return;
 
     const { datamodel, document } = this;
 
@@ -100,34 +94,34 @@ export class MicrostepSink<Event, Executable> implements Sink<Event | undefined>
       datamodel.configuration(t as number, configuration);
 
       switch (this.s) {
-        case INIT:
-          this.s = STABILIZE;
+        case State.INIT:
+          this.s = State.STABILIZE;
           this.state = init(backend, document);
           break;
 
-        case STABLE:
-          this.s = AWAIT_EVENT;
+        case State.STABLE:
+          this.s = State.AWAIT_EVENT;
           this.loop = false;
           this.sink.event(t as number, configuration);
           break;
 
-        case AWAIT_EVENT:
-          this.s = HANDLE_EVENT;
+        case State.AWAIT_EVENT:
+          this.s = State.HANDLE_EVENT;
           this.microstepEvent = undefined;
           this.state = handleEvent(backend, document, state, microstepEvent);
           break;
 
-        case HANDLE_EVENT:
-          this.s = SYNCHRONIZE;
+        case State.HANDLE_EVENT:
+          this.s = State.SYNCHRONIZE;
           break;
 
-        case SYNCHRONIZE:
-          this.s = STABILIZE;
+        case State.SYNCHRONIZE:
+          this.s = State.STABILIZE;
           this.state = synchronize(backend, document, state);
           break;
 
-        case STABILIZE:
-          this.s = state.isStable ? STABLE : SYNCHRONIZE;
+        case State.STABILIZE:
+          this.s = state.isStable ? State.STABLE : State.SYNCHRONIZE;
           break;
       }
     }
