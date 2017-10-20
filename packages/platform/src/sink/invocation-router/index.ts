@@ -21,10 +21,16 @@ export type Invoker<Event, Invocation> =
 export type InvokerMap<Event, Invocation> =
   Map<string, Invoker<Event, Invocation>>;
 
-export class InvocationRouter<Event, Invocation extends InvocationEvent>
-    extends Router<IInvocationCommand<Invocation>, Event, Invoker<Event, Invocation>> {
+export class InvocationRouter<
+  Event,
+  Invocation extends InvocationEvent
+> extends Router<
+  IInvocationCommand<Invocation>,
+  Event,
+  Invoker<Event, Invocation>
+> {
 
-  getType({ invocation: { type } }: IInvocationCommand<Invocation & InvocationEvent>) {
+  getType({ invocation: { type } }: IInvocationCommand<Invocation>) {
     return type;
   }
 

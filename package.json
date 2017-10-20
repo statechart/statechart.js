@@ -12,7 +12,8 @@
   },
   "scripts": {
     "build": "lerna exec \"rollup -c\"",
-    "test": "mocha --require ./test packages/*/test/*.js",
+    "unit": "lerna run unit",
+    "test": "lerna run test",
     "test:watch": "mocha --require ./test -w packages/*/test/*.js"
   },
   "dependencies": {
