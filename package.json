@@ -11,10 +11,9 @@
     "rollup-plugin-json": "^2.1.1"
   },
   "scripts": {
-    "build": "lerna exec \"rollup -c\"",
+    "build": "lerna run build",
     "unit": "lerna run unit",
-    "test": "lerna run test",
-    "test:watch": "mocha --require ./test -w packages/*/test/*.js"
+    "test": "lerna run test"
   },
   "dependencies": {
     "babel-runtime": "^6.23.0"

@@ -8,6 +8,7 @@ import {
 } from '@statechart/interpreter';
 import { Document } from '@statechart/scexe';
 import { StreamSink } from '@statechart/util-most';
+import uuid from 'uuid/v4'; // tslint:disable-line
 
 export type MapSink<Event> = Map<string, Sink<Event>>;
 
@@ -72,7 +73,7 @@ export function createSCXMLInterpreter<Invocation, Event, Executable>(
   sinks: MapSink<Event>,
 ): Invoker<Event, Invocation & SCXMLInvocation<Executable>> {
   return (_T: Time, invocation: Invocation & SCXMLInvocation<Executable>) => {
-    const sessionId = '123';
+    const sessionId = uuid();
     const datamodel = createDatamodel(sessionId);
 
     const instance = new SCXMLInterpreterInstance(invocation, datamodel);

@@ -1,13 +1,13 @@
 {
   "extends": "../../tsconfig",
   "compilerOptions": {
-    "outDir": "mjs",
-    "rootDir": "src",
+    "outDir": "src",
+    "rootDir": "ts",
     "baseUrl": ".",
-    "declarationDir": "dist"
+    "declarationDir": "src"
   },
   "include": [
-    "src/**/*.ts"
+    "ts/**/*.ts"
   ],
   "exclude": [
     "node_modules/**"

@@ -2,18 +2,17 @@
   "name": "@statechart/types",
   "version": "0.1.45",
   "description": "",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "module": "dist/index.mjs",
+  "main": "lib/index.js",
+  "typings": "src/index.d.ts",
+  "module": "src/index.js",
   "repository": "https://github.com/statechart/statechart.js",
   "author": "Cameron Bytheway <bytheway.cameron@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "trash lib && yarn build:mjs && yarn build:lib && yarn build:dist",
-    "build:mjs": "tsc -p tsconfig.json",
+    "build": "rm -rf lib src && yarn build:src && yarn build:lib",
+    "build:src": "tsc -p tsconfig.json",
     "build:lib": "tsc -p tsconfig.lib.json",
-    "build:dist": "rollup -c",
-    "lint": "tslint --project . --type-check src/**/*.ts",
+    "lint": "tslint --project . --type-check ts/**/*.ts",
     "unit": "yarn build && nyc ava",
     "check-coverage": "nyc check-coverage --lines 100 --functions 100 --branches 100",
     "test": "yarn lint && yarn unit && yarn check-coverage",
@@ -22,8 +21,8 @@
     "html-coverage": "nyc report --reporter=html",
     "send-coverage": "nyc report --reporter=lcov > coverage.lcov && codecov",
     "docs": "yarn docs:html && opn docs/index.html",
-    "docs:html": "typedoc src/index.ts --excludePrivate --mode file --theme minimal --out docs",
-    "docs:json": "typedoc --mode file --json docs/typedoc.json src/index.ts",
+    "docs:html": "typedoc ts/index.ts --excludePrivate --mode file --theme minimal --out docs",
+    "docs:json": "typedoc --mode file --json docs/typedoc.json ts/index.ts",
     "docs:publish": "yarn docs:html && gh-pages -d docs",
     "changelog": "standard-version",
     "release": "yarn reset && yarn test && yarn docs:publish && yarn changelog",
@@ -52,8 +51,7 @@
   "nyc": {
     "exclude": [
       "**/*.test.js",
-      "dist/**",
-      "mjs/**"
+      "src/**"
     ]
   },
   "ava": {

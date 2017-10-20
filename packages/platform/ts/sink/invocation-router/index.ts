@@ -50,7 +50,7 @@ export class InvocationRouter<
 
     if (type === EInvocationCommandType.CLOSE) {
       const disposable = disposables.get(id);
-      if (typeof disposable !== 'undefined') disposable.dispose();
+      if (disposable !== undefined) disposable.dispose();
       return;
     }
 
