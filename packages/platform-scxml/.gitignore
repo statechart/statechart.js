@@ -1,9 +1,7 @@
 /node_modules
 /dist
 /lib
-/mjs
-/test
-/src/**.js
+/src
 
 /doc
 /coverage

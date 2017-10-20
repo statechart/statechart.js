@@ -1,14 +1,4 @@
-src
-config
-examples
-test
+ts
 tsconfig.json
+tsconfig.lib.json
 tslint.json
-.travis.yml
-.github
-build/temp
-build/docs
-
-coverage
-.nyc_output
-*.log
