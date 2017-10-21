@@ -1,5 +1,5 @@
 import { Sink, Time } from '@most/types';
-import uuid from 'uuid/v4'; // tslint:disable-line
+import uuid from '@statechart/util-uuid'; // tslint:disable-line
 import {
   Configuration,
 } from '@statechart/interpreter-microstep';

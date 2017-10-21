@@ -9,15 +9,15 @@ class Sink {
     this.t = t;
   }
 
-  event(_t: number, _b: any) {
+  event(_T: number, _V: any) {
     this.t.fail();
   }
 
-  end(_t: number) {
+  end(_T: number) {
     this.t.fail();
   }
 
-  error(_t: number, _e: Error) {
+  error(_T: number, _E: Error) {
     this.t.fail();
   }
 }
@@ -56,7 +56,7 @@ test('macrostep', (t) => {
     t.fail();
   };
 
-  eventSink.error = (time: number, _error: Error) => {
+  eventSink.error = (time: number, _E: Error) => {
     t.true(time === 7);
   };
 
@@ -64,7 +64,7 @@ test('macrostep', (t) => {
     t.true(time === 9);
   };
 
-  invocationSink.event = (time: number, _configuration: any) => {
+  invocationSink.event = (time: number, _C: any) => {
     t.true(time === 2 || time === 3 || time === 4 || time === 6 || time === 6.5 || time === 8);
   };
 
@@ -75,10 +75,10 @@ test('macrostep', (t) => {
   const sink = new MacrostepSink(eventSink, configurationSink, invocationSink);
 
   sink.raise(0, {
-    name: 'internal1'
+    name: 'internal1',
   });
   sink.send(0, {
-    name: 'external1'
+    name: 'external1',
   });
   sink.send(0, {
     name: 'external2',
@@ -86,6 +86,7 @@ test('macrostep', (t) => {
   sink.raise(0, {
     name: 'internal2',
   });
+
 
   sink.event(0, new Set());
   sink.event(1, new Set());

@@ -1,5 +1,5 @@
 {
-  "name": "@statechart/interpreter",
+  "name": "@statechart/util-uuid",
   "version": "0.1.45",
   "description": "",
   "main": "lib/index.js",
@@ -12,12 +12,11 @@
     "build": "rm -rf lib src && yarn build:src && yarn build:lib",
     "build:src": "tsc -p tsconfig.json",
     "build:lib": "tsc -p tsconfig.lib.json",
-    "build:watch": "npm run --silent build:lib -- -w",
     "lint": "tslint --project . --type-check ts/**/*.ts",
     "unit": "yarn build && nyc ava",
     "check-coverage": "nyc check-coverage --lines 100 --functions 100 --branches 100",
     "test": "yarn lint && yarn unit && yarn check-coverage",
-    "test:watch": "yarn build:lib && concurrently -r --kill-others 'yarn build:watch' 'sleepms 2000 && ava --watch'",
+    "watch": "yarn build:lib && concurrently -r --kill-others 'npm run --silent build:lib -- -w' 'sleepms 2000 && ava --watch'",
     "cov": "yarn unit && yarn html-coverage && opn coverage/index.html",
     "html-coverage": "nyc report --reporter=html",
     "send-coverage": "nyc report --reporter=lcov > coverage.lcov && codecov",
@@ -65,13 +64,7 @@
     ]
   },
   "dependencies": {
-    "@most/scheduler": "^0.13.1",
-    "@most/types": "^0.11.1",
-    "@statechart/interpreter-microstep": "^0.1.45",
-    "@statechart/types": "^0.1.45",
-    "@statechart/scexe": "^0.1.45",
-    "@statechart/util-set": "^0.1.45",
-    "@statechart/util-uuid": "^0.1.45",
-    "tslib": "^1.6.0"
+    "tslib": "^1.6.0",
+    "uuid": "^3.1.0"
   }
 }

@@ -163,7 +163,7 @@ test.cb('interpreter', (t) => {
         targets: [2],
         conflicts: [1, 2, 3],
         exits: [1],
-        events: ({ name }: any) => name === 'first',
+        event: ({ name }: any) => name === 'first',
         condition: (_: any, { In }: any) => In(1),
       },
       {
@@ -174,7 +174,7 @@ test.cb('interpreter', (t) => {
         conflicts: [0, 2, 3],
         exits: [2],
         onTransition: [],
-        events: ({ name }: any) => name === 'internal_first',
+        event: ({ name }: any) => name === 'internal_first',
       },
       {
         type: TransitionType.EXTERNAL,
@@ -184,7 +184,7 @@ test.cb('interpreter', (t) => {
         conflicts: [0, 1, 3],
         exits: [1],
         onTransition: [],
-        events: ({ name }: any) => name === 'second',
+        event: ({ name }: any) => name === 'second',
       },
       {
         type: TransitionType.EXTERNAL,
@@ -194,7 +194,7 @@ test.cb('interpreter', (t) => {
         conflicts: [0, 1, 2],
         exits: [2],
         onTransition: [],
-        events: ({ name }: any) => name === 'third',
+        event: ({ name }: any) => name === 'third',
       },
     ],
   };

@@ -1,6 +1,6 @@
 import { test, TestContext } from 'ava';
 import { Configuration } from '@statechart/interpreter-microstep';
-import { StateType, TransitionType } from '@statechart/scexe';
+import { Document, StateType, TransitionType } from '@statechart/scexe';
 import { toArray } from '@statechart/util-set';
 import { MicrostepSink, IDatamodelSink } from './';
 
@@ -11,15 +11,15 @@ class Sink {
     this.t = t;
   }
 
-  event(_t: number, _b: any) {
+  event(_R: number, _V: any) {
     this.t.fail();
   }
 
-  end(_t: number) {
+  end(_R: number) {
     this.t.fail();
   }
 
-  error(_t: number, _e: Error) {
+  error(_R: number, _E: Error) {
     this.t.fail();
   }
 }
@@ -28,11 +28,11 @@ type Executable = (t: number) => any;
 class DatamodelSink<Data> extends Sink implements IDatamodelSink<Data, Executable> {
   public $event: any;
 
-  event(_t: number, e: any) {
+  event(_R: number, e: any) {
     this.$event = e;
   }
 
-  configuration(_t: number, _c: Configuration) {
+  configuration(_R: number, _C: Configuration) {
 
   }
 
@@ -68,7 +68,7 @@ test.cb('microstep', (t) => {
     t.fail(`unhandled time ${time}`);
   };
 
-  datamodel.error = sink.error = (time: number, _e: Error) => {
+  datamodel.error = sink.error = (time: number, _E: Error) => {
     t.true(time === 2);
   };
 
@@ -76,7 +76,7 @@ test.cb('microstep', (t) => {
     t.true(time === 3);
   };
 
-  const document = {
+  const document: Document<any> = {
     states: [
       {
         type: StateType.COMPOUND,
@@ -85,7 +85,6 @@ test.cb('microstep', (t) => {
         invocations: [],
         parent: 0,
         ancestors: [],
-        descendants: [1, 2],
         onInit: [],
         onEnter: [],
         onExit: [],
@@ -100,7 +99,6 @@ test.cb('microstep', (t) => {
         invocations: [],
         parent: 0,
         ancestors: [0],
-        descendants: [],
         onInit: [],
         onEnter: [],
         onExit: [],
@@ -115,7 +113,6 @@ test.cb('microstep', (t) => {
         invocations: [],
         parent: 0,
         ancestors: [0],
-        descendants: [],
         onInit: [],
         onEnter: [],
         onExit: [],
@@ -138,7 +135,7 @@ test.cb('microstep', (t) => {
             microstep.event(time + 0.5);
           },
         ],
-        events: undefined,
+        event: undefined,
       },
       {
         type: TransitionType.EXTERNAL,
@@ -148,7 +145,7 @@ test.cb('microstep', (t) => {
         conflicts: [0],
         exits: [2],
         onTransition: [],
-        events: ({ name }: any) => name === 'first',
+        event: ({ name }: any) => name === 'first',
       },
     ],
   };
@@ -158,8 +155,11 @@ test.cb('microstep', (t) => {
   microstep.event(0);
   microstep.error(2, new Error('foo'));
 
-  setTimeout(() => {
-    microstep.end(3);
-    t.end();
-  }, 1)
+  setTimeout(
+    () => {
+      microstep.end(3);
+      t.end();
+    },
+    1,
+  );
 });

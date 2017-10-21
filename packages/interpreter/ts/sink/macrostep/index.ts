@@ -61,7 +61,7 @@ export class MacrostepSink<Configuration, Event> implements Sink<Configuration> 
     // if we already are in a macrostep then wait for a loop
     const { macrostepTime } = this;
     if (t >= (macrostepTime || 0)) this.macrostepTime = t;
-    if (macrostepTime === undefined) return;
+    if (macrostepTime !== undefined) return;
 
     const {
       invocations,

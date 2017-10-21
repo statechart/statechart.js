@@ -1,21 +1,35 @@
 {
+  "dependencies": {
+    "babel-runtime": "^6.23.0"
+  },
   "devDependencies": {
+    "ava": "^0.22.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-env": "^1.5.2",
+    "concurrently": "^3.4.0",
     "expect": "^1.20.2",
     "lerna": "^2.4.0",
     "mocha": "^3.4.1",
     "rollup": "^0.41.6",
     "rollup-plugin-babel": "^2.7.1",
-    "rollup-plugin-json": "^2.1.1"
+    "rollup-plugin-json": "^2.1.1",
+    "sleep-ms": "^2.0.1"
   },
   "scripts": {
+    "bootstrap": "lerna bootstrap --hoist",
     "build": "lerna run build",
-    "unit": "lerna run unit",
-    "test": "lerna run test"
+    "test": "lerna run test",
+    "test:watch": "yarn build && concurrently -r --kill-others 'lerna run --parallel build:watch' 'sleepms 2000 && ava --watch'",
+    "unit": "lerna run unit"
   },
-  "dependencies": {
-    "babel-runtime": "^6.23.0"
+  "ava": {
+    "files": [
+      "packages/**/lib/**/*.test.js"
+    ],
+    "source": [
+      "packages/**/lib/**/*.js",
+      "packages/**/lib/**/*.test.js"
+    ]
   }
 }

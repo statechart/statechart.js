@@ -77,8 +77,8 @@ function isTransitionApplicable<Event, Executable>(
   event: Event | undefined,
   backend: Backend<Event, Executable>,
 ) {
-  const hasEvents = typeof matcher !== 'undefined';
-  const hasEvent = typeof event !== 'undefined';
+  const hasEvents = matcher !== undefined;
+  const hasEvent = event !== undefined;
   if (!hasEvents && !hasEvent) return true;
   if (hasEvents && hasEvent) return backend.match(matcher, event as Event);
   return false;
@@ -88,7 +88,7 @@ function isTransitionEnabled<Event, Executable>(
   { condition }: Transition<Executable>,
   backend: Backend<Event, Executable>,
 ) {
-  return typeof condition === 'undefined' ?
+  return condition === undefined ?
     true :
     backend.query(condition);
 }

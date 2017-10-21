@@ -16,7 +16,7 @@ export interface InvocationInstance<Event, Invocation> {
 }
 
 export type Invoker<Event, Invocation> =
-  (t: Time, invocation: Invocation) => InvocationInstance<Event, Invocation>;
+  (t: Time, invocation: Invocation, id?: string) => InvocationInstance<Event, Invocation>;
 
 export type InvokerMap<Event, Invocation> =
   Map<string, Invoker<Event, Invocation>>;
@@ -54,7 +54,7 @@ export class InvocationRouter<
       return;
     }
 
-    const instance = processor(t, invocation);
+    const instance = processor(t, invocation, id);
 
     const invocationSink = new UnendableSink(this);
 

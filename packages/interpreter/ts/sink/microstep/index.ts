@@ -71,7 +71,7 @@ export class MicrostepSink<Event, Executable> implements Sink<Event | undefined>
     const { microstepTime } = this;
     if (t >= (microstepTime || 0)) this.microstepTime = t;
     this.microstepEvent = event;
-    if (microstepTime === undefined) return;
+    if (microstepTime !== undefined) return;
 
     const { datamodel, document } = this;
 
