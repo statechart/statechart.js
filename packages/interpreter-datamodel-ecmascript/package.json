@@ -1,14 +1,10 @@
 {
-  "name": "@statechart/util-uuid",
+  "name": "@statechart/interpreter-datamodel-ecmascript",
   "version": "0.1.45",
   "description": "",
   "main": "lib/index.js",
   "typings": "src/index.d.ts",
   "module": "src/index.js",
-  "browser": {
-    "src/rnd.js": "src/rnd.browser.js",
-    "lib/rnd.js": "lib/rnd.browser.js"
-  },
   "repository": "https://github.com/statechart/statechart.js",
   "author": "Cameron Bytheway <bytheway.cameron@gmail.com>",
   "license": "MIT",
@@ -69,7 +65,9 @@
     ]
   },
   "dependencies": {
-    "tslib": "^1.6.0",
-    "uuid": "^3.1.0"
+    "@most/types": "^0.11.1",
+    "@statechart/interpreter": "^0.1.45",
+    "@statechart/types": "^0.1.45",
+    "tslib": "^1.6.0"
   }
 }

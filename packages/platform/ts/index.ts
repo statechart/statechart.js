@@ -1,4 +1,5 @@
 import { Stream, Scheduler, Sink, Disposable } from '@most/types';
+import { disposeBoth } from '@most/disposable';
 import { IInvocationCommand } from '@statechart/types';
 import {
   Invoker,
@@ -75,4 +76,36 @@ export function withIOProcessors<Event extends IOProcessorEvent>(
   events: Stream<Event>,
 ) {
   return new PlatformEvents(events, ioprocessors);
+}
+
+export type PlatformPlugin<Event, Invocation> =
+  (
+    ioprocessors: IOProcessorMap<Event>,
+    invokers: InvokerMap<Event, Invocation>,
+  ) => any;
+
+export class Platform<Event extends IOProcessorEvent, Invocation extends InvocationEvent> {
+  ioprocessors: IOProcessorMap<Event>;
+  invokers: InvokerMap<Event, Invocation>;
+  events: Stream<Event>;
+  invocations: Stream<Event>;
+
+  constructor(events: Stream<Event>, invocations: Stream<IInvocationCommand<Invocation>>) {
+    const ioprocessors = this.ioprocessors = new Map();
+    const invokers = this.invokers = new Map();
+    this.events = withIOProcessors(ioprocessors, events);
+    this.invocations = withInvocations(invokers, invocations);
+  }
+
+  use(fn: PlatformPlugin<Event, Invocation>) {
+    const { ioprocessors, invokers } = this;
+    fn(ioprocessors, invokers);
+  }
+
+  run(outgoingEvents: Sink<Event>, scheduler: Scheduler): Disposable {
+    const { events, invocations } = this;
+    const eventD = events.run(outgoingEvents, scheduler);
+    const invocationD = invocations.run(outgoingEvents, scheduler);
+    return disposeBoth(eventD, invocationD);
+  }
 }

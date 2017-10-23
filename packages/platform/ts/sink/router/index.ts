@@ -2,10 +2,10 @@ import { Disposable, Time, Scheduler, Sink } from '@most/types';
 
 export class RoutingError<Event> extends Error {
   event: Event;
-  type: string;
+  type: string | undefined;
 
-  constructor(event: Event, type: string) {
-    super(`Unknown ioprocessor ${JSON.stringify(type)}`);
+  constructor(event: Event, type: string | undefined) {
+    super(`Unknown instance ${JSON.stringify(type)}`);
     this.event = event;
     this.type = type;
   }
@@ -35,26 +35,28 @@ export abstract class Router<InEvent, OutEvent, Processor>
     processor: Processor,
   ): Disposable | void;
 
-  abstract getType(x: InEvent): string;
+  abstract getType(x: InEvent): string | undefined;
 
-  abstract getId(x: InEvent): string;
+  abstract getId(x: InEvent): string | undefined;
 
   event(t: Time, x: InEvent) {
     const type = this.getType(x);
     const { sink, scheduler, processors, disposables } = this;
-    const processor = processors.get(type);
-    if (typeof processor === 'undefined') throw new RoutingError(x, type);
+    const processor = type !== undefined ? processors.get(type) : type;
+    if (processor === undefined) throw new RoutingError(x, type);
 
     const disposable = this.init(t, x, sink, scheduler, processor);
 
-    if (typeof disposable !== 'undefined') {
+    if (disposable !== undefined) {
       const id = this.getId(x);
-      const { dispose } = disposable;
-      disposable.dispose = () => {
-        disposables.delete(id);
-        dispose.apply(disposable);
-      };
-      disposables.set(id, disposable);
+      if (id !== undefined) {
+        const { dispose } = disposable;
+        disposable.dispose = () => {
+          disposables.delete(id);
+          dispose.apply(disposable);
+        };
+        disposables.set(id, disposable);
+      }
     }
   }
 

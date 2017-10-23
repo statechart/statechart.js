@@ -12,6 +12,7 @@
     "build": "rm -rf lib src && yarn build:src && yarn build:lib",
     "build:src": "tsc -p tsconfig.json",
     "build:lib": "tsc -p tsconfig.lib.json",
+    "build:watch": "npm run --silent build:lib -- -w",
     "lint": "tslint --project . --type-check ts/**/*.ts",
     "unit": "yarn build && nyc ava",
     "check-coverage": "nyc check-coverage --lines 100 --functions 100 --branches 100",

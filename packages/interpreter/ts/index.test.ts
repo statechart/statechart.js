@@ -5,6 +5,7 @@ import { IDatamodel } from '@statechart/types';
 import { StateType, TransitionType } from '@statechart/scexe';
 import { toArray } from '@statechart/util-set';
 import { Interpreter, Configuration } from './';
+// import { StreamSink } from '@statechart/util-most';
 
 class Sink {
   private t: TestContext;
@@ -112,7 +113,6 @@ test.cb('interpreter', (t) => {
         invocations: [],
         parent: 0,
         ancestors: [],
-        descendants: [1, 2],
         onInit: [],
         onEnter: [],
         onExit: [],
@@ -127,7 +127,6 @@ test.cb('interpreter', (t) => {
         invocations: [],
         parent: 0,
         ancestors: [0],
-        descendants: [],
         onInit: [],
         onEnter: [],
         onExit: [],
@@ -142,7 +141,6 @@ test.cb('interpreter', (t) => {
         invocations: [],
         parent: 0,
         ancestors: [0],
-        descendants: [],
         onInit: [],
         onEnter: [],
         onExit: [],

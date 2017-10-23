@@ -1,31 +1,30 @@
-const crypto = (global as any).crypto;
+import { bytes } from './rnd';
 
-const hasCrypto =
-  crypto !== undefined &&
-  crypto.getRandomValues !== undefined;
+export default function uuid(): string {
+  const rnds = bytes();
 
-export default hasCrypto ?
-  () => {
-    const buf: Uint16Array = new Uint16Array(8);
-    crypto.getRandomValues(buf);
-    return `${pad(buf[0])}${pad(buf[1])}-${pad(buf[2])}-${pad(buf[3])
-          }-${pad(buf[4])}-${pad(buf[5])}${pad(buf[6])}${pad(buf[7])}`;
-  } :
-  () => {
-    return `${rnd()}${rnd()}-${rnd()}-${rnd()
-          }-${rnd()}-${rnd()}${rnd()}${rnd()}`;
-  };
+  // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+  rnds[6] = (rnds[6] & 0x0f) | 0x40;
+  rnds[8] = (rnds[8] & 0x3f) | 0x80;
 
-function pad(n: number) {
-  let ret = n.toString(16);
-  while (ret.length < 4) {
-    ret = `0${ret}`;
-  }
-  return ret;
+  return toString(rnds);
 }
 
-function rnd() {
-  return Math.floor((1 + Math.random()) * 0x10000)
-    .toString(16)
-    .slice(1);
+const BYTE_TO_HEX: string[] = [];
+for (let i = 0; i < 256; ++i) { // tslint:disable-line
+  BYTE_TO_HEX[i] = (i + 0x100).toString(16).substr(1);
+}
+
+function toString(buf: Uint8Array) {
+  let i = 0;
+  const bth = BYTE_TO_HEX;
+  // tslint:disable
+  return bth[buf[i++]] + bth[buf[i++]] +
+          bth[buf[i++]] + bth[buf[i++]] + '-' +
+          bth[buf[i++]] + bth[buf[i++]] + '-' +
+          bth[buf[i++]] + bth[buf[i++]] + '-' +
+          bth[buf[i++]] + bth[buf[i++]] + '-' +
+          bth[buf[i++]] + bth[buf[i++]] +
+          bth[buf[i++]] + bth[buf[i++]] +
+          bth[buf[i++]] + bth[buf[i++]];
 }

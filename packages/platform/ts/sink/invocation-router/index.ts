@@ -16,7 +16,8 @@ export interface InvocationInstance<Event, Invocation> {
 }
 
 export type Invoker<Event, Invocation> =
-  (t: Time, invocation: Invocation, id?: string) => InvocationInstance<Event, Invocation>;
+  (t: Time, invocation: Invocation, id: string, scheduler: Scheduler)
+    => InvocationInstance<Event, Invocation>;
 
 export type InvokerMap<Event, Invocation> =
   Map<string, Invoker<Event, Invocation>>;
@@ -30,8 +31,10 @@ export class InvocationRouter<
   Invoker<Event, Invocation>
 > {
 
-  getType({ invocation: { type } }: IInvocationCommand<Invocation>) {
-    return type;
+  getType({ invocation }: IInvocationCommand<Invocation>) {
+    return invocation !== undefined ?
+      invocation.type :
+      undefined;
   }
 
   getId({ id }: IInvocationCommand<Invocation>) {
@@ -54,7 +57,7 @@ export class InvocationRouter<
       return;
     }
 
-    const instance = processor(t, invocation, id);
+    const instance = processor(t, invocation, id, scheduler);
 
     const invocationSink = new UnendableSink(this);
 

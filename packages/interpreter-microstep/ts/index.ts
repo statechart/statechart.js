@@ -9,11 +9,16 @@ export function init<Event, Executable>(
   backend: Backend<Event, Executable>,
   doc: Document<Executable>,
 ): InterpreterState {
+  const { states } = doc;
+  const s = initialState();
+
+  if (states.length < 1) return { ...s, isStable: true };
+
   return establishEntryset(
     backend,
     doc,
-    initialState(),
-    new Set(doc.states[0].completion),
+    s,
+    new Set(states[0].completion),
     new Set(),
     new Set(),
   );

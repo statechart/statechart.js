@@ -20,7 +20,7 @@
     "bootstrap": "lerna bootstrap --hoist",
     "build": "lerna run build",
     "test": "lerna run test",
-    "test:watch": "yarn build && concurrently -r --kill-others 'lerna run --parallel build:watch' 'sleepms 2000 && ava --watch'",
+    "test:watch": "concurrently -r --kill-others 'lerna run --parallel build:watch' 'sleepms 2000 && ava --watch'",
     "unit": "lerna run unit"
   },
   "ava": {
