@@ -19,7 +19,7 @@ export function transform<From, To>(
 }
 
 function safeLoad<From, To>(value: From, transformer: Transformer<From, To>): To | undefined {
-  return typeof value === 'undefined' ? undefined : transformer(value);
+  return value === undefined ? undefined : transformer(value);
 }
 
 function loadState<From, To>(
@@ -27,10 +27,10 @@ function loadState<From, To>(
   transformer: Transformer<From, To>,
 ): State<To> {
   const {
-    onInit = [],
-    onEnter = [],
-    onExit = [],
-    invocations = [],
+    onInit,
+    onEnter,
+    onExit,
+    invocations,
   } = state;
 
   return {
@@ -47,7 +47,7 @@ function loadTransition<From, To>(
   transformer: Transformer<From, To>,
 ): Transition<To> {
   const {
-    onTransition = [],
+    onTransition,
     event,
     condition,
   } = transition;
@@ -69,7 +69,7 @@ function invocation<From, To>(
     id,
     src,
     content,
-    onExit = [],
+    onExit,
   } = invocation;
 
   return {

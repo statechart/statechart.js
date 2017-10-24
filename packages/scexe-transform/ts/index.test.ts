@@ -1,19 +1,29 @@
 import { test } from 'ava';
-import { StateType, TransitionType } from '@statechart/scexe';
+import { Document, StateType, TransitionType } from '@statechart/scexe';
 import { transform } from './';
 
 test('convert', (t) => {
-  const doc = {
+  const doc: Document<string> = {
     name: 'foo',
     states: [
       {
         type: StateType.ATOMIC,
         idx: 0,
         completion: [],
-        invocations: [],
+        invocations: [
+          {
+            type: '(function(){return true;})',
+            src: '(function(){return true;})',
+            id: '(function(){return true;})',
+            autoforward: false,
+            content: '(function(){return true;})',
+            onExit: [
+              '(function(){return true;})',
+            ],
+          },
+        ],
         parent: 0,
         ancestors: [],
-        descendants: [],
         onInit: [
           '(function(){return true;})',
         ],
@@ -37,8 +47,7 @@ test('convert', (t) => {
         targets: [2],
         conflicts: [1, 2, 3],
         exits: [1],
-        events: '(function(){return true;})',
-        condition: '(function(){return true;})',
+        event: '(function(){return true;})',
       },
     ],
   };
