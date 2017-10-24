@@ -11,10 +11,10 @@ import {
   transition as transitionTypes,
 } from './types';
 
-export function decode(reader: $Reader, length?: number): Document {
-  if (!(reader instanceof $Reader)) reader = $Reader.create(reader); // tslint:disable-line
+export function decode(data: Uint8Array): Document {
+  const reader = $Reader.create(data);
 
-  const end = length === undefined ? reader.len : reader.pos + length;
+  const end = reader.len;
   const document = {
     states: [],
     transitions: [],
@@ -42,6 +42,7 @@ export function decode(reader: $Reader, length?: number): Document {
         reader.pos++; // tslint:disable-line
         (document.meta as any)[key] = reader.string();
         break;
+      /* istanbul ignore next */
       default:
         reader.skipType(tag & 7);
         break;
@@ -50,8 +51,8 @@ export function decode(reader: $Reader, length?: number): Document {
   return document;
 }
 
-function decodeState(reader: $Reader, length?: number): State {
-  const end = length === undefined ? reader.len : reader.pos + length;
+function decodeState(reader: $Reader, length: number): State {
+  const end = reader.pos + length;
   const state = {
     type: StateType.ATOMIC,
     idx: -1,
@@ -112,6 +113,7 @@ function decodeState(reader: $Reader, length?: number): State {
       case 14:
         state.name = reader.string();
         break;
+      /* istanbul ignore next */
       default:
         reader.skipType(tag & 7);
         break;
@@ -120,8 +122,8 @@ function decodeState(reader: $Reader, length?: number): State {
   return state;
 }
 
-function decodeTransition(reader: $Reader, length?: number): Transition {
-  const end = length === undefined ? reader.len : reader.pos + length;
+function decodeTransition(reader: $Reader, length: number): Transition {
+  const end = reader.pos + length;
   const message = {
     type: TransitionType.EXTERNAL,
     idx: -1,
@@ -165,6 +167,7 @@ function decodeTransition(reader: $Reader, length?: number): Transition {
       case 10:
         message.name = reader.string();
         break;
+      /* istanbul ignore next */
       default:
         reader.skipType(tag & 7);
         break;
@@ -174,8 +177,8 @@ function decodeTransition(reader: $Reader, length?: number): Transition {
 }
 
 const emptyBytes = new Uint8Array(0);
-function decodeInvocation(reader: $Reader, length?: number) {
-  const end = length === undefined ? reader.len : reader.pos + length;
+function decodeInvocation(reader: $Reader, length: number) {
+  const end = reader.pos + length;
   const message = {
     type: emptyBytes,
     src: emptyBytes,
@@ -206,6 +209,7 @@ function decodeInvocation(reader: $Reader, length?: number) {
       case 6:
         message.autoforward = reader.bool();
         break;
+      /* istanbul ignore next */
       default:
         reader.skipType(tag & 7);
         break;
