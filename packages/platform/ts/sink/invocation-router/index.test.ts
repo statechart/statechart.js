@@ -90,13 +90,15 @@ test('invocation router', async (t) => {
     },
   });
 
-  router.event(1, {
+  const secondEvent = {
     id: 'second',
     type: EInvocationCommandType.OPEN,
     invocation: {
       type: 'second',
     },
-  });
+  };
+  delete secondEvent.id;
+  router.event(1, secondEvent);
 
   router.event(1.5, {
     id: 'first',
@@ -113,6 +115,18 @@ test('invocation router', async (t) => {
       type: 'second',
     },
   });
+
+  await t.throws(new Promise(() => {
+    const e = {
+      id: 'foo',
+      type: EInvocationCommandType.OPEN,
+      invocation: {
+        type: 'foo',
+      },
+    };
+    delete e.invocation;
+    router.event(2, e);
+  }));
 
   await t.throws(new Promise(() => {
     router.event(2, {

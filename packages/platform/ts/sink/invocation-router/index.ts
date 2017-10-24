@@ -79,7 +79,6 @@ class UnendableSink<Event> extends ThroughSink<Event, Event> {
     this.sink.event(t, x);
   }
 
-  end(_T: Time) {
-    // noop
-  }
+  /* istanbul ignore next */
+  end() {}
 }

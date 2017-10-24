@@ -52,7 +52,7 @@ test('convert', (t) => {
     ],
   };
 
-  const out = transform(doc, i => (
+  const out = transform(doc, (i: string) => (
     eval(i) as Function // tslint:disable-line
   ));
 

@@ -20,7 +20,8 @@ export interface EcmascriptDatamodel {
 export type Executable<Datamodel, Context> =
   (d: Datamodel & EcmascriptDatamodel, context: Context & EcmascriptContext) => any;
 
-export class Datamodel<Datamodel,Context> implements IDatamodel<Configuration, EcmascriptEvent> {
+export class Datamodel<Datamodel, Context>
+    implements IDatamodel<Configuration, EcmascriptEvent, Executable<Datamodel, Context>> {
   public internalEvents: Sink<EcmascriptEvent>;
   public externalEvents: Sink<EcmascriptEvent>;
 
