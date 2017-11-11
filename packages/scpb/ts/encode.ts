@@ -55,7 +55,7 @@ export function encode(document: Document) {
     }
   }
 
-  return writer;
+  return writer.finish();
 }
 
 function encodeState(state: State, writer: $Writer, stateSize: number, transitionSize: number) {

@@ -25,8 +25,6 @@ class SCXMLInterpreterInstance<Invocation, Content, Event, Executable>
     implements InvocationInstance<Event, InterpreterInvocation<Content>>,
                Sink<Event> {
 
-  private invocation: Invocation & SCXMLInvocation<Executable>;
-  private datamodel: SCXMLDatamodel<Event, Executable>;
   private interpreter: Interpreter<Event, Executable>;
   private sink: Sink<Event>;
   private configurationSink: Sink<Configuration>;
@@ -36,8 +34,6 @@ class SCXMLInterpreterInstance<Invocation, Content, Event, Executable>
     datamodel: SCXMLDatamodel<Event, Executable>,
     configurationSink: Sink<Configuration>,
   ) {
-    this.invocation = invocation;
-    this.datamodel = datamodel;
     this.configurationSink = configurationSink;
     const incomingEvents = this.sink = new StreamSink();
     const document = invocation.content;

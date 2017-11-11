@@ -125,7 +125,7 @@ const documents: Document<Buffer>[] = [
 
 documents.forEach((document, i) => {
   test(`document ${i}`, (t) => {
-    t.deepEqual(decode(encode(document).finish()), document);
+    t.deepEqual(decode(encode(document)), document);
   });
 });
 
@@ -134,5 +134,5 @@ test('optional meta', (t) => {
     states: [],
     transitions: [],
   };
-  t.deepEqual(decode(encode(document).finish()), Object.assign({ meta: {} }, document));
+  t.deepEqual(decode(encode(document)), Object.assign({ meta: {} }, document));
 });

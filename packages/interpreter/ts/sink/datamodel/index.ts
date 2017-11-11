@@ -6,12 +6,10 @@ export class DatamodelSink<Configuration, Event, Executable> implements Sink<Eve
   public datamodel: IDatamodel<Configuration, Event, Executable>;
   private sink: Sink<any>;
   private queue: PromiseQueue;
-  private scheduler: Scheduler;
 
   constructor(sink: Sink<any>, datamodel: IDatamodel<Configuration, Event, Executable>, scheduler: Scheduler) {
     this.sink = sink;
     this.datamodel = datamodel;
-    this.scheduler = scheduler;
 
     this.queue = new PromiseQueue(
       () => {

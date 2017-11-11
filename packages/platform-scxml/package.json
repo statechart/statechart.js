@@ -72,6 +72,7 @@
     "@statechart/types": "^0.1.45",
     "@statechart/scexe": "^0.1.45",
     "@statechart/util-most": "^0.1.45",
+    "@statechart/util-set": "^0.1.45",
     "tslib": "^1.6.0"
   }
 }
