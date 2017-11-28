@@ -52,10 +52,8 @@ const loaders = {
     return `_log(${props})`;
   },
   param: function(node) {
-    return formatProps([
-      optionLoad(node, 'name'),
-      optionLoad(node, 'value'),
-    ]);
+    const { name, value } = node.props || {};
+    return `${load(name)}:${load(value)}`;
   },
   send: function(node) {
     // TODO setup the correct properties
@@ -66,9 +64,9 @@ const loaders = {
       optionLoad(node, 'type'),
       optionLoad(node, 'id'),
       optionLoad(node, 'delay'),
-      optionLoad(node, 'content'),
+      optionLoad(node, 'content', 'data'),
       children.length ?
-        `params:[${children.map(load).join(',')}]` :
+        `data:{${children.map(load).join(',')}}` :
         '',
     ]);
     return `_send(${props})`;
