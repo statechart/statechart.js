@@ -1,3 +1,4 @@
-test
-rollup.config.js
-yarn.lock
+ts
+tsconfig.json
+tsconfig.lib.json
+tslint.json

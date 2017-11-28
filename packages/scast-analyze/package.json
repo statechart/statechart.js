@@ -6,7 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "babel-runtime": "^6.23.0",
-    "unist-util-transform": "^1.0.1",
+    "unist-util-transform": "^1.0.5",
     "unist-util-transform-group": "^1.0.1",
     "unist-util-transform-stack": "^1.0.0"
   }

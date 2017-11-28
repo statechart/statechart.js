@@ -7,7 +7,7 @@
   "dependencies": {
     "@statechart/scpb": "^0.1.44",
     "babel-runtime": "^6.23.0",
-    "unist-util-transform": "*",
+    "unist-util-transform": "^1.0.5",
     "unist-util-transform-group": "*",
     "unist-util-transform-stack": "*"
   }

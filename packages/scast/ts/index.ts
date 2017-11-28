@@ -54,41 +54,41 @@ export interface Position {
   indent?: number;
 }
 
-export interface Node {
+export interface Node<_Executable> {
   type: NodeType;
   data?: { [s: string]: any };
   position?: Position;
 }
 
-export interface Parent extends Node {
-  children: Node[];
+export interface Parent<Executable> extends Node<Executable> {
+  children: Node<Executable>[];
 }
 
-export interface Text extends Node {
+export interface Text<Executable> extends Node<Executable> {
   value: string;
 }
 
-export interface SCXML extends Parent {
+export interface SCXML<Executable> extends Parent<Executable> {
   type: NodeType.SCXML;
   initial: string[];
   datamodel?: string;
   binding: Binding;
 }
 
-export interface State extends Parent {
+export interface State<Executable> extends Parent<Executable> {
   type: NodeType.STATE;
   id?: string;
   initial: string[];
   name?: string;
 }
 
-export interface Parallel extends Parent {
+export interface Parallel<Executable> extends Parent<Executable> {
   type: NodeType.PARALLEL;
   id?: string;
   name?: string;
 }
 
-export interface Transition<Executable> extends Parent {
+export interface Transition<Executable> extends Parent<Executable> {
   type: NodeType.TRANSITION;
   event: string[];
   target: string[] | false;
@@ -97,125 +97,134 @@ export interface Transition<Executable> extends Parent {
   name?: string;
 }
 
-export interface Initial extends Parent {
+export interface Initial<Executable> extends Parent<Executable> {
   type: NodeType.INITIAL;
   name?: string;
 }
 
-export interface Final extends Parent {
+export interface Final<Executable> extends Parent<Executable> {
   type: NodeType.FINAL;
   id?: string;
   name?: string;
 }
 
-export interface OnEntry extends Parent {
+export interface OnEntry<Executable> extends Parent<Executable> {
   type: NodeType.ON_ENTRY;
 }
 
-export interface OnExit extends Parent {
+export interface OnExit<Executable> extends Parent<Executable> {
   type: NodeType.ON_EXIT;
 }
 
-export interface History extends Parent {
+export interface History<Executable> extends Parent<Executable> {
   type: NodeType.HISTORY;
   id?: string;
   t: HistoryType;
   name?: string;
 }
 
-export interface Raise extends Parent {
+export interface Raise<Executable> extends Parent<Executable> {
   type: NodeType.RAISE;
   event: string;
 }
 
-export interface If<Executable> extends Parent {
+export interface If<Executable> extends Parent<Executable> {
   type: NodeType.IF;
   cond: Executable;
 }
 
-export interface ElseIf<Executable> extends Parent {
+export interface ElseIf<Executable> extends Parent<Executable> {
   type: NodeType.ELSE_IF;
   cond: Executable;
 }
 
-export interface Else extends Parent {
+export interface Else<Executable> extends Parent<Executable> {
   type: NodeType.ELSE;
 }
 
-export interface Foreach<Executable> extends Parent {
+export interface Foreach<Executable> extends Parent<Executable> {
   type: NodeType.FOREACH;
   item?: string;
   index?: string;
   array: Executable;
 }
 
-export interface Log<Executable> extends Parent {
+export interface Log<Executable> extends Parent<Executable> {
   type: NodeType.LOG;
   label?: string;
   expr: Executable;
 }
 
-export interface Datamodel extends Parent {
+export interface Datamodel<Executable> extends Parent<Executable> {
   type: NodeType.DATAMODEL;
 }
 
-export interface Data<Executable> extends Parent {
+export interface Data<Executable> extends Parent<Executable> {
   type: NodeType.DATA;
   id: string;
   src?: string;
   expr?: Executable;
 }
 
-export interface Assign<Executable> extends Parent {
+export interface Assign<Executable> extends Parent<Executable> {
   type: NodeType.ASSIGN;
   location: string;
   expr?: Executable;
 }
 
-export interface DoneData extends Parent {
+export interface DoneData<Executable> extends Parent<Executable> {
   type: NodeType.DONE_DATA;
 }
 
-export interface Content<Executable> extends Parent {
+export interface Content<Executable> extends Parent<Executable> {
   type: NodeType.CONTENT;
   expr?: Executable;
 }
 
-export interface Param<Executable> extends Parent {
+export interface Param<Executable> extends Parent<Executable> {
   type: NodeType.PARAM;
   location: string;
   expr?: Executable;
 }
 
-export interface Script extends Parent {
+export interface Script<Executable> extends Parent<Executable> {
   type: NodeType.SCRIPT;
   src?: string;
 }
 
-export interface Send<Executable> extends Parent {
+export const enum LiteralType {
+  LITERAL = 'SCAST_LITERAL',
+}
+
+export interface Literal {
+  type: LiteralType;
+  value: string;
+}
+
+export interface Send<Executable> extends Parent<Executable> {
   type: NodeType.SEND;
   namelist: string[];
-  event: Executable;
-  target: Executable;
-  t: Executable;
-  id: Executable;
-  delay: Executable;
+  event: Executable | Literal;
+  target: Executable | Literal;
+  t: Executable | Literal;
+  id: Executable | Literal;
+  delay: Executable | Literal;
 }
 
-export interface Cancel<Executable> extends Parent {
+export interface Cancel<Executable> extends Parent<Executable> {
   type: NodeType.CANCEL;
-  sendid: Executable;
+  sendid: Executable | Literal;
 }
 
-export interface Invoke<Executable> extends Parent {
+export interface Invoke<Executable> extends Parent<Executable> {
   type: NodeType.SEND;
   namelist: string[];
   autoforward: boolean;
-  t: Executable;
-  src: Executable;
-  id: Executable;
+  t: Executable | Literal;
+  src: Executable | Literal;
+  id: Executable | Literal;
 }
 
-export interface Finalize extends Parent {
+export interface Finalize<Executable> extends Parent<Executable> {
   type: NodeType.FINALIZE;
 }
