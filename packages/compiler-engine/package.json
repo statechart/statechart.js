@@ -1,6 +1,6 @@
 {
   "name": "@statechart/compiler-engine",
-  "version": "0.1.45",
+  "version": "0.1.46",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "license": "MIT",
@@ -8,7 +8,7 @@
     "@statechart/hast-scxml-lint": "^0.1.45",
     "@statechart/hast-to-scast": "^0.1.45",
     "@statechart/hast-xml-parse": "^0.1.44",
-    "@statechart/scast-analyze": "^0.1.45",
+    "@statechart/scast-analyze": "^0.1.46",
     "@statechart/scast-datamodel": "^0.1.44",
     "@statechart/scast-to-scexe": "^0.1.45",
     "@statechart/scexe-to-scpb": "^0.1.44",

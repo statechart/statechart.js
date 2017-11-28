@@ -1,6 +1,6 @@
 {
   "name": "@statechart/interpreter-datamodel-js",
-  "version": "0.1.44",
+  "version": "0.1.46",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "license": "MIT",
